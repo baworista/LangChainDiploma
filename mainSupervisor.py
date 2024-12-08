@@ -2,17 +2,26 @@ from langchain_core.messages import SystemMessage
 from auth_utils import auth_func
 from langchain_openai import ChatOpenAI
 from langchain_core.messages import SystemMessage, HumanMessage
+import sys
 
 auth_func()
-model = ChatOpenAI(model="gpt-4o-mini", temperature=0.0, max_tokens=300)
 
-user_message = HumanMessage(content=f"Tell me about Miami")
+from graphSupervisor.graph import graphSupervisor
 
-messages = [
-    SystemMessage(content="You are helpful AI assistant"),
-    user_message,
-]
+def main():
+    # Check if a CLI parameter (question) is provided
+    if len(sys.argv) > 1:
+        question = " ".join(sys.argv[1:])  # Combine all CLI arguments into a single string
+    else:
+        # Default hardcoded question
+        question = "Help a multinational manufacturing company in their journey to product management maturity."
 
-response = model.invoke(messages)
+    # Invoke the app with the provided or default question
+    response = graphSupervisor.invoke({"topic": question}, config={"configurable": {"thread_id": "1"}})
 
-print(response)
+    # Print the report
+    print("\n=====REPORT=====")
+    print(response["final_report"])
+
+if __name__ == "__main__":
+    main()
