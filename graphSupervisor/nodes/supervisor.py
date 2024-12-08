@@ -56,7 +56,7 @@ def create_analysts_tool(topic: str) -> dict:
 
 def supervisor_decision(state: OverallState):
     """
-    Determines which analyst the supervisor should talk to next.
+    Determines which analyst the supervisor should talk to next. (Currently just for be)
     """
     current_step = state.get("current_step", 0)
     max_steps = 4  # Number of analysts
@@ -72,39 +72,15 @@ def supervisor_node(state: OverallState):
     Invokes the model with the provided tools and updates the state.
     """
     tools = [create_analysts_tool]
+    tool_mapping = {tool.name.lower(): tool for tool in tools}
+    print(tool_mapping)
+
     llm_with_tools = llm.bind_tools(tools, parallel_tool_calls=False)
 
     # Вызов инструмента для генерации аналитиков
     response = llm_with_tools.invoke(state["topic"])
     print("Response from llm with tools:", response.tool_calls)
 
-    for tool_call in response.tool_calls:
-        if tool_call["name"] == "create_analysts_tool":
-            tool_response = create_analysts_tool.invoke(state["topic"])
-
-            # Обновляем состояние аналитиков
-            state["analysts"] = tool_response["analysts"]
-    return state
-
-
-
-def invoke_model_with_tools(state: OverallState):
-    """
-    Invokes the model with the specified tools and updates the state's fields dynamically
-    based on the tool outputs.
-    """
-    # Define the tools manually
-    tools = [create_analysts_tool]
-    tool_mapping = {tool.name.lower(): tool for tool in tools}  # Map tool names to their functions
-
-    # Bind the tools to the model
-    llm_with_tools = llm.bind_tools(tools, parallel_tool_calls=False)
-
-    # Invoke the model with tools
-    response = llm_with_tools.invoke(state["topic"])
-    print("Response from llm with tools:", response.tool_calls)
-
-    # Process each tool call in the response
     for tool_call in response.tool_calls:
         tool_name = tool_call["name"].lower()
         tool_args = tool_call["args"]
@@ -113,17 +89,14 @@ def invoke_model_with_tools(state: OverallState):
         if tool_name not in tool_mapping:
             raise ValueError(f"Tool '{tool_name}' not found in the defined tools.")
 
-        # Invoke the tool with its arguments
         selected_tool = tool_mapping[tool_name]
-        tool_response = selected_tool(**tool_args)
+        tool_response = selected_tool.invoke(tool_args)  # Correctly use the invoke method
         print(f"Output from tool '{tool_name}':", tool_response)
 
         # Update only specific fields in the state
-        if "analysts" in tool_response:
-            state["analysts"] = tool_response["analysts"]  # Update only the analysts field
+        state.update(tool_response)
 
     return state
-
 
 
 # Example usage
@@ -137,7 +110,7 @@ if __name__ == "__main__":
     supervisor_node(state)
 
     # Print the updated state
-    print("initial_state:", json.dumps(state, indent=4, ensure_ascii=False))
+    print("update_state:", json.dumps(state, indent=4, ensure_ascii=False))
 
 
 
