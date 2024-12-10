@@ -73,24 +73,29 @@ def recommend_tool(state: AnalystState)-> OverallState:
     return {"recommendations": [recommendation.content]}
 
 
-def analyst_node(state: AnalystState):
+def analyst_node(state: AnalystState) -> AnalystState:
     """
-    Processes an individual analyst and generates their unique AnalystState.
+    Processes an individual analyst's state and updates it with diagnosis and recommendations.
 
     Args:
-        topic (str): The topic of the analysis.
-        name (str): The name of the analyst.
-        role (str): The role of the analyst.
-        description (str): The description of the analyst's focus and tasks.
+        state (AnalystState): The specific state for the analyst.
 
     Returns:
-        AnalystState: The unique state for the processed analyst.
+        AnalystState: Updated state with diagnosis and recommendations.
     """
+    print(f"Processing {state['analyst_name']}...")
 
-#Diagnose
-    diagnose_tool(state)
-#Reccomend
-    recommend_tool(state)
+    # Generate diagnosis
+    diagnosis_result = diagnose_tool(state)
+    state.update(diagnosis_result)
+
+    # Generate recommendations
+    recommendation_result = recommend_tool(state)
+    state.update(recommendation_result)
+
+    print(f"Completed analysis for {state['analyst_name']}")
+    return state
+
 
 
 

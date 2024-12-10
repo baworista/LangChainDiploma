@@ -1,11 +1,16 @@
 import json
+from typing import List
+
 from langchain_core.messages import HumanMessage, SystemMessage
+from langgraph.graph import StateGraph
 from langgraph.prebuilt.chat_agent_executor import AgentState
 
 from auth_utils import auth_func
 from langchain_openai import ChatOpenAI
 from langgraph.constants import START, END
-from graphSupervisor.state import OverallState, Perspectives
+
+from graphSupervisor.nodes.analyst import analyst_node
+from graphSupervisor.state import OverallState, Perspectives, AnalystState
 from langchain.tools import tool
 from langgraph.constants import Send
 
@@ -126,52 +131,74 @@ def supervisor_decision(state: OverallState):
     return END
 
 @tool
-def initiate_consulting_threads(state: OverallState)->AgentState:
-    """ Initiate parallel agent workflow using isolated substates for each analyst """
+def initiate_consulting_threads(topic: str, analysts: List[dict]) -> dict:
+    """
+    Initiate parallel agent workflow using isolated substates for each analyst.
+
+    Args:
+        topic (str): The overall topic of analysis.
+        analysts (List[dict]): List of analyst definitions containing name, role, and description.
+        questionnaire (str): The questionnaire results or user input.
+
+    Returns:
+        Dict[str, AnalystState]: Dictionary of individual analyst states indexed by their names.
+    """
     print("... Initiate analysis ...")
-
-    topic = state["topic"]
-    analysts = state["analysts"]
-    questionnaire = state.get("questionnaire", "Questionnaire results")
-
     print(f"Analysts: {analysts}")
     print(f"Topic: {topic}")
     print("... Analysis initiated...")
-    return [
-        Send(
-            analyst.name,
-            {
-                "analyst": analyst,  # Pass individual analyst here, without attempting to store in OverallState
-                "topic": topic,
-                "questionnaire": questionnaire,
-            }
-        ) for analyst in analysts
-    ]
+
+    # Create individual states for each analyst
+    analyst_states = {}
+    for analyst in analysts:
+        analyst_state = AnalystState(
+            analyst_name=analyst["name"],
+            topic=topic,
+            goals=f"Name: {analyst['name']}\nRole: {analyst['role']}\nDescription: {analyst['description']}",
+            diagnosis=[],
+            recommendations=[],
+        )
+        analyst_states[analyst["name"]] = analyst_state
+
+    return analyst_states #should be dict for state to update
 
 
-def supervisor_node(state: OverallState):
+
+def supervisor_node(state: OverallState, app_builder: StateGraph):
     """
-    Invokes the supervisor node
+    Invokes the supervisor node and dynamically adds analyst nodes to the graph.
     """
 
     # Check if there are agents
     if "analysts" not in state or not state["analysts"]:
-        # Генерация аналитиков
+        # Generate analysts
         generated_analysts = create_analysts_tool.invoke(state["topic"])
         state.update(generated_analysts)
-        state["analyst_progress"] = {analyst["name"]: False for analyst in state["analysts"]} #Если разговор, то удалить
+        state["analyst_progress"] = {analyst["name"]: False for analyst in state["analysts"]}
+
+        # Generate individual analyst states
+        input_payload = {"topic": state["topic"], "analysts": state["analysts"]}
+        analyst_states = initiate_consulting_threads.invoke(input_payload)  # Ensure both fields are passed
 
 
 
-    # Invokes the model with the provided tools and updates the state.
+        # Add dynamic nodes to the graph
+        for analyst_name, analyst_state in analyst_states.items():
+            node_name = f"{analyst_name.replace(' ', '')}Node"  # Ensure unique node names
+            app_builder.add_node(node_name, lambda s: analyst_node(analyst_state))
+            app_builder.add_edge(node_name, "supervisor")  # Add edge back to the supervisor
+
+        print("Analyst nodes added dynamically.")
+
+    # Invoke tools to process the state
     tools = [initiate_consulting_threads, write_report]
     tool_mapping = {tool.name.lower(): tool for tool in tools}
     print(tool_mapping)
 
     llm_with_tools = llm.bind_tools(tools, parallel_tool_calls=False)
 
-    # Вызов инструмента для генерации аналитиков
-    response = llm_with_tools.invoke(state["topic"])
+    # Call tools
+    response = llm_with_tools.invoke(state)
     print("Response from llm with tools:", response.tool_calls)
 
     for tool_call in response.tool_calls:
@@ -183,13 +210,16 @@ def supervisor_node(state: OverallState):
             raise ValueError(f"Tool '{tool_name}' not found in the defined tools.")
 
         selected_tool = tool_mapping[tool_name]
-        tool_response = selected_tool.invoke(tool_args)  # Correctly use the invoke method
+        tool_response = selected_tool.run(tool_args)  # Use `run` to correctly pass arguments
         print(f"Output from tool '{tool_name}':", tool_response)
 
         # Update only specific fields in the state
         state.update(tool_response)
 
     return state
+
+
+
 
 
 # # Example usage

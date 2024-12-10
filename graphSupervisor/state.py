@@ -28,17 +28,6 @@ class Perspectives(BaseModel):
     )
 
 
-# Overall state for the supervisor
-class OverallState(TypedDict):
-    topic: str  # Overall topic of analysis
-    questionnaire: str  # Questionnaire results or user input
-    analysts: List[Analyst] # All analysts
-    analyst_progress: Dict[str, bool]  # Progress of each analyst (e.g., {'HRAnalyst': True})
-    aggregated_diagnosis: List[str]  # Combined diagnosis from all analysts
-    aggregated_recommendations: List[str]  # Combined recommendations from all analysts
-    final_report: str  # Final report generated after all analysts complete their tasks
-
-
 # Individual state for each analyst
 class AnalystState(TypedDict):
     analyst_name: str  # Name of the analyst (e.g., HRAnalyst, BPAnalyst)
@@ -46,3 +35,17 @@ class AnalystState(TypedDict):
     goals: str  # Goals or focus of this analyst (e.g., HR-specific goals)
     diagnosis: List[str]  # Analyst-specific diagnosis
     recommendations: List[str]  # Analyst-specific recommendations
+
+
+# Overall state for the supervisor
+class OverallState(TypedDict):
+    topic: str  # Overall topic of analysis
+    questionnaire: str  # Questionnaire results or user input
+    analysts: List[Analyst]  # All analysts
+    analyst_progress: Dict[str, bool]  # Progress of each analyst (e.g., {'HRAnalyst': True})
+    aggregated_diagnosis: List[str]  # Combined diagnosis from all analysts
+    aggregated_recommendations: List[str]  # Combined recommendations from all analysts
+    final_report: str  # Final report generated after all analysts complete their tasks
+    analyst_states: Dict[str, AnalystState]  # Individual states for each analyst
+
+

@@ -24,33 +24,11 @@ def testAnalyst(state):
 app_builder = StateGraph(OverallState)
 
 # Add nodes
-app_builder.add_node('supervisor', supervisor_node)  # Supervisor node
+app_builder.add_node("supervisor", lambda state: supervisor_node(state, app_builder))
 # app_builder.add_node("supervisor_tools", ToolNode([create_analysts_tool])) - additional for graph visualizing
-
-app_builder.add_node('HRAnalyst', analyst_node)  # Human Resources Analyst
-
-app_builder.add_node('BPAnalyst', testAnalyst)  # Business Process Analyst
-
-app_builder.add_node('KMAnalyst', testAnalyst)  # Knowledge Management Analyst
-
-app_builder.add_node('ITAnalyst', testAnalyst)  # IT Systems Analyst
-
-
-# Add conditional edges for supervisor to talk to each analyst sequentially
-app_builder.add_conditional_edges(
-    'supervisor',  # Source node
-    supervisor_decision,  # Decision-making function
-    ['HRAnalyst', 'BPAnalyst', 'KMAnalyst', 'ITAnalyst', END]  # Target nodes
-)
 
 # Set start and end points
 app_builder.add_edge(START, 'supervisor')
-
-# Add edges for analysts to return to supervisor
-app_builder.add_edge('HRAnalyst', 'supervisor')
-app_builder.add_edge('BPAnalyst', 'supervisor')
-app_builder.add_edge('KMAnalyst', 'supervisor')
-app_builder.add_edge('ITAnalyst', 'supervisor')
 
 # Compile the graph
 graphSupervisor = app_builder.compile()
