@@ -1,10 +1,13 @@
 import json
 from langchain_core.messages import HumanMessage, SystemMessage
+from langgraph.prebuilt.chat_agent_executor import AgentState
+
 from auth_utils import auth_func
 from langchain_openai import ChatOpenAI
 from langgraph.constants import START, END
 from graphSupervisor.state import OverallState, Perspectives
 from langchain.tools import tool
+from langgraph.constants import Send
 
 # Authenticate and initialize LLM
 auth_func()
@@ -51,12 +54,68 @@ def create_analysts_tool(topic: str) -> dict:
 
     return {"analysts": serialized_analysts}
 
+@tool
+def write_report(state: OverallState):
+    """
+    Объединяет результаты всех аналитиков и формирует финальный отчет.
 
+    Args:
+        state (OverallState): Состояние, содержащее результаты всех аналитиков.
+
+    Returns:
+        dict: Обновленное состояние с финальным отчетом.
+    """
+    print("... Write Report ...")
+
+    aggregated_diagnosis = []
+    aggregated_recommendations = []
+
+    # Сбор данных из консультирования
+    for analyst in state["analysts"]:
+        diagnosis = analyst.get("diagnosis", [])
+        recommendations = analyst.get("recommendations", [])
+        aggregated_diagnosis.extend(diagnosis)
+        aggregated_recommendations.extend(recommendations)
+
+    # Инструкции для генерации отчёта
+    writing_instructions = """
+    You are an expert tasked with summarizing the findings of a consulting process.
+    Use the following structure to create the report:
+
+    1. Introduction: Provide a brief summary of the consulting process.
+    2. Diagnoses: Summarize the key diagnoses in a concise and clear manner.
+    3. Recommendations: Provide actionable recommendations for the client.
+    4. Conclusion: Conclude the report with a forward-looking statement.
+
+    Diagnoses:
+    {diagnosis}
+
+    Recommendations:
+    {recommendations}
+    """
+
+    # Формирование сообщения для LLM
+    system_message = writing_instructions.format(
+        diagnosis="\n".join(aggregated_diagnosis),
+        recommendations="\n".join(aggregated_recommendations),
+    )
+
+    # Генерация отчёта с помощью LLM
+    report_response = llm.invoke([SystemMessage(content=system_message)])
+    final_report = report_response.content.strip()
+
+    # Формирование итогового состояния
+    state["aggregated_diagnosis"] = aggregated_diagnosis
+    state["aggregated_recommendations"] = aggregated_recommendations
+    state["final_report"] = final_report
+
+    print("Final report generated.")
+    return state
 
 
 def supervisor_decision(state: OverallState):
     """
-    Determines which analyst the supervisor should talk to next. (Currently just for be)
+    Invokes the supervisor decision function.
     """
     current_step = state.get("current_step", 0)
     max_steps = 4  # Number of analysts
@@ -66,12 +125,46 @@ def supervisor_decision(state: OverallState):
         return ["HRAnalyst", "BPAnalyst", "KMAnalyst", "ITAnalyst"][current_step]
     return END
 
+@tool
+def initiate_consulting_threads(state: OverallState)->AgentState:
+    """ Initiate parallel agent workflow using isolated substates for each analyst """
+    print("... Initiate analysis ...")
+
+    topic = state["topic"]
+    analysts = state["analysts"]
+    questionnaire = state.get("questionnaire", "Questionnaire results")
+
+    print(f"Analysts: {analysts}")
+    print(f"Topic: {topic}")
+    print("... Analysis initiated...")
+    return [
+        Send(
+            analyst.name,
+            {
+                "analyst": analyst,  # Pass individual analyst here, without attempting to store in OverallState
+                "topic": topic,
+                "questionnaire": questionnaire,
+            }
+        ) for analyst in analysts
+    ]
+
 
 def supervisor_node(state: OverallState):
     """
-    Invokes the model with the provided tools and updates the state.
+    Invokes the supervisor node
     """
-    tools = [create_analysts_tool]
+
+    # Check if there are agents
+    if "analysts" not in state or not state["analysts"]:
+        # Генерация аналитиков
+        generated_analysts = create_analysts_tool.invoke(state["topic"])
+        state.update(generated_analysts)
+        state["analyst_progress"] = {analyst["name"]: False for analyst in state["analysts"]} #Если разговор, то удалить
+
+
+
+    # Invokes the model with the provided tools and updates the state.
+    tools = [initiate_consulting_threads, write_report]
     tool_mapping = {tool.name.lower(): tool for tool in tools}
     print(tool_mapping)
 
@@ -99,18 +192,18 @@ def supervisor_node(state: OverallState):
     return state
 
 
-# Example usage
-if __name__ == "__main__":
-    # Mock OverallState for demonstration
-    state = OverallState(topic="Digital Transformation in Organizations")
-
-    print("initial_state: ", json.dumps(state, indent=4, ensure_ascii=False))
-
-    # Invoke the model with the tools and initial state
-    supervisor_node(state)
-
-    # Print the updated state
-    print("update_state:", json.dumps(state, indent=4, ensure_ascii=False))
+# # Example usage
+# if __name__ == "__main__":
+#     # Mock OverallState for demonstration
+#     state = OverallState(topic="Digital Transformation in Organizations")
+#
+#     print("initial_state: ", json.dumps(state, indent=4, ensure_ascii=False))
+#
+#     # Invoke the model with the tools and initial state
+#     supervisor_node(state)
+#
+#     # Print the updated state
+#     print("update_state:", json.dumps(state, indent=4, ensure_ascii=False))
 
 
 

@@ -1,6 +1,8 @@
 import os
 import getpass
 from dotenv import load_dotenv
+import inspect
+
 
 def auth_func():
     """
@@ -32,4 +34,8 @@ def auth_func():
     os.environ.setdefault("LANGCHAIN_TRACING_V2", "true")
     os.environ.setdefault("LANGCHAIN_PROJECT", "langchain-academy")
 
-    print("Environment variables set successfully.")
+    # Get the file name where the function was called from
+    caller_frame = inspect.stack()[1]
+    caller_file = caller_frame.filename
+
+    print(f"Environment variables set successfully. Called from file: {caller_file}")

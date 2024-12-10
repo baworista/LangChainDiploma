@@ -4,16 +4,18 @@ from typing_extensions import TypedDict
 
 class Analyst(BaseModel):
     name: str = Field(
-        description="Analyst's persona name."
+        description="The human-like name of the analyst persona. "
+                    "Ensure the name is realistic and fits the persona."
     )
-
     role: str = Field(
-        description="Role of the analyst in the context of the topic.",
+        description="The specific role of the analyst in the context of the research topic. "
+                    "Clearly defines the focus area such as 'Human Resources Analyst' or 'Business Process Analyst'."
+    )
+    description: str = Field(
+        description="A detailed description of the analyst's focus, key competencies, tasks within the project, "
+                    "concerns, and motives. This should align with the research topic and the analyst's role."
     )
 
-    description: str = Field(
-        description="Description of the analyst focus, key competencies, tasks in the project and concerns, and motives.",
-    )
 
     @property
     def persona(self) -> str:
