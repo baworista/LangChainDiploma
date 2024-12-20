@@ -1,0 +1,13 @@
+1 - Subgraph for each team
+    Supervisor returns State for each team via Send
+    Teams names must be hardcoded(name node, not generated name)
+2 - In teams(reviewers -> from their team state) must be return Command(
+        update={
+            ---
+        },
+        goto="supervisor",
+    )
+
+3 - Supervisor should wait for answers from all teams - smth like
+    if reviewer_final_overview.lengh=4
+        goto report_writer

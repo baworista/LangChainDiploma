@@ -1,20 +1,17 @@
-from langchain.agents import initialize_agent
-from langchain_openai import ChatOpenAI
+from langgraph.constants import START, END
 from langgraph.constants import START, END
 from langgraph.graph import StateGraph
-from langgraph.prebuilt import ToolNode
-from auth_utils import auth_func
+
 from graphSupervisor.nodes.analyst import *
-from graphSupervisor import state
-from graphSupervisor.nodes.supervisor import supervisor_decision, create_analysts_tool, supervisor_node
-from graphSupervisor.state import OverallState, AnalystState
+from graphSupervisor.nodes.supervisor import supervisor_node
+from graphSupervisor.state import OverallState
 
 auth_func()
 
 model = ChatOpenAI(temperature=0.0, model_name="gpt-4o-mini")
 
 
-# Define simple test functions for nodes
+# Define simple testfiles functions for nodes
 def testAnalyst(state):
     print(f"Function call for {state.get('node_name', 'unknown node')}")
     return state  # Return the same state for simplicity
@@ -24,11 +21,12 @@ def testAnalyst(state):
 app_builder = StateGraph(OverallState)
 
 # Add nodes
-app_builder.add_node("supervisor", lambda state: supervisor_node(state, app_builder))
+app_builder.add_node("supervisor", supervisor_node)
 # app_builder.add_node("supervisor_tools", ToolNode([create_analysts_tool])) - additional for graph visualizing
 
 # Set start and end points
 app_builder.add_edge(START, 'supervisor')
+app_builder.add_edge('supervisor', END)
 
 # Compile the graph
 graphSupervisor = app_builder.compile()
@@ -38,7 +36,6 @@ graph_image = graphSupervisor.get_graph().draw_mermaid_png()
 with open("graph_diagram.png", "wb") as file:
     file.write(graph_image)
 print("Saved as PNG 'graph_diagram.png'")
-
 
 # Thread configuration and graph input
 thread = {"configurable": {"thread_id": "1"}}

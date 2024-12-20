@@ -1,18 +1,14 @@
-import json
 from typing import List
 
+from langchain.tools import tool
 from langchain_core.messages import HumanMessage, SystemMessage
-from langgraph.graph import StateGraph
-from langgraph.prebuilt.chat_agent_executor import AgentState
-
-from auth_utils import auth_func
 from langchain_openai import ChatOpenAI
 from langgraph.constants import START, END
+from langgraph.graph import StateGraph
 
+from auth_utils import auth_func
 from graphSupervisor.nodes.analyst import analyst_node
 from graphSupervisor.state import OverallState, Perspectives, AnalystState
-from langchain.tools import tool
-from langgraph.constants import Send
 
 # Authenticate and initialize LLM
 auth_func()
@@ -58,6 +54,7 @@ def create_analysts_tool(topic: str) -> dict:
     ]
 
     return {"analysts": serialized_analysts}
+
 
 @tool
 def write_report(state: OverallState):
@@ -130,6 +127,7 @@ def supervisor_decision(state: OverallState):
         return ["HRAnalyst", "BPAnalyst", "KMAnalyst", "ITAnalyst"][current_step]
     return END
 
+
 @tool
 def initiate_consulting_threads(topic: str, analysts: List[dict]) -> dict:
     """
@@ -146,7 +144,6 @@ def initiate_consulting_threads(topic: str, analysts: List[dict]) -> dict:
     print("... Initiate analysis ...")
     print(f"Analysts: {analysts}")
     print(f"Topic: {topic}")
-    print("... Analysis initiated...")
 
     # Create individual states for each analyst
     analyst_states = {}
@@ -154,17 +151,16 @@ def initiate_consulting_threads(topic: str, analysts: List[dict]) -> dict:
         analyst_state = AnalystState(
             analyst_name=analyst["name"],
             topic=topic,
-            goals=f"Name: {analyst['name']}\nRole: {analyst['role']}\nDescription: {analyst['description']}",
+            goals=f"Role: {analyst['role']}\nDescription: {analyst['description']}",
             diagnosis=[],
             recommendations=[],
         )
         analyst_states[analyst["name"]] = analyst_state
 
-    return analyst_states #should be dict for state to update
+    return analyst_states  # should be dict for state to update
 
 
-
-def supervisor_node(state: OverallState, app_builder: StateGraph):
+def supervisor_node(state: OverallState):
     """
     Invokes the supervisor node and dynamically adds analyst nodes to the graph.
     """
@@ -180,15 +176,10 @@ def supervisor_node(state: OverallState, app_builder: StateGraph):
         input_payload = {"topic": state["topic"], "analysts": state["analysts"]}
         analyst_states = initiate_consulting_threads.invoke(input_payload)  # Ensure both fields are passed
 
-
-
         # Add dynamic nodes to the graph
-        for analyst_name, analyst_state in analyst_states.items():
-            node_name = f"{analyst_name.replace(' ', '')}Node"  # Ensure unique node names
-            app_builder.add_node(node_name, lambda s: analyst_node(analyst_state))
-            app_builder.add_edge(node_name, "supervisor")  # Add edge back to the supervisor
-
-        print("Analyst nodes added dynamically.")
+        for analyst_state in analyst_states.items():
+            create_analyst_subgraph(analyst_state)
+            print(analyst_state)
 
     # Invoke tools to process the state
     tools = [initiate_consulting_threads, write_report]
@@ -219,8 +210,33 @@ def supervisor_node(state: OverallState, app_builder: StateGraph):
     return state
 
 
+def create_analyst_subgraph(analyst_state: AnalystState):
+    """
+    Создаёт подграф для отдельного аналитика.
+    """
+    subgraph = StateGraph(state_schema=AnalystState)
 
+    # # Добавление узлов подграфа
+    # subgraph.add_node("analysis", lambda state: {
+    #     "diagnosis": [f"Diagnosis by {analyst_state['name']}"],
+    #     "recommendations": [f"Recommendation by {analyst_state['name']}"]
+    # })
 
+    subgraph.add_node("analysis", analyst_node)
+
+    # Установка последовательности выполнения
+    subgraph.add_edge(START, "analysis")
+    subgraph.add_edge("analysis", END)
+
+    subApp = subgraph.compile()
+
+    # Save as PNG
+    graph_image = subApp.get_graph().draw_mermaid_png()
+    with open("updated_graph_diagram.png", "wb") as file:
+        file.write(graph_image)
+    print("Saved as PNG 'updated_graph_diagram.png'")
+
+    return subApp
 
 # # Example usage
 # if __name__ == "__main__":
@@ -234,7 +250,3 @@ def supervisor_node(state: OverallState, app_builder: StateGraph):
 #
 #     # Print the updated state
 #     print("update_state:", json.dumps(state, indent=4, ensure_ascii=False))
-
-
-
-

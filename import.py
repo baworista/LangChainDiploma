@@ -1,5 +1,6 @@
 import os
 
+
 def generate_py_files_summary(folder_path, output_file):
     """
     Generate a summary of .py files in a folder, including their names and content.
@@ -32,4 +33,6 @@ def generate_py_files_summary(folder_path, output_file):
     except Exception as e:
         print(f"Error generating summary: {e}")
 
-generate_py_files_summary("/Users/bawo4lenix/Documents/PyCharmProjects/LangChainDiploma/graphSupervisor", "porno.txt")
+
+generate_py_files_summary("/Users/bawo4lenix/Documents/PyCharmProjects/LangChainDiploma/supervisor_simple",
+                          "import.txt")
