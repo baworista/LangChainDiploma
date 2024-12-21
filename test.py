@@ -1,17 +1,16 @@
 import json
 from typing import List, Dict
 
+from auth_utils import load_dotenv
+from langchain.tools import tool
 from langchain_core.messages import HumanMessage, SystemMessage
-from langgraph.graph import StateGraph
 from langchain_openai import ChatOpenAI
 from langgraph.constants import START, END
-from langchain.tools import tool
+from langgraph.graph import StateGraph
 
 from graphSupervisor.state import OverallState, AnalystState
 
-from auth_utils import auth_func
-
-auth_func()
+load_dotenv()
 # Инициализация LLM
 llm = ChatOpenAI(model="gpt-4o-mini", temperature=0)
 

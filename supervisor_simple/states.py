@@ -56,9 +56,8 @@ class Perspectives(BaseModel):
 
 # Individual state for each analyst
 class ResearchState(TypedDict):
-    research_id: int
-    research_name: str
     topic: str  # Topic assigned to the analyst
+    description: str  # Description of team's responsibility and capables
     questionnaire: str  # Questionnaire results or user input
     messages: Annotated[Sequence[BaseMessage], operator.add]  # Their conversation
     result: str

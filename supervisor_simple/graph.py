@@ -6,13 +6,11 @@ from langgraph.graph import StateGraph
 from nodes.supervisor_node import supervisor_node
 from nodes.team_node import *
 from states import *
-from testfiles.bla1 import should_continue
 
 load_dotenv()
 model = ChatOpenAI(temperature=0.1, model_name="gpt-4o-mini")
 
-# Build the graph
-# Add subgraphs
+# Define subgraphs
 hr_team_builder = StateGraph(ResearchState)
 
 hr_team_builder.add_node("Analyst", analyst_node)
@@ -61,7 +59,7 @@ app_builder.add_node("IT_Team", it_team_builder.compile())
 
 # app_builder.add_node("supervisor_tools", ToolNode([create_analysts_tool])) - additional for graph visualizing
 
-# Set start and end points
+# Build the main graph
 app_builder.add_edge(START, 'Supervisor')
 
 app_builder.add_edge('Supervisor', 'HR_Team')
@@ -96,7 +94,7 @@ user_input = {
     "topic": "Help a multinational manufacturing company in their journey to product management maturity.",
 }
 
-# response = graphSupervisor.invoke(user_input, thread)
+response = graphSupervisor.invoke(user_input, thread)
 #
 # print(response)
 

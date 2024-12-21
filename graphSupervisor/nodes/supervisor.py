@@ -1,17 +1,17 @@
 from typing import List
 
+from auth_utils import load_dotenv
 from langchain.tools import tool
 from langchain_core.messages import HumanMessage, SystemMessage
 from langchain_openai import ChatOpenAI
 from langgraph.constants import START, END
 from langgraph.graph import StateGraph
 
-from auth_utils import auth_func
 from graphSupervisor.nodes.analyst import analyst_node
 from graphSupervisor.state import OverallState, Perspectives, AnalystState
 
 # Authenticate and initialize LLM
-auth_func()
+load_dotenv()
 llm = ChatOpenAI(model="gpt-4o-mini", temperature=0)  # should be gpt-4o
 
 # Analyst creation instructions

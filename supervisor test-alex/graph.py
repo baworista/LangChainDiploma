@@ -5,7 +5,7 @@ from graphSupervisor.nodes.analyst import *
 from graphSupervisor.state import OverallState
 from nodes import *
 
-auth_func()
+load_dotenv()
 
 model = ChatOpenAI(temperature=0.1, model_name="gpt-4o-mini")
 

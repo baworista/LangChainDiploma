@@ -1,12 +1,11 @@
-from langchain_core.messages import SystemMessage
-from auth_utils import auth_func
-from langchain_openai import ChatOpenAI
-from langchain_core.messages import SystemMessage, HumanMessage
 import sys
 
-auth_func()
+from auth_utils import load_dotenv
+
+load_dotenv()
 
 from graphSupervisor.graph import graphSupervisor
+
 
 def main():
     # Check if a CLI parameter (question) is provided
@@ -22,6 +21,7 @@ def main():
     # Print the report
     print("\n=====REPORT=====")
     print(response["final_report"])
+
 
 if __name__ == "__main__":
     main()

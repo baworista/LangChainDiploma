@@ -1,12 +1,11 @@
 from langgraph.constants import START, END
-from langgraph.constants import START, END
 from langgraph.graph import StateGraph
 
 from graphSupervisor.nodes.analyst import *
 from graphSupervisor.nodes.supervisor import supervisor_node
 from graphSupervisor.state import OverallState
 
-auth_func()
+load_dotenv()
 
 model = ChatOpenAI(temperature=0.0, model_name="gpt-4o-mini")
 

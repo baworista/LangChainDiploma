@@ -1,27 +1,29 @@
 import json
+import os
 from typing import List
 
 from dotenv import load_dotenv
 from langchain.tools import tool
 from langchain_core.messages import HumanMessage, SystemMessage
 from langchain_openai import ChatOpenAI
+from langgraph.types import Send
 
-from supervisor_simple.states import OverallState, ResearchState, Perspectives
+from supervisor_simple.states import OverallState, Perspectives
 
 # LLM Initialization
 load_dotenv()
-llm = ChatOpenAI(model="gpt-4o-mini", temperature=0)
+llm = ChatOpenAI(model=os.getenv("MODEL_SUPERVISOR"), temperature=0)
 
 team_creation_instructions = """
 You are tasked with creating AI research teams, each consisting of an analyst and a reviewer. Follow these instructions:
-
+Use provided in prompts names
 1. Review the provided research topic.
-2. Generate four research teams:
-    a. Human Resources Team: Focused on HR issues like team dynamics, performance, and training.
-    b. Business Process Team: Specializing in process optimization and automation.
-    c. Knowledge Management Team: Concentrating on knowledge sharing and tools.
-    d. IT Systems Team: Addressing IT strategies and tools.
-3. Each team must have a detailed name, description and prompts reflecting their responsibilities.
+2. Generate four research teams with names:
+    a. HR_Team: Focused on HR issues like team dynamics, performance, and training.
+    b. BP_Team: Specializing in process optimization and automation.
+    c. KM_Team: Concentrating on knowledge sharing and tools.
+    d. IT_Team: Addressing IT strategies and tools.
+3. Each team must have explicitly provided name, description and prompts reflecting their responsibilities.
 """
 
 
@@ -54,26 +56,26 @@ def create_research_teams_tool(topic: str) -> dict:
 
 
 @tool
-def initialize_research_states(topic: str, teams: List[dict]) -> List[ResearchState]:
+def initialize_research_states(topic: str, teams: List[dict]) -> list[Send]:
     """
     Initializes states for each research team.
     """
 
-    teams_states = []
-    for idx, team in enumerate(teams):
-        research_state = ResearchState(
-            research_id=idx + 1,
-            research_name=team["name"],
-            topic=topic,
-            questionnaire="",
-            messages=[],  # Empty conversation history initially
-            result="",
-            analyst_prompt=f"Analyst: {team['description']}",
-            reviewer_prompt=f"Reviewer: {team['description']}",
-        )
-        teams_states.append(research_state)
-
-    return {"teams_states": teams_states}
+    return [
+        Send(
+            team["name"],
+            {
+                "topic": topic,  # Topic assigned to the analyst
+                "description": team["description"],
+                "questionnaire": "piska",
+                "result": "",
+                "current_iteration": 0,
+                "max_iterations": 3,
+                "analyst_prompt": team["analyst_prompt"],
+                "reviewer_prompt": team["reviewer_prompt"],
+            }
+        ) for team in teams
+    ]
 
 
 def supervisor_node(state: OverallState):

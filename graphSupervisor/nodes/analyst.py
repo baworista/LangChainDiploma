@@ -1,17 +1,16 @@
+from auth_utils import load_dotenv
 from langchain_core.messages import SystemMessage
 from langchain_openai import ChatOpenAI
 
 from graphSupervisor.state import AnalystState
 from graphSupervisor.state import OverallState
 
-from auth_utils import auth_func
-
-auth_func()
+load_dotenv()
 
 llm = ChatOpenAI(model_name='gpt-4o-mini', temperature=0)
 
-def diagnose_tool(state:AnalystState):
 
+def diagnose_tool(state: AnalystState):
     diagnosis_instructions = """You are an analyst tasked with needs analysis of Your customer.
     Here is Your detailed persona, including role in the projects, competencies and tasks: {goals}
 
@@ -41,7 +40,8 @@ def diagnose_tool(state:AnalystState):
         "diagnosis": [diagnosis_result.content]  # Store current diagnosis
     }
 
-def recommend_tool(state: AnalystState)-> OverallState:
+
+def recommend_tool(state: AnalystState) -> OverallState:
     recommendations_instructions = """You are an analyst tasked with helping Your customer in the {topic}.".
     Here is Your detailed persona, including role in the projects, competencies and tasks: {goals}
 
@@ -96,11 +96,6 @@ def analyst_node(state: AnalystState) -> AnalystState:
     print(f"Completed analysis for {state['analyst_name']}")
     return state
 
-
-
-
-
-
 # def analyst_node(topic: str, name: str, role: str, description: str) -> AnalystState:
 #     """
 #     Processes an individual analyst and generates their unique AnalystState.
@@ -130,5 +125,3 @@ def analyst_node(state: AnalystState) -> AnalystState:
 #
 #     print(f"Generated state for {name}:\n{analyst_state}")
 #     return analyst_state
-
-
