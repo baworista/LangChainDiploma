@@ -54,7 +54,7 @@ def create_research_teams_tool(topic: str) -> dict:
 
 
 @tool
-def initialize_research_states(topic: str, teams: List[dict]) -> List[ResearchState]:
+def initialize_research_states(topic: str, teams: List[dict]):
     """
     Initializes states for each research team.
     """
@@ -85,9 +85,7 @@ def supervisor_node(state: OverallState):
         generated_teams = create_research_teams_tool.invoke({"topic": state["topic"]})
         state["teams"] = generated_teams["teams"]
 
-        initialized_states = initialize_research_states.invoke(
-            {"topic": state["topic"], "teams": state["teams"]})
-        state["teams_states"] = initialized_states["teams_states"]
+        initialize_research_states.invoke({"topic": state["topic"], "teams": state["teams"]})
 
     return state
 

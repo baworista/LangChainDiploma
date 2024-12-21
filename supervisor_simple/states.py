@@ -73,4 +73,3 @@ class OverallState(TypedDict):
     reviewer_final_overview: Dict[int, str]  # Four reviewers answers
     final_report: str  # Final report generated after all analysts complete their tasks
     teams: List[ResearchTeam]
-    teams_states: List[ResearchState]
