@@ -8,10 +8,7 @@ from typing_extensions import TypedDict
 
 class ResearchTeam(BaseModel):
     name: str = Field(
-        description="The name of the research team that reflects the combined expertise of the analyst and reviewer. "
-                    "It should clearly convey the team's overarching responsibility and domain focus. "
-                    "Ensure the name is concise, professional, and indicative of the team's key role, "
-                    "e.g., 'Human Resources Insights Team' or 'Process Optimization Experts'."
+        description="Use only provided in system message names"
     )
 
     description: str = Field(

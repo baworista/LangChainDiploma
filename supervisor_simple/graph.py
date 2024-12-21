@@ -3,9 +3,9 @@ from langchain_openai import ChatOpenAI
 from langgraph.constants import START
 from langgraph.graph import StateGraph
 
-from nodes.supervisor_node import supervisor_node
+from nodes.supervisor_node import supervisor_node, initialize_research_states
 from nodes.team_node import *
-from states import *
+from supervisor_simple.states import *
 
 load_dotenv()
 model = ChatOpenAI(temperature=0.1, model_name="gpt-4o-mini")
@@ -62,10 +62,13 @@ app_builder.add_node("IT_Team", it_team_builder.compile())
 # Build the main graph
 app_builder.add_edge(START, 'Supervisor')
 
-app_builder.add_edge('Supervisor', 'HR_Team')
-app_builder.add_edge('Supervisor', 'BP_Team')
-app_builder.add_edge('Supervisor', 'KM_Team')
-app_builder.add_edge('Supervisor', 'IT_Team')
+# app_builder.add_edge('Supervisor', 'HR_Team')
+# app_builder.add_edge('Supervisor', 'BP_Team')
+# app_builder.add_edge('Supervisor', 'KM_Team')
+# app_builder.add_edge('Supervisor', 'IT_Team')
+
+app_builder.add_conditional_edges('Supervisor', initialize_research_states,
+                                  ["HR_Team", "BP_Team", "KM_Team", "IT_Team"])
 
 app_builder.add_edge('HR_Team', 'Supervisor')
 app_builder.add_edge('BP_Team', 'Supervisor')

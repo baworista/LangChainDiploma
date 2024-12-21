@@ -10,7 +10,9 @@ def analyst_node(state: ResearchState):
 
 def reviewer_node(state: ResearchState):
     prompt = state["reviewer_prompt"]
-    pass
+    print("Curr iteration")
+    print(state["current_iteration"])
+    return {"current_iteration": state["current_iteration"] + 1}
 
 
 def should_continue(state: ResearchState):
