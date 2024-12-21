@@ -54,7 +54,7 @@ def create_research_teams_tool(topic: str) -> dict:
 
 
 @tool
-def initialize_research_states(topic: str, teams: List[dict]):
+def initialize_research_states(topic: str, teams: List[dict]) -> List[ResearchState]:
     """
     Initializes states for each research team.
     """

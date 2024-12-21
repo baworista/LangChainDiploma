@@ -62,6 +62,8 @@ class ResearchState(TypedDict):
     questionnaire: str  # Questionnaire results or user input
     messages: Annotated[Sequence[BaseMessage], operator.add]  # Their conversation
     result: str
+    current_iteration: int
+    max_iterations: int
     analyst_prompt: str  # Their info
     reviewer_prompt: str
 
