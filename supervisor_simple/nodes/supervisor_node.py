@@ -32,6 +32,7 @@ def initialize_research_states(state: OverallState) -> list[Send]:
     """
     topic = state["topic"]
     teams = state["teams"]
+    print(f"Initializing research teams for topic: \n\t{topic}")
 
     return [
         Send(
@@ -55,6 +56,7 @@ def create_research_teams_tool(topic: str) -> dict:
     """
     Generates a list of research teams based on the given topic.
     """
+    print(f"Creating research teams on topic: \n\t{topic}")
     structured_llm = llm.with_structured_output(Perspectives)
 
     # LLM Query
@@ -76,29 +78,6 @@ def create_research_teams_tool(topic: str) -> dict:
     ]
 
     return {"teams": serialized_teams}
-
-
-# @tool
-# def initialize_research_states(topic: str, teams: List[dict]) -> list[Send]:
-#     """
-#     Initializes states for each research team.
-#     """
-#
-#     return [
-#         Send(
-#             team["name"],
-#             {
-#                 "topic": topic,  # Topic assigned to the analyst
-#                 "description": team["description"],
-#                 "questionnaire": "piska",
-#                 "result": "",
-#                 "current_iteration": 0,
-#                 "max_iterations": 3,
-#                 "analyst_prompt": team["analyst_prompt"],
-#                 "reviewer_prompt": team["reviewer_prompt"],
-#             }
-#         ) for team in teams
-#     ]
 
 
 def supervisor_node(state: OverallState):

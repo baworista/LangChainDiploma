@@ -1,11 +1,10 @@
-from dotenv import load_dotenv
-from langchain_openai import ChatOpenAI
 from langgraph.constants import START
 from langgraph.graph import StateGraph
 
-from nodes.supervisor_node import supervisor_node, initialize_research_states
+from nodes.report_writer_node import *
+from nodes.supervisor_node import *
 from nodes.team_node import *
-from supervisor_simple.states import *
+from states import *
 
 load_dotenv()
 model = ChatOpenAI(temperature=0.1, model_name="gpt-4o-mini")
@@ -50,7 +49,7 @@ it_team_builder.add_conditional_edges("Reviewer", should_continue)
 app_builder = StateGraph(OverallState)
 
 app_builder.add_node("Supervisor", supervisor_node)
-app_builder.add_node("Report_Writer", reviewer_node)
+app_builder.add_node("Report_Writer", report_writer)
 
 app_builder.add_node("HR_Team", hr_team_builder.compile())
 app_builder.add_node("BP_Team", bp_team_builder.compile())
