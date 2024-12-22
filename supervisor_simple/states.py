@@ -1,5 +1,5 @@
 import operator
-from typing import List, Dict, Annotated, Sequence
+from typing import List, Annotated
 
 from langchain_core.messages import BaseMessage
 from pydantic import BaseModel, Field
@@ -56,10 +56,7 @@ class ResearchState(TypedDict):
     topic: str  # Topic assigned to the analyst
     description: str  # Description of team's responsibility and capables
     questionnaire: str  # Questionnaire results or user input
-    messages: Annotated[Sequence[BaseMessage], operator.add]  # Their conversation
-    result: str
-    current_iteration: int
-    max_iterations: int
+    messages: Annotated[List[BaseMessage], operator.add]  # Their conversation
     analyst_prompt: str  # Their info
     reviewer_prompt: str
 
@@ -68,6 +65,6 @@ class ResearchState(TypedDict):
 class OverallState(TypedDict):
     topic: str  # Overall topic of analysis
     questionnaire: str  # Questionnaire results or user input
-    reviewer_final_overview: Dict[int, str]  # Four reviewers answers
+    reviewer_final_overview: Annotated[list[str], operator.add]  # Four reviewers answers
     final_report: str  # Final report generated after all analysts complete their tasks
     teams: List[ResearchTeam]

@@ -1,10 +1,11 @@
-from langgraph.constants import START
+from langgraph.constants import START, END
 from langgraph.graph import StateGraph
 
 from nodes.report_writer_node import *
 from nodes.supervisor_node import *
 from nodes.team_node import *
 from states import *
+
 
 load_dotenv()
 model = ChatOpenAI(temperature=0.1, model_name="gpt-4o-mini")
@@ -56,7 +57,6 @@ app_builder.add_node("BP_Team", bp_team_builder.compile())
 app_builder.add_node("KM_Team", km_team_builder.compile())
 app_builder.add_node("IT_Team", it_team_builder.compile())
 
-# app_builder.add_node("supervisor_tools", ToolNode([create_analysts_tool])) - additional for graph visualizing
 
 # Build the main graph
 app_builder.add_edge(START, 'Supervisor')
@@ -65,7 +65,6 @@ app_builder.add_edge(START, 'Supervisor')
 # app_builder.add_edge('Supervisor', 'BP_Team')
 # app_builder.add_edge('Supervisor', 'KM_Team')
 # app_builder.add_edge('Supervisor', 'IT_Team')
-
 app_builder.add_conditional_edges('Supervisor', initialize_research_states,
                                   ["HR_Team", "BP_Team", "KM_Team", "IT_Team"])
 
@@ -74,7 +73,13 @@ app_builder.add_edge('BP_Team', 'Supervisor')
 app_builder.add_edge('KM_Team', 'Supervisor')
 app_builder.add_edge('IT_Team', 'Supervisor')
 
-app_builder.add_edge('Supervisor', 'Report_Writer')  # wait for others(COMMAND)
+# app_builder.add_edge('Supervisor', 'Report_Writer')  # wait for others(COMMAND)
+app_builder.add_conditional_edges(
+    "Supervisor",
+    lambda state:
+    "Report_Writer" if len(state["reviewer_final_overview"]) == 4
+    else "Supervisor"
+)
 
 app_builder.add_edge('Report_Writer', END)
 
@@ -97,18 +102,5 @@ user_input = {
 }
 
 response = graphSupervisor.invoke(user_input, thread)
-#
-# print(response)
 
-# # Stream through the graph with the user-defined task
-# for state in graphSupervisor.stream(user_input, thread):
-#     print("-" * 50)  # Separator for readability
-#     print("Current State (Raw):", state)  # Print the entire state for debugging
-#
-#     # Extract the current node's state dynamically
-#     current_node_state = next(iter(state.values()))  # Get the first value from the dictionary
-#
-#     # Safely access keys from the current node's state
-#     print("Processed State:")
-#     print(f"Topic: {current_node_state.get('topic', 'N/A')}")
-#     print("-" * 50)  # Separator for clarity
+print(response)

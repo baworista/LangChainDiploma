@@ -28,8 +28,12 @@ Use provided in prompts names
 
 def initialize_research_states(state: OverallState) -> list[Send]:
     """
-    Initializes states for each research team.
+    Initializes states for each research team and executes subgraphs.
     """
+
+    print("Number of teams results:")
+    print(len(state["reviewer_final_overview"]))
+
     topic = state["topic"]
     teams = state["teams"]
     print(f"Initializing research teams for topic: \n\t{topic}")
@@ -41,9 +45,6 @@ def initialize_research_states(state: OverallState) -> list[Send]:
                 "topic": topic,  # Topic assigned to the analyst
                 "description": team["description"],
                 "questionnaire": "=====",
-                "result": "",
-                "current_iteration": 0,
-                "max_iterations": 3,
                 "analyst_prompt": team["analyst_prompt"],
                 "reviewer_prompt": team["reviewer_prompt"],
             }
@@ -84,6 +85,9 @@ def supervisor_node(state: OverallState):
     """
     Supervisor node for orchestrating the research workflow.
     """
+    if "reviewer_final_overview" not in state:
+        state["reviewer_final_overview"] = []
+
     if "teams" not in state or not state["teams"]:
         # Generate teams and initialize states
         generated_teams = create_research_teams_tool.invoke({"topic": state["topic"]})

@@ -1,24 +1,31 @@
+import os
+
+from langchain_openai import ChatOpenAI
+
+from supervisor_simple.states import ResearchState, OverallState
+
 from langgraph.constants import END
 
-from supervisor_simple.states import ResearchState
+llm = ChatOpenAI(model_name=os.getenv("MODEL"))
 
 
 def analyst_node(state: ResearchState):
     prompt = state["analyst_prompt"]
-    pass
+    return {"messages": ["Hello world"]}
 
 
 def reviewer_node(state: ResearchState):
     prompt = state["reviewer_prompt"]
-    print(state["current_iteration"])
-    return {"current_iteration": state["current_iteration"] + 1}
+    print(len(state.get("messages", [])))
+    return {"messages": ["Hello world"]}
 
 
 def should_continue(state: ResearchState):
-    max_iterations = state["max_iterations"]
-    current_iteration = state["current_iteration"]
-
-    if current_iteration >= max_iterations:
+    # Check if the number of messages is 6 or more
+    if len(state.get("messages", [])) >= 6:
+        # Return the END constant and the overall state update
         return END
 
+    # If the condition is not met, return the next node
     return "Analyst"
+

@@ -1,64 +1,100 @@
 graph.py
 CONTENT:
 ==================
-from dotenv import load_dotenv
-from langchain_openai import ChatOpenAI
-from langgraph.constants import START, END
+from langgraph.constants import START
 from langgraph.graph import StateGraph
 
-from nodes.supervisor_node import supervisor_node
+from nodes.report_writer_node import *
+from nodes.supervisor_node import *
 from nodes.team_node import *
 from states import *
 
 load_dotenv()
 model = ChatOpenAI(temperature=0.1, model_name="gpt-4o-mini")
 
-# Build the graph
+# Define subgraphs
+hr_team_builder = StateGraph(ResearchState)
+
+hr_team_builder.add_node("Analyst", analyst_node)
+hr_team_builder.add_node("Reviewer", reviewer_node)
+hr_team_builder.set_entry_point("Analyst")
+
+hr_team_builder.add_edge("Analyst", "Reviewer")
+hr_team_builder.add_conditional_edges("Reviewer", should_continue)
+
+bp_team_builder = StateGraph(ResearchState)
+
+bp_team_builder.add_node("Analyst", analyst_node)
+bp_team_builder.add_node("Reviewer", reviewer_node)
+bp_team_builder.set_entry_point("Analyst")
+
+bp_team_builder.add_edge("Analyst", "Reviewer")
+bp_team_builder.add_conditional_edges("Reviewer", should_continue)
+
+km_team_builder = StateGraph(ResearchState)
+
+km_team_builder.add_node("Analyst", analyst_node)
+km_team_builder.add_node("Reviewer", reviewer_node)
+km_team_builder.set_entry_point("Analyst")
+
+km_team_builder.add_edge("Analyst", "Reviewer")
+km_team_builder.add_conditional_edges("Reviewer", should_continue)
+
+it_team_builder = StateGraph(ResearchState)
+
+it_team_builder.add_node("Analyst", analyst_node)
+it_team_builder.add_node("Reviewer", reviewer_node)
+it_team_builder.set_entry_point("Analyst")
+
+it_team_builder.add_edge("Analyst", "Reviewer")
+it_team_builder.add_conditional_edges("Reviewer", should_continue)
+
 app_builder = StateGraph(OverallState)
 
-# Add nodes
 app_builder.add_node("Supervisor", supervisor_node)
+app_builder.add_node("Report_Writer", report_writer)
 
-app_builder.add_node("HR_Analyst", analyst_node)
-app_builder.add_node("BP_Analyst", analyst_node)
-app_builder.add_node("KM_Analyst", analyst_node)
-app_builder.add_node("IT_Analyst", analyst_node)
+app_builder.add_node("HR_Team", hr_team_builder.compile())
+app_builder.add_node("BP_Team", bp_team_builder.compile())
+app_builder.add_node("KM_Team", km_team_builder.compile())
+app_builder.add_node("IT_Team", it_team_builder.compile())
 
-app_builder.add_node("HR_Reviewer", reviewer_node)
-app_builder.add_node("BP_Reviewer", reviewer_node)
-app_builder.add_node("KM_Reviewer", reviewer_node)
-app_builder.add_node("IT_Reviewer", reviewer_node)
-
-app_builder.add_node("Report_Writer", reviewer_node)
 # app_builder.add_node("supervisor_tools", ToolNode([create_analysts_tool])) - additional for graph visualizing
 
-# Set start and end points
+# Build the main graph
 app_builder.add_edge(START, 'Supervisor')
 
-app_builder.add_edge('Supervisor', 'HR_Analyst')
-app_builder.add_edge('Supervisor', 'BP_Analyst')
-app_builder.add_edge('Supervisor', 'KM_Analyst')
-app_builder.add_edge('Supervisor', 'IT_Analyst')
+# app_builder.add_edge('Supervisor', 'HR_Team')
+# app_builder.add_edge('Supervisor', 'BP_Team')
+# app_builder.add_edge('Supervisor', 'KM_Team')
+# app_builder.add_edge('Supervisor', 'IT_Team')
 
-app_builder.add_edge('HR_Analyst', 'HR_Reviewer')
-app_builder.add_edge('BP_Analyst', 'BP_Reviewer')
-app_builder.add_edge('KM_Analyst', 'KM_Reviewer')
-app_builder.add_edge('IT_Analyst', 'IT_Reviewer')
+app_builder.add_conditional_edges('Supervisor', initialize_research_states,
+                                  ["HR_Team", "BP_Team", "KM_Team", "IT_Team"])
 
-app_builder.add_conditional_edges('HR_Reviewer', if_continue_conversation, ['HR_Analyst', 'Supervisor'])
-app_builder.add_conditional_edges('BP_Reviewer', if_continue_conversation, ['BP_Analyst', 'Supervisor'])
-app_builder.add_conditional_edges('KM_Reviewer', if_continue_conversation, ['KM_Analyst', 'Supervisor'])
-app_builder.add_conditional_edges('IT_Reviewer', if_continue_conversation, ['IT_Analyst', 'Supervisor'])
+app_builder.add_edge('HR_Team', 'Supervisor')
+app_builder.add_edge('BP_Team', 'Supervisor')
+app_builder.add_edge('KM_Team', 'Supervisor')
+app_builder.add_edge('IT_Team', 'Supervisor')
 
-app_builder.add_edge('Supervisor', 'Report_Writer')
+# app_builder.add_edge('Supervisor', 'Report_Writer')  # wait for others(COMMAND)
+
+app_builder.add_conditional_edges(
+    "Supervisor",
+    lambda state:
+    "Report_Writer" if len(state["reviewer_final_overview"]) == 4
+    else "Supervisor"
+)
 
 app_builder.add_edge('Report_Writer', END)
+
+app = app_builder.compile()
 
 # Compile the graph
 graphSupervisor = app_builder.compile()
 
 # Save as PNG
-graph_image = graphSupervisor.get_graph().draw_mermaid_png()
+graph_image = graphSupervisor.get_graph(xray=1).draw_mermaid_png()
 with open("supervisor_graph_diagram.png", "wb") as file:
     file.write(graph_image)
 print("Saved as PNG 'supervisor_graph_diagram.png'")
@@ -70,22 +106,9 @@ user_input = {
     "topic": "Help a multinational manufacturing company in their journey to product management maturity.",
 }
 
-# response = graphSupervisor.invoke(user_input, thread)
-#
-# print(response)
+response = graphSupervisor.invoke(user_input, thread)
 
-# # Stream through the graph with the user-defined task
-# for state in graphSupervisor.stream(user_input, thread):
-#     print("-" * 50)  # Separator for readability
-#     print("Current State (Raw):", state)  # Print the entire state for debugging
-#
-#     # Extract the current node's state dynamically
-#     current_node_state = next(iter(state.values()))  # Get the first value from the dictionary
-#
-#     # Safely access keys from the current node's state
-#     print("Processed State:")
-#     print(f"Topic: {current_node_state.get('topic', 'N/A')}")
-#     print("-" * 50)  # Separator for clarity
+print(response)
 
 ==================
 
@@ -93,7 +116,7 @@ states.py
 CONTENT:
 ==================
 import operator
-from typing import List, Dict, Annotated, Sequence
+from typing import List, Annotated
 
 from langchain_core.messages import BaseMessage
 from pydantic import BaseModel, Field
@@ -102,10 +125,7 @@ from typing_extensions import TypedDict
 
 class ResearchTeam(BaseModel):
     name: str = Field(
-        description="The name of the research team that reflects the combined expertise of the analyst and reviewer. "
-                    "It should clearly convey the team's overarching responsibility and domain focus. "
-                    "Ensure the name is concise, professional, and indicative of the team's key role, "
-                    "e.g., 'Human Resources Insights Team' or 'Process Optimization Experts'."
+        description="Use only provided in system message names"
     )
 
     description: str = Field(
@@ -150,12 +170,10 @@ class Perspectives(BaseModel):
 
 # Individual state for each analyst
 class ResearchState(TypedDict):
-    research_id: int
-    research_name: str
     topic: str  # Topic assigned to the analyst
+    description: str  # Description of team's responsibility and capables
     questionnaire: str  # Questionnaire results or user input
-    messages: Annotated[Sequence[BaseMessage], operator.add]  # Their conversation
-    result: str
+    messages: Annotated[List[BaseMessage], operator.add]  # Their conversation
     analyst_prompt: str  # Their info
     reviewer_prompt: str
 
@@ -164,10 +182,9 @@ class ResearchState(TypedDict):
 class OverallState(TypedDict):
     topic: str  # Overall topic of analysis
     questionnaire: str  # Questionnaire results or user input
-    reviewer_final_overview: Dict[int, str]  # Four reviewers answers
+    reviewer_final_overview: Annotated[list[str], operator.add]  # Four reviewers answers
     final_report: str  # Final report generated after all analysts complete their tasks
     teams: List[ResearchTeam]
-    teams_states: List[ResearchState]
 
 ==================
 
@@ -175,30 +192,53 @@ supervisor_node.py
 CONTENT:
 ==================
 import json
-from typing import List
+import os
 
 from dotenv import load_dotenv
 from langchain.tools import tool
 from langchain_core.messages import HumanMessage, SystemMessage
 from langchain_openai import ChatOpenAI
+from langgraph.constants import Send
 
-from supervisor_simple.states import OverallState, ResearchState, Perspectives
+from supervisor_simple.states import OverallState, Perspectives
 
 # LLM Initialization
 load_dotenv()
-llm = ChatOpenAI(model="gpt-4o-mini", temperature=0)
+llm = ChatOpenAI(model=os.getenv("MODEL_SUPERVISOR"), temperature=0)
 
 team_creation_instructions = """
 You are tasked with creating AI research teams, each consisting of an analyst and a reviewer. Follow these instructions:
-
+Use provided in prompts names
 1. Review the provided research topic.
-2. Generate four research teams:
-    a. Human Resources Team: Focused on HR issues like team dynamics, performance, and training.
-    b. Business Process Team: Specializing in process optimization and automation.
-    c. Knowledge Management Team: Concentrating on knowledge sharing and tools.
-    d. IT Systems Team: Addressing IT strategies and tools.
-3. Each team must have a detailed name, description and prompts reflecting their responsibilities.
+2. Generate four research teams strictly using provided names:
+    a. **HR_Team**: Focused on HR issues like team dynamics, performance, and training.
+    b. **BP_Team**: Specializing in process optimization and automation.
+    c. **KM_Team**: Concentrating on knowledge sharing and tools.
+    d. **IT_Team**: Addressing IT strategies and tools.
+3. Each team must have explicitly provided name, description and prompts reflecting their responsibilities.
 """
+
+
+def initialize_research_states(state: OverallState) -> list[Send]:
+    """
+    Initializes states for each research team.
+    """
+    topic = state["topic"]
+    teams = state["teams"]
+    print(f"Initializing research teams for topic: \n\t{topic}")
+
+    return [
+        Send(
+            team["name"],
+            {
+                "topic": topic,  # Topic assigned to the analyst
+                "description": team["description"],
+                "questionnaire": "=====",
+                "analyst_prompt": team["analyst_prompt"],
+                "reviewer_prompt": team["reviewer_prompt"],
+            }
+        ) for team in teams
+    ]
 
 
 @tool
@@ -206,16 +246,17 @@ def create_research_teams_tool(topic: str) -> dict:
     """
     Generates a list of research teams based on the given topic.
     """
+    print(f"Creating research teams on topic: \n\t{topic}")
     structured_llm = llm.with_structured_output(Perspectives)
 
-    # Формируем запрос для LLM
+    # LLM Query
     system_message = SystemMessage(content=team_creation_instructions)
     human_message = HumanMessage(content=f"Generate the teams for the topic: {topic}.")
 
-    # Генерация аналитиков
+    # Teams generation
     perspectives: Perspectives = structured_llm.invoke([system_message, human_message])
 
-    # Преобразуем в сериализуемый формат
+    # Serialize
     serialized_teams = [
         {
             "name": team.name,
@@ -229,40 +270,14 @@ def create_research_teams_tool(topic: str) -> dict:
     return {"teams": serialized_teams}
 
 
-@tool
-def initialize_research_states(topic: str, teams: List[dict]) -> List[ResearchState]:
-    """
-    Initializes states for each research team.
-    """
-    teams_states = []
-    for idx, team in enumerate(teams):
-        research_state = ResearchState(
-            research_id=idx + 1,
-            research_name=team["name"],
-            topic=topic,
-            questionnaire="",
-            messages=[],  # Empty conversation history initially
-            result="",
-            analyst_prompt=f"Analyst: {team['description']}",
-            reviewer_prompt=f"Reviewer: {team['description']}",
-        )
-        teams_states.append(research_state)
-
-    return {"teams_states": teams_states}
-
-
 def supervisor_node(state: OverallState):
     """
     Supervisor node for orchestrating the research workflow.
     """
-    if "teams_states" not in state or not state["teams_states"]:
+    if "teams" not in state or not state["teams"]:
         # Generate teams and initialize states
         generated_teams = create_research_teams_tool.invoke({"topic": state["topic"]})
         state["teams"] = generated_teams["teams"]
-
-        initialized_states = initialize_research_states.invoke(
-            {"topic": state["topic"], "teams": state["teams"]})
-        state["teams_states"] = initialized_states["teams_states"]
 
     return state
 
@@ -285,16 +300,48 @@ if __name__ == "__main__":
 team_node.py
 CONTENT:
 ==================
-def analyst_node():
-    pass
+import os
+
+from langchain_openai import ChatOpenAI
+from langgraph.constants import END
+
+from supervisor_simple.states import ResearchState, OverallState
+
+llm = ChatOpenAI(model_name=os.getenv("MODEL"))
 
 
-def reviewer_node():
-    pass
+def analyst_node(state: ResearchState):
+    prompt = state["analyst_prompt"]
+    return {"messages": ["Hello world"]}
 
 
-def if_continue_conversation():
-    pass
+def reviewer_node(state: ResearchState):
+    prompt = state["reviewer_prompt"]
+    print(len(state.get("messages", [])))
+    return {"messages": ["Hello world"]}
+
+
+def should_continue(state: ResearchState) -> str | (str, OverallState):
+    if len(state.get("messages", [])) >= 6:
+        end_node = END
+        overall_state_update = {"reviewer_final_overview": [state["messages"][-1]]}
+        return end_node, overall_state_update
+
+    return "Analyst"
+
+==================
+
+report_writer_node.py
+CONTENT:
+==================
+from supervisor_simple.states import OverallState
+
+
+def report_writer(state: OverallState):
+    topic = state["topic"]
+    # prompt = f"You are tasked to summarize teams resolutions messages about this {topic}"
+    print("report_writer node activated!!")
+    return {"final_report": ["Good game"]}
 
 ==================
 
