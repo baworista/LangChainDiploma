@@ -1,4 +1,4 @@
-from supervisor_simple.states import OverallState
+from graphSupervisor.states import OverallState
 
 
 def report_writer(state: OverallState):

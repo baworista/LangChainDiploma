@@ -1,14 +1,13 @@
 import json
 import os
-from langgraph.types import Command
-from typing import List, Optional, Annotated
+from typing import List
 from dotenv import load_dotenv
 from langchain.tools import tool
 from langchain_core.messages import HumanMessage, SystemMessage
 from langchain_openai import ChatOpenAI
 from langgraph.constants import Send
 
-from supervisor_simple.states import OverallState, Perspectives, ResearchTeam
+from graphSupervisor.states import OverallState, Perspectives
 
 # LLM Initialization
 load_dotenv()

@@ -1,6 +1,5 @@
 import operator
-from typing import List, Annotated, Optional
-from langchain_core.messages import BaseMessage
+from typing import List, Annotated
 from pydantic import BaseModel, Field
 from typing_extensions import TypedDict
 

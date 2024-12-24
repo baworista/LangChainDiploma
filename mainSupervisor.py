@@ -1,10 +1,10 @@
 import sys
-
-from auth_utils import load_dotenv
-
-load_dotenv()
+from dotenv import load_dotenv
 
 from graphSupervisor.graph import graphSupervisor
+
+
+load_dotenv()
 
 
 def main():

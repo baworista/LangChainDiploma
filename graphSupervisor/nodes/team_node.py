@@ -1,12 +1,12 @@
 import os
 from langgraph.types import *
-from typing import LiteralString, Literal
-
+from typing import Literal
 from langchain_openai import ChatOpenAI
-
-from supervisor_simple.states import ResearchState, OverallState
-
 from langgraph.constants import END
+
+from graphSupervisor.states import ResearchState
+
+
 
 llm = ChatOpenAI(model_name=os.getenv("MODEL"))
 
