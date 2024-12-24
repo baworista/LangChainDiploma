@@ -1,6 +1,5 @@
 import operator
-from typing import List, Annotated
-
+from typing import List, Annotated, Optional
 from langchain_core.messages import BaseMessage
 from pydantic import BaseModel, Field
 from typing_extensions import TypedDict
@@ -56,15 +55,16 @@ class ResearchState(TypedDict):
     topic: str  # Topic assigned to the analyst
     description: str  # Description of team's responsibility and capables
     questionnaire: str  # Questionnaire results or user input
-    messages: Annotated[List[BaseMessage], operator.add]  # Their conversation
+    messages: Annotated[List[str], operator.add]  # Their conversation
+    reviews: Annotated[List[str], operator.add]  # Four reviewers answers
     analyst_prompt: str  # Their info
     reviewer_prompt: str
 
 
 # Overall state for the supervisor
 class OverallState(TypedDict):
-    topic: str  # Overall topic of analysis
-    questionnaire: str  # Questionnaire results or user input
-    reviewer_final_overview: Annotated[list[str], operator.add]  # Four reviewers answers
+    topic: Annotated[str, operator.add]  # Overall topic of analysis
+    questionnaire: Annotated[str, operator.add]  # Questionnaire results or user input
+    reviews: Annotated[List[str], operator.add]  # Four reviewers answers
     final_report: str  # Final report generated after all analysts complete their tasks
     teams: List[ResearchTeam]

@@ -1,13 +1,14 @@
 import json
 import os
-
+from langgraph.types import Command
+from typing import List, Optional, Annotated
 from dotenv import load_dotenv
 from langchain.tools import tool
 from langchain_core.messages import HumanMessage, SystemMessage
 from langchain_openai import ChatOpenAI
 from langgraph.constants import Send
 
-from supervisor_simple.states import OverallState, Perspectives
+from supervisor_simple.states import OverallState, Perspectives, ResearchTeam
 
 # LLM Initialization
 load_dotenv()
@@ -26,14 +27,10 @@ Use provided in prompts names
 """
 
 
-def initialize_research_states(state: OverallState) -> list[Send]:
+def initialize_research_states(state: OverallState) -> List[Send]:
     """
-    Initializes states for each research team and executes subgraphs.
+    Initializes states for each research team.
     """
-
-    print("Number of teams results:")
-    print(len(state["reviewer_final_overview"]))
-
     topic = state["topic"]
     teams = state["teams"]
     print(f"Initializing research teams for topic: \n\t{topic}")
@@ -45,6 +42,8 @@ def initialize_research_states(state: OverallState) -> list[Send]:
                 "topic": topic,  # Topic assigned to the analyst
                 "description": team["description"],
                 "questionnaire": "=====",
+                "messages": [],
+                "reviews": [],
                 "analyst_prompt": team["analyst_prompt"],
                 "reviewer_prompt": team["reviewer_prompt"],
             }
@@ -85,8 +84,8 @@ def supervisor_node(state: OverallState):
     """
     Supervisor node for orchestrating the research workflow.
     """
-    if "reviewer_final_overview" not in state:
-        state["reviewer_final_overview"] = []
+    if "reviewer" not in state:
+        state["reviewer"] = []
 
     if "teams" not in state or not state["teams"]:
         # Generate teams and initialize states
@@ -94,6 +93,15 @@ def supervisor_node(state: OverallState):
         state["teams"] = generated_teams["teams"]
 
     return state
+
+
+def should_write_report(state: OverallState):
+    print("Checking if a research team should be reported.")
+    print(len(state["reviewer_final_overview"]))
+
+    if len(state["reviewer_final_overview"]) >= 4:
+        return "Report_Writer"
+    return "Supervisor"
 
 
 # Example usage

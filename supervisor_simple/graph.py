@@ -11,41 +11,21 @@ load_dotenv()
 model = ChatOpenAI(temperature=0.1, model_name="gpt-4o-mini")
 
 # Define subgraphs
-hr_team_builder = StateGraph(ResearchState)
+def create_team_builder():
+    team_builder = StateGraph(ResearchState)
+    team_builder.add_node("Analyst", analyst_node)
+    team_builder.add_node("Reviewer", reviewer_node)
 
-hr_team_builder.add_node("Analyst", analyst_node)
-hr_team_builder.add_node("Reviewer", reviewer_node)
-hr_team_builder.set_entry_point("Analyst")
+    team_builder.set_entry_point("Analyst")
+    
+    team_builder.add_edge("Analyst", "Reviewer")
+    team_builder.add_conditional_edges("Reviewer", should_continue, ["Analyst", END])
+    return team_builder
 
-hr_team_builder.add_edge("Analyst", "Reviewer")
-hr_team_builder.add_conditional_edges("Reviewer", should_continue)
-
-bp_team_builder = StateGraph(ResearchState)
-
-bp_team_builder.add_node("Analyst", analyst_node)
-bp_team_builder.add_node("Reviewer", reviewer_node)
-bp_team_builder.set_entry_point("Analyst")
-
-bp_team_builder.add_edge("Analyst", "Reviewer")
-bp_team_builder.add_conditional_edges("Reviewer", should_continue)
-
-km_team_builder = StateGraph(ResearchState)
-
-km_team_builder.add_node("Analyst", analyst_node)
-km_team_builder.add_node("Reviewer", reviewer_node)
-km_team_builder.set_entry_point("Analyst")
-
-km_team_builder.add_edge("Analyst", "Reviewer")
-km_team_builder.add_conditional_edges("Reviewer", should_continue)
-
-it_team_builder = StateGraph(ResearchState)
-
-it_team_builder.add_node("Analyst", analyst_node)
-it_team_builder.add_node("Reviewer", reviewer_node)
-it_team_builder.set_entry_point("Analyst")
-
-it_team_builder.add_edge("Analyst", "Reviewer")
-it_team_builder.add_conditional_edges("Reviewer", should_continue)
+hr_team_builder = create_team_builder()
+bp_team_builder = create_team_builder()
+km_team_builder = create_team_builder()
+it_team_builder = create_team_builder()
 
 app_builder = StateGraph(OverallState)
 
@@ -65,21 +45,23 @@ app_builder.add_edge(START, 'Supervisor')
 # app_builder.add_edge('Supervisor', 'BP_Team')
 # app_builder.add_edge('Supervisor', 'KM_Team')
 # app_builder.add_edge('Supervisor', 'IT_Team')
-app_builder.add_conditional_edges('Supervisor', initialize_research_states,
-                                  ["HR_Team", "BP_Team", "KM_Team", "IT_Team"])
+app_builder.add_conditional_edges('Supervisor', initialize_research_states, ["HR_Team", "BP_Team", "IT_Team", "KM_Team"], "Report_Writer")
 
-app_builder.add_edge('HR_Team', 'Supervisor')
-app_builder.add_edge('BP_Team', 'Supervisor')
-app_builder.add_edge('KM_Team', 'Supervisor')
-app_builder.add_edge('IT_Team', 'Supervisor')
+
+
+# app_builder.add_edge('HR_Team', 'Supervisor')
+# app_builder.add_edge('BP_Team', 'Supervisor')
+# app_builder.add_edge('KM_Team', 'Supervisor')
+# app_builder.add_edge('IT_Team', 'Supervisor')
 
 # app_builder.add_edge('Supervisor', 'Report_Writer')  # wait for others(COMMAND)
-app_builder.add_conditional_edges(
-    "Supervisor",
-    lambda state:
-    "Report_Writer" if len(state["reviewer_final_overview"]) == 4
-    else "Supervisor"
-)
+# app_builder.add_conditional_edges(
+#     "Supervisor",
+#     lambda state:
+#     "Report_Writer" if len(state["reviewer_final_overview"]) == 4
+#     else "Supervisor"
+# )
+# app_builder.add_conditional_edges("Supervisor", should_write_report,['Report_Writer', "Supervisor"])
 
 app_builder.add_edge('Report_Writer', END)
 
