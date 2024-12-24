@@ -52,9 +52,9 @@ class Perspectives(BaseModel):
 
 # Individual state for each analyst
 class ResearchState(TypedDict):
-    topic: str  # Topic assigned to the analyst
+    # Topic assigned to the analyst
     description: str  # Description of team's responsibility and capables
-    questionnaire: str  # Questionnaire results or user input
+    # Questionnaire results or user input
     messages: Annotated[List[str], operator.add]  # Their conversation
     reviews: Annotated[List[str], operator.add]  # Four reviewers answers
     analyst_prompt: str  # Their info
@@ -63,8 +63,8 @@ class ResearchState(TypedDict):
 
 # Overall state for the supervisor
 class OverallState(TypedDict):
-    topic: Annotated[str, operator.add]  # Overall topic of analysis
-    questionnaire: Annotated[str, operator.add]  # Questionnaire results or user input
+    topic: str  # Overall topic of analysis
+    questionnaire: str  # Questionnaire results or user input
     reviews: Annotated[List[str], operator.add]  # Four reviewers answers
     final_report: str  # Final report generated after all analysts complete their tasks
     teams: List[ResearchTeam]

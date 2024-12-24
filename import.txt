@@ -83,7 +83,7 @@ print("Saved as PNG 'supervisor_graph_diagram.png'")
 thread = {"configurable": {"thread_id": "1"}}
 
 user_input = {
-    "topic": ["Help a multinational manufacturing company in their journey to product management maturity."],
+    "topic": "Help a multinational manufacturing company in their journey to product management maturity.",
 }
 
 response = graphSupervisor.invoke(user_input, thread)
@@ -149,7 +149,7 @@ class Perspectives(BaseModel):
 
 # Individual state for each analyst
 class ResearchState(TypedDict):
-    topic: str  # Topic assigned to the analyst
+    team_topic: str  # Topic assigned to the analyst
     description: str  # Description of team's responsibility and capables
     questionnaire: str  # Questionnaire results or user input
     messages: Annotated[List[str], operator.add]  # Their conversation
@@ -158,15 +158,10 @@ class ResearchState(TypedDict):
     reviewer_prompt: str
 
 
-# class ResearchOutputState(TypedDict):
-#     messages: Annotated[List[BaseMessage], operator.add]  # Their conversation
-#     reviewer_final_overview: Annotated[List[str], operator.add]  # Four reviewers answers
-
-
 # Overall state for the supervisor
 class OverallState(TypedDict):
-    topic: Annotated[List[str], operator.add]  # Overall topic of analysis
-    questionnaire: Annotated[List[str], operator.add]  # Questionnaire results or user input
+    topic: Annotated[str, operator.or_]  # Overall topic of analysis
+    questionnaire: Annotated[str, operator.or_]  # Questionnaire results or user input
     reviews: Annotated[List[str], operator.add]  # Four reviewers answers
     final_report: str  # Final report generated after all analysts complete their tasks
     teams: List[ResearchTeam]
@@ -209,7 +204,7 @@ def initialize_research_states(state: OverallState) -> List[Send]:
     """
     Initializes states for each research team.
     """
-    topic = state["topic"][0]
+    topic = state["topic"]
     teams = state["teams"]
     print(f"Initializing research teams for topic: \n\t{topic}")
 
@@ -227,32 +222,6 @@ def initialize_research_states(state: OverallState) -> List[Send]:
             }
         ) for team in teams
     ]
-
-
-
-# def initialize_research_states(state: OverallState):
-#     """
-#     Initializes states for each research team.
-#     """
-#     topic = state["topic"]
-#     teams = state["teams"]
-#     print(f"Initializing research teams for topic: \n\t{topic}")
-#
-#     return [
-#         Command(
-#             goto=team["name"],
-#             update={
-#                 "topic": topic,  # Topic assigned to the analyst
-#                 "description": team["description"],
-#                 "questionnaire": "=====",
-#                 "current_iteration": 0,
-#                 "reviews": [],
-#                 "max_iterations": 3,
-#                 "analyst_prompt": team["analyst_prompt"],
-#                 "reviewer_prompt": team["reviewer_prompt"],
-#             }
-#         ) for team in teams
-#     ]
 
 
 @tool
@@ -293,7 +262,7 @@ def supervisor_node(state: OverallState):
 
     if "teams" not in state or not state["teams"]:
         # Generate teams and initialize states
-        generated_teams = create_research_teams_tool.invoke({"topic": state["topic"][0]})
+        generated_teams = create_research_teams_tool.invoke({"topic": state["topic"]})
         state["teams"] = generated_teams["teams"]
 
     return state
@@ -331,7 +300,6 @@ from langgraph.types import *
 from typing import LiteralString, Literal
 
 from langchain_openai import ChatOpenAI
-from sqlalchemy.orm.sync import update
 
 from supervisor_simple.states import ResearchState, OverallState
 
@@ -366,16 +334,12 @@ def reviewer_node(state: ResearchState):
 #     return "Analyst"
 
 
-
-def should_continue(state) -> str | Command[Literal[END]]:
+def should_continue(state: ResearchState) -> str | Command[Literal[END]]:
     # Check if the number of messages is 6 or more
     if len(state.get("messages", [])) >= 6:
         # Return the END constant and the overall state update
-        review = state["messages"][-1]
-        return Command(
-            update={"reviews": review},
-            goto=END,
-        )
+        state["reviews"].append(state["messages"][-1])
+        return END
 
     # If the condition is not met, return the next node
     return "Analyst"
@@ -390,10 +354,10 @@ from supervisor_simple.states import OverallState
 
 
 def report_writer(state: OverallState):
-    topic = state["topic"][0]
+    topic = state["topic"]
     # prompt = f"You are tasked to summarize teams resolutions messages about this {topic}"
     print("report_writer node activated!!")
-    print(len(state["reviewer_final_overview"]))
+    print(len(state["reviews"]))
     return {"final_report": ["Good game"]}
 
 ==================
