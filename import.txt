@@ -1,13 +1,13 @@
 graph.py
 CONTENT:
 ==================
-from langgraph.constants import START, END
+from langgraph.constants import START
 from langgraph.graph import StateGraph
 
-from nodes.report_writer_node import *
-from nodes.supervisor_node import *
-from nodes.team_node import *
-from states import *
+from graphSupervisor.nodes.report_writer_node import *
+from graphSupervisor.nodes.supervisor_node import *
+from graphSupervisor.nodes.team_node import *
+from graphSupervisor.states import *
 
 
 load_dotenv()
@@ -48,14 +48,17 @@ app_builder.add_edge(START, 'Supervisor')
 # app_builder.add_edge('Supervisor', 'BP_Team')
 # app_builder.add_edge('Supervisor', 'KM_Team')
 # app_builder.add_edge('Supervisor', 'IT_Team')
-app_builder.add_conditional_edges('Supervisor', initialize_research_states, ["HR_Team", "BP_Team", "IT_Team", "KM_Team"], "Report_Writer")
+
+app_builder.add_conditional_edges('Supervisor', define_edge,
+                                  ["HR_Team", "BP_Team", "IT_Team", "KM_Team", "Report_Writer", END]) # Could also be added Supervisot if we will make llm in that node
 
 
 
-# app_builder.add_edge('HR_Team', 'Supervisor')
-# app_builder.add_edge('BP_Team', 'Supervisor')
-# app_builder.add_edge('KM_Team', 'Supervisor')
-# app_builder.add_edge('IT_Team', 'Supervisor')
+app_builder.add_edge('HR_Team', 'Supervisor')
+app_builder.add_edge('BP_Team', 'Supervisor')
+app_builder.add_edge('KM_Team', 'Supervisor')
+app_builder.add_edge('IT_Team', 'Supervisor')
+app_builder.add_edge('Report_Writer', 'Supervisor')
 
 # app_builder.add_edge('Supervisor', 'Report_Writer')  # wait for others(COMMAND)
 # app_builder.add_conditional_edges(
@@ -64,9 +67,6 @@ app_builder.add_conditional_edges('Supervisor', initialize_research_states, ["HR
 #     "Report_Writer" if len(state["reviewer_final_overview"]) == 4
 #     else "Supervisor"
 # )
-# app_builder.add_conditional_edges("Supervisor", should_write_report,['Report_Writer', "Supervisor"])
-
-app_builder.add_edge('Report_Writer', END)
 
 app = app_builder.compile()
 
@@ -96,8 +96,9 @@ states.py
 CONTENT:
 ==================
 import operator
-from typing import List, Annotated, Optional
-from langchain_core.messages import BaseMessage
+from typing import List, Annotated
+
+from langgraph.graph import MessagesState
 from pydantic import BaseModel, Field
 from typing_extensions import TypedDict
 
@@ -147,22 +148,24 @@ class Perspectives(BaseModel):
     )
 
 
-# Individual state for each analyst
-class ResearchState(TypedDict):
-    team_topic: str  # Topic assigned to the analyst
-    description: str  # Description of team's responsibility and capables
-    questionnaire: str  # Questionnaire results or user input
-    messages: Annotated[List[str], operator.add]  # Their conversation
+# Individual state for each analyst and reviewer team
+class ResearchState(MessagesState):
+    # Topic assigned to the analyst
+    description: str  # Description of team's responsibility and capabilities
+    # Questionnaire results or user input
     reviews: Annotated[List[str], operator.add]  # Four reviewers answers
     analyst_prompt: str  # Their info
     reviewer_prompt: str
 
 
+def deduplicate_merge(old_reviews: List[str], new_reviews: List[str]) -> List[str]:
+    return list(set(old_reviews).union(new_reviews))
+
 # Overall state for the supervisor
 class OverallState(TypedDict):
-    topic: Annotated[str, operator.or_]  # Overall topic of analysis
-    questionnaire: Annotated[str, operator.or_]  # Questionnaire results or user input
-    reviews: Annotated[List[str], operator.add]  # Four reviewers answers
+    topic: str  # Overall topic of analysis
+    questionnaire: str  # Questionnaire results or user input
+    reviews: Annotated[List[str], deduplicate_merge]  # Four reviewers answers
     final_report: str  # Final report generated after all analysts complete their tasks
     teams: List[ResearchTeam]
 
@@ -173,15 +176,15 @@ CONTENT:
 ==================
 import json
 import os
-from langgraph.types import Command
-from typing import List, Optional, Annotated
+from typing import List
 from dotenv import load_dotenv
 from langchain.tools import tool
 from langchain_core.messages import HumanMessage, SystemMessage
 from langchain_openai import ChatOpenAI
 from langgraph.constants import Send
+from langgraph.constants import END
 
-from supervisor_simple.states import OverallState, Perspectives, ResearchTeam
+from graphSupervisor.states import OverallState, Perspectives
 
 # LLM Initialization
 load_dotenv()
@@ -200,10 +203,18 @@ Use provided in prompts names
 """
 
 
-def initialize_research_states(state: OverallState) -> List[Send]:
+def define_edge(state: OverallState):
     """
     Initializes states for each research team.
     """
+    # print("This is log info FROM DEFINE_EDGE about reviews list length: " + str(len(state["reviews"])))
+
+    if "final_report" in state:
+        return END
+
+    if len(state["reviews"]) >= 4:
+        return "Report_Writer"
+
     topic = state["topic"]
     teams = state["teams"]
     print(f"Initializing research teams for topic: \n\t{topic}")
@@ -229,6 +240,7 @@ def create_research_teams_tool(topic: str) -> dict:
     """
     Generates a list of research teams based on the given topic.
     """
+
     print(f"Creating research teams on topic: \n\t{topic}")
     structured_llm = llm.with_structured_output(Perspectives)
 
@@ -257,38 +269,33 @@ def supervisor_node(state: OverallState):
     """
     Supervisor node for orchestrating the research workflow.
     """
-    if "reviewer" not in state:
-        state["reviewer"] = []
+    # print("This is log info FROM SUPERVISOR about reviews list length: " + str(len(state["reviews"])))
+
+    if "reviews" not in state:
+        state["reviews"] = []
 
     if "teams" not in state or not state["teams"]:
         # Generate teams and initialize states
         generated_teams = create_research_teams_tool.invoke({"topic": state["topic"]})
         state["teams"] = generated_teams["teams"]
 
+    reviews = state["reviews"]
+
     return state
 
 
-def should_write_report(state: OverallState):
-    print("Checking if a research team should be reported.")
-    print(len(state["reviewer_final_overview"]))
-
-    if len(state["reviewer_final_overview"]) >= 4:
-        return "Report_Writer"
-    return "Supervisor"
-
-
 # Example usage
-if __name__ == "__main__":
-    # Mock OverallState for demonstration
-    state = OverallState(topic="Digital Transformation in Organizations")
-
-    print("initial_state: ", json.dumps(state, indent=4, ensure_ascii=False))
-
-    # Invoke the model with the tools and initial state
-    supervisor_node(state)
-
-    # Print the updated state
-    print("update_state:", json.dumps(state, indent=4, ensure_ascii=False))
+# if __name__ == "__main__":
+#     # Mock OverallState for demonstration
+#     state = OverallState(topic="Digital Transformation in Organizations")
+#
+#     print("initial_state: ", json.dumps(state, indent=4, ensure_ascii=False))
+#
+#     # Invoke the model with the tools and initial state
+#     supervisor_node(state)
+#
+#     # Print the updated state
+#     print("update_state:", json.dumps(state, indent=4, ensure_ascii=False))
 
 ==================
 
@@ -297,44 +304,32 @@ CONTENT:
 ==================
 import os
 from langgraph.types import *
-from typing import LiteralString, Literal
-
+from typing import Literal
 from langchain_openai import ChatOpenAI
-
-from supervisor_simple.states import ResearchState, OverallState
-
 from langgraph.constants import END
+
+from graphSupervisor.states import ResearchState
+
+
 
 llm = ChatOpenAI(model_name=os.getenv("MODEL"))
 
 
 def analyst_node(state: ResearchState):
     prompt = state["analyst_prompt"]
-    return {"messages": ["Hello world"]}
+    descr = state["analyst_prompt"][0:15]
+    return {"messages": ["Hello world Assystent: " + descr]}
 
 
 def reviewer_node(state: ResearchState):
     prompt = state["reviewer_prompt"]
+    descr = state["reviewer_prompt"][0:15]
     print(len(state.get("messages", [])))
-    return {"messages": ["Hello world"]}
-
-
-# def sender_node(state: ResearchOutputState):
-#     return {"reviewer_final_overview": state["messages"][-1]}
+    return {"messages": ["Hello world Reviewer: " + descr]}
 
 
 
-# def should_continue(state: ResearchState):
-#     # Check if the number of messages is 6 or more
-#     if len(state.get("messages", [])) >= 6:
-#         # Return the END constant and the overall state update
-#         return END
-#
-#     # If the condition is not met, return the next node
-#     return "Analyst"
-
-
-def should_continue(state: ResearchState) -> str | Command[Literal[END]]:
+def should_continue(state: ResearchState):
     # Check if the number of messages is 6 or more
     if len(state.get("messages", [])) >= 6:
         # Return the END constant and the overall state update
@@ -350,7 +345,7 @@ def should_continue(state: ResearchState) -> str | Command[Literal[END]]:
 report_writer_node.py
 CONTENT:
 ==================
-from supervisor_simple.states import OverallState
+from graphSupervisor.states import OverallState
 
 
 def report_writer(state: OverallState):

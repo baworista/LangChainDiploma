@@ -45,14 +45,17 @@ app_builder.add_edge(START, 'Supervisor')
 # app_builder.add_edge('Supervisor', 'BP_Team')
 # app_builder.add_edge('Supervisor', 'KM_Team')
 # app_builder.add_edge('Supervisor', 'IT_Team')
-app_builder.add_conditional_edges('Supervisor', initialize_research_states, ["HR_Team", "BP_Team", "IT_Team", "KM_Team"], "Report_Writer")
+
+app_builder.add_conditional_edges('Supervisor', define_edge,
+                                  ["HR_Team", "BP_Team", "IT_Team", "KM_Team", "Report_Writer", END]) # Could also be added Supervisot if we will make llm in that node
 
 
 
-# app_builder.add_edge('HR_Team', 'Supervisor')
-# app_builder.add_edge('BP_Team', 'Supervisor')
-# app_builder.add_edge('KM_Team', 'Supervisor')
-# app_builder.add_edge('IT_Team', 'Supervisor')
+app_builder.add_edge('HR_Team', 'Supervisor')
+app_builder.add_edge('BP_Team', 'Supervisor')
+app_builder.add_edge('KM_Team', 'Supervisor')
+app_builder.add_edge('IT_Team', 'Supervisor')
+app_builder.add_edge('Report_Writer', 'Supervisor')
 
 # app_builder.add_edge('Supervisor', 'Report_Writer')  # wait for others(COMMAND)
 # app_builder.add_conditional_edges(
@@ -61,9 +64,6 @@ app_builder.add_conditional_edges('Supervisor', initialize_research_states, ["HR
 #     "Report_Writer" if len(state["reviewer_final_overview"]) == 4
 #     else "Supervisor"
 # )
-# app_builder.add_conditional_edges("Supervisor", should_write_report,['Report_Writer', "Supervisor"])
-
-app_builder.add_edge('Report_Writer', END)
 
 app = app_builder.compile()
 
@@ -76,13 +76,13 @@ with open("supervisor_graph_diagram.png", "wb") as file:
     file.write(graph_image)
 print("Saved as PNG 'supervisor_graph_diagram.png'")
 
-# # Thread configuration and graph input
-# thread = {"configurable": {"thread_id": "1"}}
-#
-# user_input = {
-#     "topic": "Help a multinational manufacturing company in their journey to product management maturity.",
-# }
-#
-# response = graphSupervisor.invoke(user_input, thread)
-#
-# print(response)
+# Thread configuration and graph input
+thread = {"configurable": {"thread_id": "1"}}
+
+user_input = {
+    "topic": "Help a multinational manufacturing company in their journey to product management maturity.",
+}
+
+response = graphSupervisor.invoke(user_input, thread)
+
+print(response)
