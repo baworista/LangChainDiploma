@@ -24,6 +24,7 @@ Use provided in prompts names
     c. **KM_Team**: Concentrating on knowledge sharing and tools.
     d. **IT_Team**: Addressing IT strategies and tools.
 3. Each team must have explicitly provided name, description and prompts reflecting their responsibilities.
+4. For agents
 """
 
 
@@ -49,7 +50,8 @@ def define_edge(state: OverallState):
         Send(
             team["name"],
             {
-                "topic": topic,  # Topic assigned to the analyst
+                "name": team["name"],
+                "team_topic": topic,  # Topic assigned to the analyst
                 "description": team["description"],
                 "team_questionnaire": questionnaire,
                 "messages": [],

@@ -53,8 +53,8 @@ class Perspectives(BaseModel):
 
 # Individual state for each analyst and reviewer team
 class ResearchState(MessagesState):
-    # name: str
-    # team_topic: str
+    name: str
+    team_topic: str
     description: str  # Description of team's responsibility and capabilities
     team_questionnaire: str # Questionnaire results or user input
     reviews: Annotated[List[str], operator.add]  # Four reviewers answers

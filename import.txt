@@ -25,6 +25,7 @@ def create_team_builder():
     team_builder.add_conditional_edges("Reviewer", should_continue, ["Analyst", END])
     return team_builder
 
+
 hr_team_builder = create_team_builder()
 bp_team_builder = create_team_builder()
 km_team_builder = create_team_builder()
@@ -33,7 +34,7 @@ it_team_builder = create_team_builder()
 app_builder = StateGraph(OverallState)
 
 app_builder.add_node("Supervisor", supervisor_node)
-app_builder.add_node("Report_Writer", report_writer)
+app_builder.add_node("Report_Writer", report_writer_node)
 
 app_builder.add_node("HR_Team", hr_team_builder.compile())
 app_builder.add_node("BP_Team", bp_team_builder.compile())
@@ -158,9 +159,10 @@ class Perspectives(BaseModel):
 
 # Individual state for each analyst and reviewer team
 class ResearchState(MessagesState):
-    # Topic assigned to the analyst
+    name: str
+    team_topic: str
     description: str  # Description of team's responsibility and capabilities
-    # Questionnaire results or user input
+    team_questionnaire: str # Questionnaire results or user input
     reviews: Annotated[List[str], operator.add]  # Four reviewers answers
     analyst_prompt: str  # Their info
     reviewer_prompt: str
@@ -233,9 +235,10 @@ def define_edge(state: OverallState):
         Send(
             team["name"],
             {
-                "topic": topic,  # Topic assigned to the analyst
+                "name": team["name"],
+                "team_topic": topic,  # Topic assigned to the analyst
                 "description": team["description"],
-                "questionnaire": questionnaire,
+                "team_questionnaire": questionnaire,
                 "messages": [],
                 "reviews": [],
                 "analyst_prompt": team["analyst_prompt"],
@@ -324,23 +327,23 @@ llm = ChatOpenAI(model_name=os.getenv("MODEL"))
 # Based on your role you should
 # """
 
-def analyst_node(state: ResearchState):
+def analyst_node(state):
     print("Analyst node activated.")
 
     if len(state.get("messages", [])) < 1:
-        questionnaire = state["questionnaire"]
-        state["messages"].append(HumanMessage(f"Your questionnaire is: {questionnaire}"))
+        team_questionnaire = state["team_questionnaire"]
+        state["messages"].append(HumanMessage(f"Your questionnaire is: {team_questionnaire}"))
 
-    # sys_msg = SystemMessage(state["analyst_prompt"])
-    # return {"messages": [llm.invoke([sys_msg] + state["messages"])]}
-    return {"messages": [AIMessage("Analyst answer " + state["analyst_prompt"][0:25])]  + state.get("messages", [])} # For test
+    sys_msg = SystemMessage(state["analyst_prompt"])
+    return {"messages": [llm.invoke([sys_msg] + state["messages"])]}
+    # return {"messages": [AIMessage("Analyst answer " + state["analyst_prompt"][0:25])]  + state.get("messages", [])} # For test
 
 
-def reviewer_node(state: ResearchState):
+def reviewer_node(state):
     print("Reviewer node activated.")
-    # sys_msg = SystemMessage(state["reviewer_prompt"])
-    # return {"messages": [llm.invoke([sys_msg] + state["messages"])]}
-    return {"messages": [AIMessage("Reviewers answer " + state["reviewer_prompt"][0:25])] + state.get("messages", [])} # For test
+    sys_msg = SystemMessage(state["reviewer_prompt"])
+    return {"messages": [llm.invoke([sys_msg] + state["messages"])]}
+    # return {"messages": [AIMessage("Reviewers answer " + state["reviewer_prompt"][0:25])] + state.get("messages", [])} # For test
 
 
 def should_continue(state: ResearchState):
@@ -361,15 +364,45 @@ def should_continue(state: ResearchState):
 report_writer_node.py
 CONTENT:
 ==================
+from dotenv import load_dotenv
+
 from graphSupervisor.states import OverallState
+from langchain_openai import ChatOpenAI
+from langchain_core.messages import AIMessage, HumanMessage, SystemMessage
+import os
 
+load_dotenv()
 
-def report_writer(state: OverallState):
+llm = ChatOpenAI(model_name=os.getenv("MODEL"))
+
+writing_instructions = """You are a senior consultant experienced in writing executive reports. Your goal is to write a comprehensive report based on the reviews provided by the analyst-reviewer teams.
+
+The report should be structured, concise, and actionable. It should include an executive summary, an introduction, a detailed analysis, and a set of recommendations.
+
+Here are the topic of task: {topic}
+
+Here are the questionnaire: {questionnaire}
+
+Here are reviews from teams: {reviews}.
+
+Write a report from provided.
+"""
+
+def report_writer_node(state: OverallState):
+    """ Node to summarize diagnosis and recommendations in a single report"""
+
+    print("... Write Report ...")
+    # Get state
     topic = state["topic"]
-    # prompt = f"You are tasked to summarize teams resolutions messages about this {topic}"
-    print("report_writer node activated!!")
-    print(len(state["reviews"]))
-    return {"final_report": ["Good game"]}
+    questionnaire = state["questionnaire"]
+    reviews = state["reviews"]
+
+    # Generate question
+    system_message = writing_instructions.format(topic=topic, questionnaire=questionnaire, reviews=reviews)
+    report = llm.invoke([SystemMessage(content=system_message)])
+
+    # Write messages to state
+    return {"final_report": report}
 
 ==================
 

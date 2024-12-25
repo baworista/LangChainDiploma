@@ -13,7 +13,8 @@ llm = ChatOpenAI(model_name=os.getenv("MODEL"))
 # """
 
 def analyst_node(state):
-    print("Analyst node activated.")
+    name = state["name"]
+    print(f"Analyst node {name} activated.")
 
     if len(state.get("messages", [])) < 1:
         team_questionnaire = state["team_questionnaire"]
@@ -25,7 +26,8 @@ def analyst_node(state):
 
 
 def reviewer_node(state):
-    print("Reviewer node activated.")
+    name = state["name"]
+    print(f"Reviewer node {name} activated.")
     sys_msg = SystemMessage(state["reviewer_prompt"])
     return {"messages": [llm.invoke([sys_msg] + state["messages"])]}
     # return {"messages": [AIMessage("Reviewers answer " + state["reviewer_prompt"][0:25])] + state.get("messages", [])} # For test
