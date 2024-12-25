@@ -6,12 +6,13 @@ from langchain.tools import tool
 from langchain_core.messages import HumanMessage, SystemMessage
 from langchain_openai import ChatOpenAI
 from langgraph.constants import Send
+from langgraph.constants import END
 
 from graphSupervisor.states import OverallState, Perspectives
 
 # LLM Initialization
 load_dotenv()
-llm = ChatOpenAI(model=os.getenv("MODEL_SUPERVISOR"), temperature=0)
+llm = ChatOpenAI(model=os.getenv("MODEL_SUPERVISOR"))
 
 team_creation_instructions = """
 You are tasked with creating AI research teams, each consisting of an analyst and a reviewer. Follow these instructions:
@@ -26,25 +27,36 @@ Use provided in prompts names
 """
 
 
-def initialize_research_states(state: OverallState) -> List[Send]:
+def define_edge(state: OverallState):
     """
     Initializes states for each research team.
     """
+    # print("This is log info FROM DEFINE_EDGE about reviews list length: " + str(len(state["reviews"])))
+
+    if "final_report" in state:
+        return END
+
+    if len(state["reviews"]) >= 4:
+        return "Report_Writer"
+
     topic = state["topic"]
     teams = state["teams"]
+    questionnaire = state["questionnaire"]
+
     print(f"Initializing research teams for topic: \n\t{topic}")
 
     return [
         Send(
             team["name"],
             {
-                "topic": topic,  # Topic assigned to the analyst
+                "name": team["name"],
+                "team_topic": topic,  # Topic assigned to the analyst
                 "description": team["description"],
-                "questionnaire": "=====",
+                "team_questionnaire": questionnaire,
                 "messages": [],
                 "reviews": [],
-                "analyst_prompt": team["analyst_prompt"],
-                "reviewer_prompt": team["reviewer_prompt"],
+                "analyst": team["analyst"],
+                "reviewer": team["reviewer"],
             }
         ) for team in teams
     ]
@@ -55,6 +67,7 @@ def create_research_teams_tool(topic: str) -> dict:
     """
     Generates a list of research teams based on the given topic.
     """
+
     print(f"Creating research teams on topic: \n\t{topic}")
     structured_llm = llm.with_structured_output(Perspectives)
 
@@ -70,8 +83,8 @@ def create_research_teams_tool(topic: str) -> dict:
         {
             "name": team.name,
             "description": team.description,
-            "analyst_prompt": team.analyst_prompt,
-            "reviewer_prompt": team.reviewer_prompt,
+            "analyst": team.analyst,
+            "reviewer": team.reviewer,
         }
         for team in perspectives.teams
     ]
@@ -83,8 +96,10 @@ def supervisor_node(state: OverallState):
     """
     Supervisor node for orchestrating the research workflow.
     """
-    if "reviewer" not in state:
-        state["reviewer"] = []
+    # print("This is log info FROM SUPERVISOR about reviews list length: " + str(len(state["reviews"])))
+
+    if "reviews" not in state:
+        state["reviews"] = []
 
     if "teams" not in state or not state["teams"]:
         # Generate teams and initialize states
@@ -94,24 +109,15 @@ def supervisor_node(state: OverallState):
     return state
 
 
-def should_write_report(state: OverallState):
-    print("Checking if a research team should be reported.")
-    print(len(state["reviewer_final_overview"]))
-
-    if len(state["reviewer_final_overview"]) >= 4:
-        return "Report_Writer"
-    return "Supervisor"
-
-
 # Example usage
-if __name__ == "__main__":
-    # Mock OverallState for demonstration
-    state = OverallState(topic="Digital Transformation in Organizations")
-
-    print("initial_state: ", json.dumps(state, indent=4, ensure_ascii=False))
-
-    # Invoke the model with the tools and initial state
-    supervisor_node(state)
-
-    # Print the updated state
-    print("update_state:", json.dumps(state, indent=4, ensure_ascii=False))
+# if __name__ == "__main__":
+#     # Mock OverallState for demonstration
+#     state = OverallState(topic="Digital Transformation in Organizations")
+#
+#     print("initial_state: ", json.dumps(state, indent=4, ensure_ascii=False))
+#
+#     # Invoke the model with the tools and initial state
+#     supervisor_node(state)
+#
+#     # Print the updated state
+#     print("update_state:", json.dumps(state, indent=4, ensure_ascii=False))

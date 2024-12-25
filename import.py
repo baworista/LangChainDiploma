@@ -34,5 +34,5 @@ def generate_py_files_summary(folder_path, output_file):
         print(f"Error generating summary: {e}")
 
 
-generate_py_files_summary("/Users/bawo4lenix/Documents/PyCharmProjects/LangChainDiploma/supervisor_simple",
+generate_py_files_summary("/Users/bawo4lenix/Documents/PyCharmProjects/LangChainDiploma/graphSupervisor",
                           "import.txt")
