@@ -12,7 +12,7 @@ from graphSupervisor.states import OverallState, Perspectives
 
 # LLM Initialization
 load_dotenv()
-llm = ChatOpenAI(model=os.getenv("MODEL_SUPERVISOR"), temperature=0)
+llm = ChatOpenAI(model=os.getenv("MODEL_SUPERVISOR"))
 
 team_creation_instructions = """
 You are tasked with creating AI research teams, each consisting of an analyst and a reviewer. Follow these instructions:
@@ -24,7 +24,6 @@ Use provided in prompts names
     c. **KM_Team**: Concentrating on knowledge sharing and tools.
     d. **IT_Team**: Addressing IT strategies and tools.
 3. Each team must have explicitly provided name, description and prompts reflecting their responsibilities.
-4. For agents
 """
 
 
@@ -56,8 +55,8 @@ def define_edge(state: OverallState):
                 "team_questionnaire": questionnaire,
                 "messages": [],
                 "reviews": [],
-                "analyst_prompt": team["analyst_prompt"],
-                "reviewer_prompt": team["reviewer_prompt"],
+                "analyst": team["analyst"],
+                "reviewer": team["reviewer"],
             }
         ) for team in teams
     ]
@@ -84,8 +83,8 @@ def create_research_teams_tool(topic: str) -> dict:
         {
             "name": team.name,
             "description": team.description,
-            "analyst_prompt": team.analyst_prompt,
-            "reviewer_prompt": team.reviewer_prompt,
+            "analyst": team.analyst,
+            "reviewer": team.reviewer,
         }
         for team in perspectives.teams
     ]

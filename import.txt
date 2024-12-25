@@ -20,9 +20,9 @@ def create_team_builder():
     team_builder.add_node("Reviewer", reviewer_node)
 
     team_builder.add_edge(START, "Analyst")
-    
-    team_builder.add_edge("Analyst", "Reviewer")
-    team_builder.add_conditional_edges("Reviewer", should_continue, ["Analyst", END])
+
+    team_builder.add_conditional_edges("Analyst", should_continue, ["Reviewer", END])
+    team_builder.add_edge("Reviewer", "Analyst")
     return team_builder
 
 
@@ -97,7 +97,12 @@ user_input = {
 
 response = graphSupervisor.invoke(user_input, thread)
 
-print(response)
+final_report = response.get("final_report")
+
+if final_report:
+    print(final_report.content)
+else:
+    print("Final report is missing.")
 
 ==================
 
@@ -110,51 +115,7 @@ from typing import List, Annotated
 from langgraph.graph import MessagesState
 from pydantic import BaseModel, Field
 from typing_extensions import TypedDict
-
-
-class ResearchTeam(BaseModel):
-    name: str = Field(
-        description="Use only provided in system message names"
-    )
-
-    description: str = Field(
-        description="Short description of what this team is response for."
-    )
-
-    analyst_prompt: str = Field(
-        description="The specific prompt for the analyst in the context of the research topic. "
-                    "Clearly defines the focus area such as 'Human Resources' or 'Business Process'. "
-                    "\n +"
-                    "A description of the analyst's focus, key competencies, tasks within the project, "
-                    "concerns, and motives. This should align with the research topic and the analyst's role."
-    )
-
-    reviewer_prompt: str = Field(
-        description="The specific prompt for the reviewer in the context of the research topic. "
-                    "Clearly defines the focus area such as 'Human Resources' or 'Business Process'. "
-                    "\n +"
-                    "A description of the reviewer's focus, key competencies, tasks within the project, "
-                    "concerns, and motives. This should align with the research topic and the reviewer's role."
-    )
-
-    @property
-    def experts(self) -> str:
-        """
-        Provides a detailed representation of the research team's persona,
-        including its name, description, and the specific prompts for the analyst and reviewer.
-        """
-        return (
-            f"Team Name: {self.name}\n"
-            f"Description: {self.description}\n\n"
-            f"Analyst Prompt:\n{self.analyst_prompt}\n\n"
-            f"Reviewer Prompt:\n{self.reviewer_prompt}\n"
-        )
-
-
-class Perspectives(BaseModel):
-    teams: List[ResearchTeam] = Field(
-        description="List of research teams where each team contains name, description and analyst - reviewer duo prompts",
-    )
+from schema import *
 
 
 # Individual state for each analyst and reviewer team
@@ -164,8 +125,8 @@ class ResearchState(MessagesState):
     description: str  # Description of team's responsibility and capabilities
     team_questionnaire: str # Questionnaire results or user input
     reviews: Annotated[List[str], operator.add]  # Four reviewers answers
-    analyst_prompt: str  # Their info
-    reviewer_prompt: str
+    analyst: Person  # Their info
+    reviewer: Person
 
 
 def deduplicate_merge(old_reviews: List[str], new_reviews: List[str]) -> List[str]:
@@ -179,6 +140,66 @@ class OverallState(TypedDict):
     final_report: str  # Final report generated after all analysts complete their tasks
     teams: List[ResearchTeam]
 
+==================
+
+schema.py
+CONTENT:
+==================
+from typing import List
+
+from pydantic import BaseModel, Field
+
+class Person(BaseModel):
+    name: str = Field(
+        description="Human-like person's name from anime"
+    )
+    role: str = Field(
+        description="Role of the person in the team and in context of the topic.",
+    )
+    description: str = Field(
+        description="Description of the person's focus, key competencies, tasks in the project and concerns, and motives.",
+    )
+
+    @property
+    def persona(self) -> str:
+        return f"Name: {self.name}\nRole: {self.role}\nDescription: {self.description}\n"
+
+
+class ResearchTeam(BaseModel):
+    name: str = Field(
+        description="Use only provided in system message names"
+    )
+
+    description: str = Field(
+        description="Short description of what this team is response for."
+    )
+
+    analyst: Person = Field(
+        description="Analyst person"
+    )
+
+    reviewer: Person = Field(
+        description="Reviewer person"
+    )
+
+    @property
+    def team(self) -> str:
+        """
+        Provides a detailed representation of the research team's persona,
+        including its name, description, and the specific prompts for the analyst and reviewer.
+        """
+        return (
+            f"Team Name: {self.name}\n"
+            f"Description: {self.description}\n\n"
+            f"Analyst :\n{self.analyst}\n\n"
+            f"Reviewer :\n{self.reviewer}\n"
+        )
+
+
+class Perspectives(BaseModel):
+    teams: List[ResearchTeam] = Field(
+        description="List of research teams where each team contains name, description and analyst - reviewer duo prompts",
+    )
 ==================
 
 supervisor_node.py
@@ -210,6 +231,7 @@ Use provided in prompts names
     c. **KM_Team**: Concentrating on knowledge sharing and tools.
     d. **IT_Team**: Addressing IT strategies and tools.
 3. Each team must have explicitly provided name, description and prompts reflecting their responsibilities.
+4. For agents
 """
 
 
@@ -241,8 +263,8 @@ def define_edge(state: OverallState):
                 "team_questionnaire": questionnaire,
                 "messages": [],
                 "reviews": [],
-                "analyst_prompt": team["analyst_prompt"],
-                "reviewer_prompt": team["reviewer_prompt"],
+                "analyst": team["analyst"],
+                "reviewer": team["reviewer"],
             }
         ) for team in teams
     ]
@@ -269,8 +291,8 @@ def create_research_teams_tool(topic: str) -> dict:
         {
             "name": team.name,
             "description": team.description,
-            "analyst_prompt": team.analyst_prompt,
-            "reviewer_prompt": team.reviewer_prompt,
+            "analyst": team.analyst,
+            "reviewer": team.reviewer,
         }
         for team in perspectives.teams
     ]
@@ -314,49 +336,155 @@ team_node.py
 CONTENT:
 ==================
 import os
+from pyexpat.errors import messages
+
+from httpx import Headers
 from langchain_core.messages import SystemMessage, AIMessage, HumanMessage
+from langchain_core.prompts import ChatPromptTemplate
 from langchain_openai import ChatOpenAI
 from langgraph.constants import END
 
 from graphSupervisor.states import ResearchState
 
-llm = ChatOpenAI(model_name=os.getenv("MODEL"))
+llm = ChatOpenAI(model_name=os.getenv("MODEL"), max_tokens=500)
 
-# team_prompt"""
-# You are in the analyst->reviewer team.
-# Based on your role you should
-# """
+analyst_prompt = """
+# Role & Context
+You are: {person}
+You are in {team} with {reviewer}, who will provide a review and share their opinion with you.
+You are tasked with performing a **needs analysis** for your customer on the topic: {topic}
+
+# Data Source
+Here are the **questionnaire results**: {questionnaire}
+
+# Objective
+Your primary goal is to **analyze the current state of the customer** based on the questionnaire results and, once received, **integrate the reviewer's feedback** into your analysis.
+
+# Guidelines
+- Generate **only an analysis** based on the questionnaire results.
+- Focus **solely on your persona, competencies, and tasks**.
+
+# Constraints
+- **Do not analyze aspects outside of your persona or competencies.**
+- **Do not recommend any solutions yet.**
+
+# Final Note
+Keep your analysis focused, clear, and aligned with the given responsibilities and data.
+"""
+
+
+reviewer_prompt = """
+# Role & Context
+You are: {person}
+You are in {team} with {analyst}, who will make an analysis and share it with you.
+You are tasked with assisting your analyst on the topic: {topic}
+
+# Data Source
+Here are the questionnaire results: {questionnaire}
+
+# Objective
+Your primary task is to create a constructive and insightful review based on the provided analysis and questionnaire results.
+
+# Guidelines
+1. **Constructive:** Provide actionable and helpful recommendations.
+2. **Specific:** Avoid generalities; include clear examples directly tied to the analysis.
+3. **Manageable:** Ensure your recommendations are practical and achievable for the customer.
+
+# Constraints
+- Base your recommendations **solely on the provided analysis**.
+- Stay **aligned with your role, expertise, and responsibilities**.
+- Avoid commenting on aspects outside your defined scope.
+
+# Final Note
+Focus on delivering a review that adds value, clarity, and direction to the analysis provided.
+"""
+
+
 
 def analyst_node(state):
-    print("Analyst node activated.")
+    topic = state["team_topic"]
 
-    if len(state.get("messages", [])) < 1:
-        team_questionnaire = state["team_questionnaire"]
-        state["messages"].append(HumanMessage(f"Your questionnaire is: {team_questionnaire}"))
+    team_name = state["name"]
+    team_description = state["description"]
 
-    sys_msg = SystemMessage(state["analyst_prompt"])
-    return {"messages": [llm.invoke([sys_msg] + state["messages"])]}
+    reviewer_info = state["reviewer"]
+    analyst_info = state["analyst"]
+
+    questionnaire = state["team_questionnaire"]
+
+    print(f"Analyst node {team_name} activated.")
+
+    system_prompt = analyst_prompt.format(topic=topic,
+                                          team = team_name + "\n" + team_description,
+                                          reviewer = reviewer_info,
+                                          person = analyst_info,
+                                          questionnaire = questionnaire)
+
+    messages = state["messages"]
+
+    if len(messages) != 0:
+        last_message = "Your previous report: \n" + messages[-2].content +"\n\n\nReviewers recommendations: \n" + messages[-1].content
+    else:
+        last_message = ""
+
+    print("++++++++++++++++++++++++++++++++++++++++")
+    print(last_message)
+    print("++++++++++++++++++++++++++++++++++++++++")
+
+    llm_messages = [SystemMessage(content=system_prompt),
+                last_message
+                ]
+
+    return {"messages": [llm.invoke(llm_messages).content]}
     # return {"messages": [AIMessage("Analyst answer " + state["analyst_prompt"][0:25])]  + state.get("messages", [])} # For test
 
 
 def reviewer_node(state):
-    print("Reviewer node activated.")
-    sys_msg = SystemMessage(state["reviewer_prompt"])
-    return {"messages": [llm.invoke([sys_msg] + state["messages"])]}
+    topic = state["team_topic"]
+
+    team_name = state["name"]
+    team_description = state["description"]
+
+    reviewer_info = state["reviewer"]
+    analyst_info = state["analyst"]
+
+    questionnaire = state["team_questionnaire"]
+
+    print(f"Reviewer node {team_name} activated.")
+
+    system_prompt = reviewer_prompt.format(topic=topic,
+                                          team = team_name + "\n" + team_description,
+                                          analyst = analyst_info,
+                                          person = reviewer_info,
+                                          questionnaire = questionnaire)
+
+
+
+    last_message = state["messages"][-1]
+    print("++++++++++++++++++++++++++++++++++++++++")
+    print(last_message)
+    print("++++++++++++++++++++++++++++++++++++++++")
+
+    messages = [SystemMessage(content=system_prompt),
+                last_message,
+                ]
+
+
+    return {"messages": [llm.invoke(messages).content]}
     # return {"messages": [AIMessage("Reviewers answer " + state["reviewer_prompt"][0:25])] + state.get("messages", [])} # For test
 
 
 def should_continue(state: ResearchState):
     messages = state.get("messages", [])
     # Check if the number of messages is 6 or more
-    if len(messages) >= 6:
+    if len(messages) >= 7:
 
         # Return the END constant and the overall state update
         state["reviews"].append(messages[-1].content)
         return END
 
     # If the condition is not met, return the next node
-    return "Analyst"
+    return "Reviewer"
 
 
 ==================

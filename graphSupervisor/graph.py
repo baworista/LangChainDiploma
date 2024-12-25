@@ -17,9 +17,9 @@ def create_team_builder():
     team_builder.add_node("Reviewer", reviewer_node)
 
     team_builder.add_edge(START, "Analyst")
-    
-    team_builder.add_edge("Analyst", "Reviewer")
-    team_builder.add_conditional_edges("Reviewer", should_continue, ["Analyst", END])
+
+    team_builder.add_conditional_edges("Analyst", should_continue, ["Reviewer", END])
+    team_builder.add_edge("Reviewer", "Analyst")
     return team_builder
 
 
@@ -94,4 +94,9 @@ user_input = {
 
 response = graphSupervisor.invoke(user_input, thread)
 
-print(response)
+final_report = response.get("final_report")
+
+if final_report:
+    print(final_report.content)
+else:
+    print("Final report is missing.")
