@@ -19,7 +19,7 @@ def create_team_builder():
     team_builder.add_node("Analyst", analyst_node)
     team_builder.add_node("Reviewer", reviewer_node)
 
-    team_builder.set_entry_point("Analyst")
+    team_builder.add_edge(START, "Analyst")
     
     team_builder.add_edge("Analyst", "Reviewer")
     team_builder.add_conditional_edges("Reviewer", should_continue, ["Analyst", END])
@@ -79,11 +79,19 @@ with open("supervisor_graph_diagram.png", "wb") as file:
     file.write(graph_image)
 print("Saved as PNG 'supervisor_graph_diagram.png'")
 
+
+
+
 # Thread configuration and graph input
 thread = {"configurable": {"thread_id": "1"}}
 
+# Load from file
+with open("../data/answer_1.json", "r") as file:
+    data = json.load(file)
+
 user_input = {
     "topic": "Help a multinational manufacturing company in their journey to product management maturity.",
+    "questionnaire" :  data
 }
 
 response = graphSupervisor.invoke(user_input, thread)
@@ -217,6 +225,8 @@ def define_edge(state: OverallState):
 
     topic = state["topic"]
     teams = state["teams"]
+    questionnaire = state["questionnaire"]
+
     print(f"Initializing research teams for topic: \n\t{topic}")
 
     return [
@@ -225,7 +235,7 @@ def define_edge(state: OverallState):
             {
                 "topic": topic,  # Topic assigned to the analyst
                 "description": team["description"],
-                "questionnaire": "=====",
+                "questionnaire": questionnaire,
                 "messages": [],
                 "reviews": [],
                 "analyst_prompt": team["analyst_prompt"],
@@ -279,8 +289,6 @@ def supervisor_node(state: OverallState):
         generated_teams = create_research_teams_tool.invoke({"topic": state["topic"]})
         state["teams"] = generated_teams["teams"]
 
-    reviews = state["reviews"]
-
     return state
 
 
@@ -303,37 +311,45 @@ team_node.py
 CONTENT:
 ==================
 import os
-from langgraph.types import *
-from typing import Literal
+from langchain_core.messages import SystemMessage, AIMessage, HumanMessage
 from langchain_openai import ChatOpenAI
 from langgraph.constants import END
 
 from graphSupervisor.states import ResearchState
 
-
-
 llm = ChatOpenAI(model_name=os.getenv("MODEL"))
 
+# team_prompt"""
+# You are in the analyst->reviewer team.
+# Based on your role you should
+# """
 
 def analyst_node(state: ResearchState):
-    prompt = state["analyst_prompt"]
-    descr = state["analyst_prompt"][0:15]
-    return {"messages": ["Hello world Assystent: " + descr]}
+    print("Analyst node activated.")
+
+    if len(state.get("messages", [])) < 1:
+        questionnaire = state["questionnaire"]
+        state["messages"].append(HumanMessage(f"Your questionnaire is: {questionnaire}"))
+
+    # sys_msg = SystemMessage(state["analyst_prompt"])
+    # return {"messages": [llm.invoke([sys_msg] + state["messages"])]}
+    return {"messages": [AIMessage("Analyst answer " + state["analyst_prompt"][0:25])]  + state.get("messages", [])} # For test
 
 
 def reviewer_node(state: ResearchState):
-    prompt = state["reviewer_prompt"]
-    descr = state["reviewer_prompt"][0:15]
-    print(len(state.get("messages", [])))
-    return {"messages": ["Hello world Reviewer: " + descr]}
-
+    print("Reviewer node activated.")
+    # sys_msg = SystemMessage(state["reviewer_prompt"])
+    # return {"messages": [llm.invoke([sys_msg] + state["messages"])]}
+    return {"messages": [AIMessage("Reviewers answer " + state["reviewer_prompt"][0:25])] + state.get("messages", [])} # For test
 
 
 def should_continue(state: ResearchState):
+    messages = state.get("messages", [])
     # Check if the number of messages is 6 or more
-    if len(state.get("messages", [])) >= 6:
+    if len(messages) >= 6:
+
         # Return the END constant and the overall state update
-        state["reviews"].append(state["messages"][-1])
+        state["reviews"].append(messages[-1].content)
         return END
 
     # If the condition is not met, return the next node

@@ -41,6 +41,8 @@ def define_edge(state: OverallState):
 
     topic = state["topic"]
     teams = state["teams"]
+    questionnaire = state["questionnaire"]
+
     print(f"Initializing research teams for topic: \n\t{topic}")
 
     return [
@@ -49,7 +51,7 @@ def define_edge(state: OverallState):
             {
                 "topic": topic,  # Topic assigned to the analyst
                 "description": team["description"],
-                "questionnaire": "=====",
+                "team_questionnaire": questionnaire,
                 "messages": [],
                 "reviews": [],
                 "analyst_prompt": team["analyst_prompt"],

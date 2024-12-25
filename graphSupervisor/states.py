@@ -1,5 +1,7 @@
 import operator
 from typing import List, Annotated
+
+from langgraph.graph import MessagesState
 from pydantic import BaseModel, Field
 from typing_extensions import TypedDict
 
@@ -50,11 +52,11 @@ class Perspectives(BaseModel):
 
 
 # Individual state for each analyst and reviewer team
-class ResearchState(TypedDict):
-    # Topic assigned to the analyst
+class ResearchState(MessagesState):
+    # name: str
+    # team_topic: str
     description: str  # Description of team's responsibility and capabilities
-    # Questionnaire results or user input
-    messages: Annotated[List[str], operator.add]  # Their conversation
+    team_questionnaire: str # Questionnaire results or user input
     reviews: Annotated[List[str], operator.add]  # Four reviewers answers
     analyst_prompt: str  # Their info
     reviewer_prompt: str
