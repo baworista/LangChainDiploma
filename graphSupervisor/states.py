@@ -3,7 +3,7 @@ from typing import List, Annotated
 from langgraph.graph import MessagesState
 from typing_extensions import TypedDict
 
-from schemas import *
+from schema import *
 
 
 # Individual state for each analyst and reviewer team
