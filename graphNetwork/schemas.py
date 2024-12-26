@@ -14,3 +14,12 @@ class Agent(BaseModel):
         description="A detailed description of the analyst's focus, key competencies, tasks within the project, "
                     "concerns, and motives. This should align with the research topic and the analyst's role."
     )
+
+class Response(BaseModel):
+    content: str = Field(
+        description="Content of agent response."
+    )
+
+    next_agent: str = Field(
+        description="Name of the next node to be called."
+    )

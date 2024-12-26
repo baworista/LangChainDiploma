@@ -1,8 +1,5 @@
 import os
-from pyexpat.errors import messages
-
-from httpx import Headers
-from langchain_core.messages import SystemMessage, AIMessage, HumanMessage
+from langchain_core.messages import SystemMessage
 from langchain_openai import ChatOpenAI
 from langgraph.constants import END
 
@@ -66,7 +63,6 @@ Start your messages from your name!
 """
 
 
-
 def analyst_node(state):
     topic = state["team_topic"]
 
@@ -78,7 +74,8 @@ def analyst_node(state):
 
     questionnaire = state["team_questionnaire"]
 
-    print(f"Analyst node {team_name} activated.")
+    analyst_name = state["analyst"].name
+    print(f"Analyst {analyst_name} from {team_name} activated.")
 
     system_prompt = analyst_prompt.format(topic=topic,
                                           team = team_name + "\n" + team_description,
@@ -92,10 +89,6 @@ def analyst_node(state):
         last_message = "Your previous report: \n" + messages[-2].content +"\n\n\nReviewers recommendations: \n" + messages[-1].content
     else:
         last_message = "This is the beginning of conversation. Make your initial analysis based on the questionnaire results."
-
-    print("========================================")
-    print(last_message)
-    print("========================================")
 
     llm_messages = [SystemMessage(content=system_prompt),
                 last_message
@@ -116,7 +109,8 @@ def reviewer_node(state):
 
     questionnaire = state["team_questionnaire"]
 
-    print(f"Reviewer node {team_name} activated.")
+    reviewer_name = state["reviewer"].name
+    print(f"Reviewer {reviewer_name} from {team_name} activated.")
 
     system_prompt = reviewer_prompt.format(topic=topic,
                                           team = team_name + "\n" + team_description,
@@ -127,9 +121,6 @@ def reviewer_node(state):
 
 
     last_message = state["messages"][-1].content
-    print("++++++++++++++++++++++++++++++++++++++++")
-    print(last_message)
-    print("++++++++++++++++++++++++++++++++++++++++")
 
     messages = [SystemMessage(content=system_prompt),
                 last_message,

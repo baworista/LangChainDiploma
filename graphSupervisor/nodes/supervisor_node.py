@@ -1,6 +1,4 @@
-import json
 import os
-from typing import List
 from dotenv import load_dotenv
 from langchain.tools import tool
 from langchain_core.messages import HumanMessage, SystemMessage
@@ -10,7 +8,7 @@ from langgraph.constants import END
 
 from graphSupervisor.states import OverallState, Perspectives
 
-# LLM Initialization
+
 load_dotenv()
 llm = ChatOpenAI(model=os.getenv("MODEL_SUPERVISOR"))
 

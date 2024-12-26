@@ -1,3 +1,4 @@
+import json
 from langgraph.constants import START
 from langgraph.graph import StateGraph
 
@@ -9,6 +10,7 @@ from graphSupervisor.states import *
 
 load_dotenv()
 model = ChatOpenAI(temperature=0.1, model_name="gpt-4o-mini")
+
 
 # Define subgraphs
 def create_team_builder():
@@ -42,29 +44,14 @@ app_builder.add_node("IT_Team", it_team_builder.compile())
 # Build the main graph
 app_builder.add_edge(START, 'Supervisor')
 
-# app_builder.add_edge('Supervisor', 'HR_Team')
-# app_builder.add_edge('Supervisor', 'BP_Team')
-# app_builder.add_edge('Supervisor', 'KM_Team')
-# app_builder.add_edge('Supervisor', 'IT_Team')
-
 app_builder.add_conditional_edges('Supervisor', define_edge,
-                                  ["HR_Team", "BP_Team", "IT_Team", "KM_Team", "Report_Writer", END]) # Could also be added Supervisot if we will make llm in that node
-
-
+                                  ["HR_Team", "BP_Team", "IT_Team", "KM_Team", "Report_Writer", END])
 
 app_builder.add_edge('HR_Team', 'Supervisor')
 app_builder.add_edge('BP_Team', 'Supervisor')
 app_builder.add_edge('KM_Team', 'Supervisor')
 app_builder.add_edge('IT_Team', 'Supervisor')
 app_builder.add_edge('Report_Writer', 'Supervisor')
-
-# app_builder.add_edge('Supervisor', 'Report_Writer')  # wait for others(COMMAND)
-# app_builder.add_conditional_edges(
-#     "Supervisor",
-#     lambda state:
-#     "Report_Writer" if len(state["reviewer_final_overview"]) == 4
-#     else "Supervisor"
-# )
 
 app = app_builder.compile()
 
@@ -76,8 +63,6 @@ graph_image = graphSupervisor.get_graph(xray=1).draw_mermaid_png()
 with open("supervisor_graph_diagram.png", "wb") as file:
     file.write(graph_image)
 print("Saved as PNG 'supervisor_graph_diagram.png'")
-
-
 
 
 # Thread configuration and graph input
@@ -94,9 +79,20 @@ user_input = {
 
 response = graphSupervisor.invoke(user_input, thread)
 
+# Assuming the response is already generated
 final_report = response.get("final_report")
 
 if final_report:
-    print(final_report.content)
+    # Extract content from the final report
+    report_content = final_report.content
+
+    # Define the output file path
+    output_file_path = "output.md"
+
+    # Write the report content to the output.md file
+    with open(output_file_path, "w", encoding="utf-8") as output_file:
+        output_file.write(report_content)
+
+    print(f"Final report has been written to {output_file_path}")
 else:
     print("Final report is missing.")
