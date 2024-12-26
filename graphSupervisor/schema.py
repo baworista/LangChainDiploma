@@ -1,6 +1,6 @@
 from typing import List
-
 from pydantic import BaseModel, Field
+
 
 class Person(BaseModel):
     name: str = Field(
