@@ -15,11 +15,19 @@ class Agent(BaseModel):
                     "concerns, and motives. This should align with the research topic and the analyst's role."
     )
 
+    @property
+    def persona(self) -> str:
+        return f"Name: {self.name}\nRole: {self.role}\nDescription: {self.description}\n"
+
 class Response(BaseModel):
-    content: str = Field(
-        description="Content of agent response."
+    question: str = Field(
+        description="Content of agent's current question."
     )
 
     next_agent: str = Field(
-        description="Name of the next node to be called."
+        description="Name of the next node to be called with question."
+    )
+
+    current_analysis: str = Field(
+        description="Current analysis "
     )

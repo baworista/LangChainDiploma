@@ -86,7 +86,7 @@ def analyst_node(state):
     messages = state["messages"]
 
     if len(messages) != 0:
-        last_message = "Your previous report: \n" + messages[-2].content +"\n\n\nReviewers recommendations: \n" + messages[-1].content
+        last_message = "Your previous report: \n" + messages[-2].question + "\n\n\nReviewers recommendations: \n" + messages[-1].question
     else:
         last_message = "This is the beginning of conversation. Make your initial analysis based on the questionnaire results."
 
@@ -120,7 +120,7 @@ def reviewer_node(state):
 
 
 
-    last_message = state["messages"][-1].content
+    last_message = state["messages"][-1].question
 
     messages = [SystemMessage(content=system_prompt),
                 last_message,
@@ -137,7 +137,7 @@ def should_continue(state: ResearchState):
     if len(messages) >= 7:
 
         # Return the END constant and the overall state update
-        state["reviews"].append(messages[-1].content)
+        state["reviews"].append(messages[-1].question)
         return END
 
     # If the condition is not met, return the next node
