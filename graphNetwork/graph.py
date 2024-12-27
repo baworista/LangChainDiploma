@@ -1,23 +1,16 @@
 import os
 from dotenv import load_dotenv
-from langchain.agents import create_react_agent
+from langchain import hub
+from langchain_core.prompts import PromptTemplate
 from langchain_openai import ChatOpenAI
 from langgraph.graph import StateGraph, START, END
 
+from graphNetwork.nodes.reActAgent import create_react_graph
 from graphNetwork.schemas import Response
 from graphNetwork.states import OverallState
 
 load_dotenv()
 llm = ChatOpenAI(model_name=os.getenv("MODEL"))
-
-def reActAgent(state: OverallState):
-    tools = []
-    prompt = ""
-    structured_llm = llm.with_structured_output(Response)
-    agent = create_react_agent(tools=tools, llm=llm, prompt=prompt)
-
-    # Логика агента (добавьте взаимодействие с LLM здесь)
-    pass
 
 # Инициализация агентов
 def initialize_agents(state: OverallState):
@@ -31,20 +24,28 @@ def report_writer(state: OverallState):
 
 
 
-# Создаем подграф для взаимодействия агентов
-app_builder = StateGraph(OverallState)
+
+agents = ["HR_Agent", "BP_Agent", "IT_Agent", "KM_Agent"]
+
+agent_graphs = []
+
+for agent_name in agents:
+    agent_graphs.append(create_react_graph(agent_name, "ACT"))
 
 # Определяем агентов
 agents = {
-    "HR_Team": reActAgent,
-    "BP_Team": reActAgent,
-    "IT_Team": reActAgent,
-    "KM_Team": reActAgent
+    "HR_Agent": agent_graphs[0],
+    "BP_Agent": agent_graphs[1],
+    "IT_Agent": agent_graphs[2],
+    "KM_Agent": agent_graphs[3]
 }
 
-# Добавляем узлы для агентов
+# Создаем подграф для взаимодействия агентов
+app_builder = StateGraph(OverallState)
+
 for agent_name, agent_function in agents.items():
     app_builder.add_node(agent_name, agent_function)
+
 
 # Создаем связи между агентами (каждый может общаться с каждым)
 for agent_from in agents.keys():

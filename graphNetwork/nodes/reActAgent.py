@@ -1,5 +1,4 @@
 import os
-
 from dotenv import load_dotenv
 from langchain.agents import create_react_agent
 from langchain_core.agents import AgentFinish
@@ -8,7 +7,7 @@ from langchain_openai import ChatOpenAI
 from langchain import hub
 from langgraph.constants import END
 from langgraph.graph import StateGraph
-from langgraph.prebuilt.tool_executor import ToolExecutor
+from langgraph.prebuilt import ToolNode
 
 from graphNetwork.schemas import Response
 from langchain_community.tools import TavilySearchResults
@@ -29,7 +28,7 @@ def run_agent_reasoning_engine(state: AgentState):
     agent_outcome = react_agent_runnable.invoke(state)
     return {"agent_outcome": agent_outcome}
 
-tool_executor = ToolExecutor(tools)
+tool_executor = ToolNode(tools)
 
 def execute_tools(state: AgentState):
     agent_action = state["agent_outcome"]
@@ -37,11 +36,11 @@ def execute_tools(state: AgentState):
     return {"intermediate_steps": [(agent_action, str(output))]}
 
 
-def reActAgent(state: OverallState):
-    AGENT_REASON = "agent_reason"
-    ACT = "act"
+def create_react_graph(agent_reason: str, act: str):
+    AGENT_REASON = agent_reason
+    ACT = act
 
-    def should_continue(state: AgentState) -> str:
+    def should_continue(state: AgentState)->str:
         if isinstance(state["agent_outcome"], AgentFinish):
             return END
         return ACT
@@ -55,5 +54,14 @@ def reActAgent(state: OverallState):
     flow.add_conditional_edges(AGENT_REASON, should_continue)
 
     flow.add_edge(ACT, AGENT_REASON)
-    return flow
 
+    return flow.compile()
+
+# def reActAgent(state: OverallState):
+#     app = create_react_graph()
+#
+#     return state
+
+
+# if __name__ == "__main__":
+#     create_react_graph("HR_Agent")
