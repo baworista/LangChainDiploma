@@ -21,10 +21,11 @@ class AgentState(MessagesState):
     # Local analysts messages
     current_analysis: str
     questions_asked: int
+    questions_from_agents: Annotated[list[Dict[str, str]], operator.add]
+    answers_from_agents: Annotated[list[Dict[str, str]], operator.add]
 
     messages: Annotated[List[str], operator.add]
-
-
     input: Dict[str, str]
+
     agent_outcome: Union[AgentAction, AgentFinish, None]
     intermediate_steps: Annotated[list[tuple[AgentAction, str]], operator.add]

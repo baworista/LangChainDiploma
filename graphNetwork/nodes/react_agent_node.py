@@ -19,32 +19,51 @@ from langchain_community.tools import TavilySearchResults
 llm = ChatOpenAI(model_name=os.getenv("MODEL"))
 
 
-def make_handoff_tool(*, agent_name: str):
-    """Create a tool that can return handoff via a Command"""
-    tool_name = f"transfer_to_{agent_name}"
+@tool
+def ask_tool(question_to: str, question_from: str, question: str):
+    """
+    Function to ask other agent a question
 
-    @tool(tool_name)
-    def handoff_to_agent(state: Annotated[dict, InjectedState], tool_call_id: Annotated[str, InjectedToolCallId], ):
-        """Ask another agent for help."""
-        tool_message = {
-            "role": "tool",
-            "content": f"Successfully transferred to {agent_name}",
-            "name": tool_name,
-            "tool_call_id": tool_call_id,
-        }
+    :param question_to: Who we want to ask
+    :param question_from: Current agent name
+    :param question:
+    :return: Command
+    """
 
-        print("handoff_to_agent " + agent_name + " has been invoked!")
-        return Command(
-            # navigate to another agent node in the PARENT graph
-            goto=agent_name,
-            graph=Command.PARENT,
-            # This is the state update that the agent `agent_name` will see when it is invoked.
-            # We're passing agent's FULL internal message history AND adding a tool message to make sure
-            # the resulting chat history is valid.
-            update={"messages": state["messages"] + [tool_message]},
-        )
+    print(question_from + " asks " + question_to + "!")
+    return Command(
+        # navigate to another agent node in the PARENT graph
+        goto=question_to,
+        graph=Command.PARENT,
+        # This is the state update that the agent `agent_name` will see when it is invoked.
+        # We're passing agent's FULL internal message history AND adding a tool message to make sure
+        # the resulting chat history is valid.
+        update={"questions_from_agents": {question_from: question}},
+    )
 
-    return handoff_to_agent
+
+@tool
+def answer_tool(answer_from: str, answer_to: str, answer: str):
+    """
+    Function to answer other's agent questions.
+
+    :param answer_to: Agent who asked us and where should we send answer
+    :param answer_from: Current agent
+    :param answer:
+    :return: Command
+    """
+
+    print(answer_from + " answers to " + answer_to + "!")
+    return Command(
+        # navigate to another agent node in the PARENT graph
+        goto=answer_to,
+        graph=Command.PARENT,
+        # This is the state update that the agent `agent_name` will see when it is invoked.
+        # We're passing agent's FULL internal message history AND adding a tool message to make sure
+        # the resulting chat history is valid.
+        update={"answers_from_agents": {answer_from: answer}},
+    )
+
 
 @tool
 def summary():
@@ -52,38 +71,22 @@ def summary():
     print("Report writer!")
 
 
-def create_tools(code_name: str):
-    handoff_tools = {
-        "HR_Agent": make_handoff_tool(agent_name="HR_Agent"),
-        "BP_Agent": make_handoff_tool(agent_name="BP_Agent"),
-        "IT_Agent": make_handoff_tool(agent_name="IT_Agent"),
-        "KM_Agent": make_handoff_tool(agent_name="KM_Agent"),
-    }
-    # Exclude the current agent from the tools
-    return [TavilySearchResults(max_results=1)] + [summary] + [
-        tool for name, tool in handoff_tools.items() if name != code_name
-    ]
-
 prompt = """
 You are an agent {name} specializing in {role}. Your task is to assist in analyzing and resolving key issues related to the topic "{topic}". 
 You have the following responsibilities:
 {description}
 
-Your team consists of: HR_Agent, BP_Agent, IT_Agent and KM_Agent
+Your team consists of(one of them is you): 
+    a. **HR_Agent**: Focused on HR issues like team dynamics, performance, and training.
+    b. **BP_Agent**: Specializing in process optimization and automation.
+    c. **KM_Agent**: Concentrating on knowledge sharing and tools.
+    d. **IT_Agent**: Addressing IT strategies and tools.
 
-Perform an initial analysis based on the questions provided: {questions}.
-
-If you need HR - recommendations, ask 'HR_Agent' for help.
-If you need business processes recommendations, ask 'BP_Agent' for help.
-If you need knowledge management recommendations, ask 'KM_Agent' for help.
-If you need IT - recommendations, ask 'IT_Agent' for help.
-
-You MUST include human-readable response before transferring to another agent.
-
+If this is a start of your work - make initial analysis.
+You can ask other agents for their opinion of your analysis ONE TIME.
+If you have questions from another agent - answer to them.
 When you have completed all questions. Summarize everything and provide a final analysis of the topic.
-
 """
-
 
 
 def call_agent(state: AgentState) -> Command[Literal["HR_Agent", "BP_Agent", "IT_Agent", "KM_Agent", END]]:
@@ -95,8 +98,10 @@ def call_agent(state: AgentState) -> Command[Literal["HR_Agent", "BP_Agent", "IT
         description=state['description'],
     )
 
+
+
     code_name = state["code_name"]
-    tools = create_tools(code_name)  # Create tools dynamically, excluding the current agent
+    tools = [TavilySearchResults(max_results=1), ask_tool, answer_tool, summary] # Create tools dynamically, excluding the current agent
 
     agent = create_react_agent(llm, tools, state_modifier=agent_prompt)
 

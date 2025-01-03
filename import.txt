@@ -1,87 +1,58 @@
 graph.py
 CONTENT:
 ==================
-from langgraph.constants import START
-from langgraph.graph import StateGraph
+import json
+import os
+from dotenv import load_dotenv
+from langchain_openai import ChatOpenAI
+from langgraph.graph import StateGraph, START, END
 
-from graphSupervisor.nodes.report_writer_node import *
-from graphSupervisor.nodes.supervisor_node import *
-from graphSupervisor.nodes.team_node import *
-from graphSupervisor.states import *
-
+from graphNetwork.nodes.initiate_func import initialize_agents_from_state
+from graphNetwork.nodes.react_agent_node import call_agent
+from graphNetwork.nodes.report_writer_node import report_writer
+from graphNetwork.states import OverallState
 
 load_dotenv()
-model = ChatOpenAI(temperature=0.1, model_name="gpt-4o-mini")
+llm = ChatOpenAI(model_name=os.getenv("MODEL"))
 
-# Define subgraphs
-def create_team_builder():
-    team_builder = StateGraph(ResearchState)
-    team_builder.add_node("Analyst", analyst_node)
-    team_builder.add_node("Reviewer", reviewer_node)
-
-    team_builder.add_edge(START, "Analyst")
-
-    team_builder.add_conditional_edges("Analyst", should_continue, ["Reviewer", END])
-    team_builder.add_edge("Reviewer", "Analyst")
-    return team_builder
-
-
-hr_team_builder = create_team_builder()
-bp_team_builder = create_team_builder()
-km_team_builder = create_team_builder()
-it_team_builder = create_team_builder()
-
+# Создаем подграф для взаимодействия агентов
 app_builder = StateGraph(OverallState)
 
-app_builder.add_node("Supervisor", supervisor_node)
-app_builder.add_node("Report_Writer", report_writer_node)
+# Определяем агентов
+agents = {
+    "HR_Agent": call_agent,
+    "BP_Agent": call_agent,
+    "IT_Agent": call_agent,
+    "KM_Agent": call_agent,
+}
 
-app_builder.add_node("HR_Team", hr_team_builder.compile())
-app_builder.add_node("BP_Team", bp_team_builder.compile())
-app_builder.add_node("KM_Team", km_team_builder.compile())
-app_builder.add_node("IT_Team", it_team_builder.compile())
+for agent_name, agent_function in agents.items():
+    app_builder.add_node(agent_name, agent_function)
 
+# Создаем связи между агентами (каждый может общаться с каждым)
+for agent_from in agents.keys():
+    for agent_to in agents.keys():
+        if agent_from != agent_to:  # Исключаем самих себя
+            app_builder.add_edge(agent_from, agent_to)
 
-# Build the main graph
-app_builder.add_edge(START, 'Supervisor')
+# Добавляем стартовый узел
+app_builder.add_conditional_edges(START, initialize_agents_from_state, [agents.items()], "Report_Writer")
 
-# app_builder.add_edge('Supervisor', 'HR_Team')
-# app_builder.add_edge('Supervisor', 'BP_Team')
-# app_builder.add_edge('Supervisor', 'KM_Team')
-# app_builder.add_edge('Supervisor', 'IT_Team')
+app_builder.add_node("Report_Writer", report_writer)
+app_builder.add_edge("Report_Writer", END)
 
-app_builder.add_conditional_edges('Supervisor', define_edge,
-                                  ["HR_Team", "BP_Team", "IT_Team", "KM_Team", "Report_Writer", END]) # Could also be added Supervisot if we will make llm in that node
+# Компилируем основной граф
+graphNetwork = app_builder.compile()
 
+# Генерация Mermaid-графа с улучшенным расположением и цветами
+graph_image = graphNetwork.get_graph(
+    xray=1,
+).draw_mermaid_png()
 
-
-app_builder.add_edge('HR_Team', 'Supervisor')
-app_builder.add_edge('BP_Team', 'Supervisor')
-app_builder.add_edge('KM_Team', 'Supervisor')
-app_builder.add_edge('IT_Team', 'Supervisor')
-app_builder.add_edge('Report_Writer', 'Supervisor')
-
-# app_builder.add_edge('Supervisor', 'Report_Writer')  # wait for others(COMMAND)
-# app_builder.add_conditional_edges(
-#     "Supervisor",
-#     lambda state:
-#     "Report_Writer" if len(state["reviewer_final_overview"]) == 4
-#     else "Supervisor"
-# )
-
-app = app_builder.compile()
-
-# Compile the graph
-graphSupervisor = app_builder.compile()
-
-# Save as PNG
-graph_image = graphSupervisor.get_graph(xray=1).draw_mermaid_png()
-with open("supervisor_graph_diagram.png", "wb") as file:
+# Сохранение графа
+with open("network_graph_diagram.png", "wb") as file:
     file.write(graph_image)
-print("Saved as PNG 'supervisor_graph_diagram.png'")
-
-
-
+print("Network graph diagram saved as 'network_graph_diagram.png'")
 
 # Thread configuration and graph input
 thread = {"configurable": {"thread_id": "1"}}
@@ -95,69 +66,65 @@ user_input = {
     "questionnaire" :  data
 }
 
-response = graphSupervisor.invoke(user_input, thread)
+response = graphNetwork.invoke(user_input, thread)
 
+# Assuming the response is already generated
 final_report = response.get("final_report")
 
 if final_report:
-    print(final_report.content)
+    # Extract content from the final report
+    report_content = final_report.content
+
+    # Define the output file path
+    output_file_path = "output.md"
+
+    # Write the report content to the output.md file
+    with open(output_file_path, "w", encoding="utf-8") as output_file:
+        output_file.write(report_content)
+
+    print(f"Final report has been written to {output_file_path}")
 else:
     print("Final report is missing.")
-
 ==================
 
-states.py
+prompts.py
 CONTENT:
 ==================
-import operator
-from typing import List, Annotated
+from langchain_core.prompts import ChatPromptTemplate
 
-from langgraph.graph import MessagesState
-from pydantic import BaseModel, Field
-from typing_extensions import TypedDict
-from schema import *
+agent_prompt = ChatPromptTemplate.from_messages(
+    [
+        "system",
+        "You work in a team on provided {topic}. Your goal is to review this topic and gice some recommendations"
 
-
-# Individual state for each analyst and reviewer team
-class ResearchState(MessagesState):
-    name: str
-    team_topic: str
-    description: str  # Description of team's responsibility and capabilities
-    team_questionnaire: str # Questionnaire results or user input
-    reviews: Annotated[List[str], operator.add]  # Four reviewers answers
-    analyst: Person  # Their info
-    reviewer: Person
-
-
-def deduplicate_merge(old_reviews: List[str], new_reviews: List[str]) -> List[str]:
-    return list(set(old_reviews).union(new_reviews))
-
-# Overall state for the supervisor
-class OverallState(TypedDict):
-    topic: str  # Overall topic of analysis
-    questionnaire: str  # Questionnaire results or user input
-    reviews: Annotated[List[str], deduplicate_merge]  # Four reviewers answers
-    final_report: str  # Final report generated after all analysts complete their tasks
-    teams: List[ResearchTeam]
+    ]
+)
 
 ==================
 
-schema.py
+schemas.py
 CONTENT:
 ==================
 from typing import List
 
 from pydantic import BaseModel, Field
 
-class Person(BaseModel):
+
+class Agent(BaseModel):
+    code_name: str = Field(
+        description="Use only provided in system message names"
+    )
     name: str = Field(
-        description="Human-like person's name from anime"
+        description="The human-like name of the analyst persona. "
+                    "Ensure the name is realistic and fits the persona."
     )
     role: str = Field(
-        description="Role of the person in the team and in context of the topic.",
+        description="The specific role of the analyst in the context of the research topic. "
+                    "Clearly defines the focus area such as 'Human Resources Analyst' or 'Business Process Analyst'."
     )
     description: str = Field(
-        description="Description of the person's focus, key competencies, tasks in the project and concerns, and motives.",
+        description="A detailed description of the analyst's focus, key competencies, tasks within the project, "
+                    "concerns, and motives. This should align with the research topic and the analyst's role."
     )
 
     @property
@@ -165,372 +132,390 @@ class Person(BaseModel):
         return f"Name: {self.name}\nRole: {self.role}\nDescription: {self.description}\n"
 
 
-class ResearchTeam(BaseModel):
-    name: str = Field(
-        description="Use only provided in system message names"
+class Perspectives(BaseModel):
+    agents: List[Agent] = Field(
+        description="List of agents-analysts where each agents contains name, description and role",
     )
 
-    description: str = Field(
-        description="Short description of what this team is response for."
+
+class Response(BaseModel):
+    question: str = Field(
+        description="Content of agent's current question."
     )
 
-    analyst: Person = Field(
-        description="Analyst person"
+    next_agent: str = Field(
+        description="Name of the next node to be called with question."
     )
 
-    reviewer: Person = Field(
-        description="Reviewer person"
+    current_analysis: str = Field(
+        description="Current analysis "
     )
 
-    @property
-    def team(self) -> str:
-        """
-        Provides a detailed representation of the research team's persona,
-        including its name, description, and the specific prompts for the analyst and reviewer.
-        """
-        return (
-            f"Team Name: {self.name}\n"
-            f"Description: {self.description}\n\n"
-            f"Analyst :\n{self.analyst}\n\n"
-            f"Reviewer :\n{self.reviewer}\n"
+==================
+
+states.py
+CONTENT:
+==================
+import operator
+from typing import List, Annotated, Sequence, TypedDict, Union, Dict
+from langgraph.graph import MessagesState
+from langchain_core.agents import AgentAction, AgentFinish
+
+from graphNetwork.schemas import Agent
+
+
+class OverallState(MessagesState):
+    topic: str
+    questionnaire: str
+    reviews: Annotated[List[str], operator.add]  # Four reviewers answers
+
+
+class AgentState(MessagesState):
+    code_name: str
+    name: str
+    description: str
+    agent_topic: str
+    agent_questionnaire: str
+    # Local analysts messages
+    current_analysis: str
+    questions_asked: int
+
+    messages: Annotated[List[str], operator.add]
+
+
+    input: Dict[str, str]
+    agent_outcome: Union[AgentAction, AgentFinish, None]
+    intermediate_steps: Annotated[list[tuple[AgentAction, str]], operator.add]
+
+==================
+
+react_agent_node.py
+CONTENT:
+==================
+import os
+from typing import Annotated, Literal
+
+from dotenv import load_dotenv
+from langchain_core.tools import tool, InjectedToolCallId
+from langgraph.prebuilt import create_react_agent, InjectedState
+from langchain_core.agents import AgentFinish
+from langchain_core.prompts import PromptTemplate
+from langchain_openai import ChatOpenAI
+from langchain import hub
+from langgraph.constants import END
+from langgraph.prebuilt.chat_agent_executor import AgentState
+from langgraph.types import Command
+from langgraph.graph import StateGraph
+from langgraph.prebuilt import ToolNode
+from langchain_community.tools import TavilySearchResults
+
+
+llm = ChatOpenAI(model_name=os.getenv("MODEL"))
+
+
+def make_handoff_tool(*, agent_name: str):
+    """Create a tool that can return handoff via a Command"""
+    tool_name = f"transfer_to_{agent_name}"
+
+    @tool(tool_name)
+    def handoff_to_agent(state: Annotated[dict, InjectedState], tool_call_id: Annotated[str, InjectedToolCallId], ):
+        """Ask another agent for help."""
+        tool_message = {
+            "role": "tool",
+            "content": f"Successfully transferred to {agent_name}",
+            "name": tool_name,
+            "tool_call_id": tool_call_id,
+        }
+
+        print("handoff_to_agent " + agent_name + " has been invoked!")
+        return Command(
+            # navigate to another agent node in the PARENT graph
+            goto=agent_name,
+            graph=Command.PARENT,
+            # This is the state update that the agent `agent_name` will see when it is invoked.
+            # We're passing agent's FULL internal message history AND adding a tool message to make sure
+            # the resulting chat history is valid.
+            update={"messages": state["messages"] + [tool_message]},
         )
 
-
-class Perspectives(BaseModel):
-    teams: List[ResearchTeam] = Field(
-        description="List of research teams where each team contains name, description and analyst - reviewer duo prompts",
-    )
-==================
-
-supervisor_node.py
-CONTENT:
-==================
-import json
-import os
-from typing import List
-from dotenv import load_dotenv
-from langchain.tools import tool
-from langchain_core.messages import HumanMessage, SystemMessage
-from langchain_openai import ChatOpenAI
-from langgraph.constants import Send
-from langgraph.constants import END
-
-from graphSupervisor.states import OverallState, Perspectives
-
-# LLM Initialization
-load_dotenv()
-llm = ChatOpenAI(model=os.getenv("MODEL_SUPERVISOR"), temperature=0)
-
-team_creation_instructions = """
-You are tasked with creating AI research teams, each consisting of an analyst and a reviewer. Follow these instructions:
-Use provided in prompts names
-1. Review the provided research topic.
-2. Generate four research teams strictly using provided names:
-    a. **HR_Team**: Focused on HR issues like team dynamics, performance, and training.
-    b. **BP_Team**: Specializing in process optimization and automation.
-    c. **KM_Team**: Concentrating on knowledge sharing and tools.
-    d. **IT_Team**: Addressing IT strategies and tools.
-3. Each team must have explicitly provided name, description and prompts reflecting their responsibilities.
-4. For agents
-"""
-
-
-def define_edge(state: OverallState):
-    """
-    Initializes states for each research team.
-    """
-    # print("This is log info FROM DEFINE_EDGE about reviews list length: " + str(len(state["reviews"])))
-
-    if "final_report" in state:
-        return END
-
-    if len(state["reviews"]) >= 4:
-        return "Report_Writer"
-
-    topic = state["topic"]
-    teams = state["teams"]
-    questionnaire = state["questionnaire"]
-
-    print(f"Initializing research teams for topic: \n\t{topic}")
-
-    return [
-        Send(
-            team["name"],
-            {
-                "name": team["name"],
-                "team_topic": topic,  # Topic assigned to the analyst
-                "description": team["description"],
-                "team_questionnaire": questionnaire,
-                "messages": [],
-                "reviews": [],
-                "analyst": team["analyst"],
-                "reviewer": team["reviewer"],
-            }
-        ) for team in teams
-    ]
-
+    return handoff_to_agent
 
 @tool
-def create_research_teams_tool(topic: str) -> dict:
-    """
-    Generates a list of research teams based on the given topic.
-    """
+def summary():
+    """Summarizes provided text"""
+    print("Report writer!")
 
-    print(f"Creating research teams on topic: \n\t{topic}")
-    structured_llm = llm.with_structured_output(Perspectives)
 
-    # LLM Query
-    system_message = SystemMessage(content=team_creation_instructions)
-    human_message = HumanMessage(content=f"Generate the teams for the topic: {topic}.")
-
-    # Teams generation
-    perspectives: Perspectives = structured_llm.invoke([system_message, human_message])
-
-    # Serialize
-    serialized_teams = [
-        {
-            "name": team.name,
-            "description": team.description,
-            "analyst": team.analyst,
-            "reviewer": team.reviewer,
-        }
-        for team in perspectives.teams
+def create_tools(code_name: str):
+    handoff_tools = {
+        "HR_Agent": make_handoff_tool(agent_name="HR_Agent"),
+        "BP_Agent": make_handoff_tool(agent_name="BP_Agent"),
+        "IT_Agent": make_handoff_tool(agent_name="IT_Agent"),
+        "KM_Agent": make_handoff_tool(agent_name="KM_Agent"),
+    }
+    # Exclude the current agent from the tools
+    return [TavilySearchResults(max_results=1)] + [summary] + [
+        tool for name, tool in handoff_tools.items() if name != code_name
     ]
 
-    return {"teams": serialized_teams}
+prompt = """
+You are an agent {name} specializing in {role}. Your task is to assist in analyzing and resolving key issues related to the topic "{topic}". 
+You have the following responsibilities:
+{description}
 
+Your team consists of: HR_Agent, BP_Agent, IT_Agent and KM_Agent
 
-def supervisor_node(state: OverallState):
-    """
-    Supervisor node for orchestrating the research workflow.
-    """
-    # print("This is log info FROM SUPERVISOR about reviews list length: " + str(len(state["reviews"])))
+Perform an initial analysis based on the questions provided: {questions}.
 
-    if "reviews" not in state:
-        state["reviews"] = []
+If you need HR - recommendations, ask 'HR_Agent' for help.
+If you need business processes recommendations, ask 'BP_Agent' for help.
+If you need knowledge management recommendations, ask 'KM_Agent' for help.
+If you need IT - recommendations, ask 'IT_Agent' for help.
 
-    if "teams" not in state or not state["teams"]:
-        # Generate teams and initialize states
-        generated_teams = create_research_teams_tool.invoke({"topic": state["topic"]})
-        state["teams"] = generated_teams["teams"]
+You MUST include human-readable response before transferring to another agent.
 
-    return state
+When you have completed all questions. Summarize everything and provide a final analysis of the topic.
 
-
-# Example usage
-# if __name__ == "__main__":
-#     # Mock OverallState for demonstration
-#     state = OverallState(topic="Digital Transformation in Organizations")
-#
-#     print("initial_state: ", json.dumps(state, indent=4, ensure_ascii=False))
-#
-#     # Invoke the model with the tools and initial state
-#     supervisor_node(state)
-#
-#     # Print the updated state
-#     print("update_state:", json.dumps(state, indent=4, ensure_ascii=False))
-
-==================
-
-team_node.py
-CONTENT:
-==================
-import os
-from pyexpat.errors import messages
-
-from httpx import Headers
-from langchain_core.messages import SystemMessage, AIMessage, HumanMessage
-from langchain_core.prompts import ChatPromptTemplate
-from langchain_openai import ChatOpenAI
-from langgraph.constants import END
-
-from graphSupervisor.states import ResearchState
-
-llm = ChatOpenAI(model_name=os.getenv("MODEL"), max_tokens=500)
-
-analyst_prompt = """
-# Role & Context
-You are: {person}
-You are in {team} with {reviewer}, who will provide a review and share their opinion with you.
-You are tasked with performing a **needs analysis** for your customer on the topic: {topic}
-
-# Data Source
-Here are the **questionnaire results**: {questionnaire}
-
-# Objective
-Your primary goal is to **analyze the current state of the customer** based on the questionnaire results and, once received, **integrate the reviewer's feedback** into your analysis.
-
-# Guidelines
-- Generate **only an analysis** based on the questionnaire results.
-- Focus **solely on your persona, competencies, and tasks**.
-
-# Constraints
-- **Do not analyze aspects outside of your persona or competencies.**
-- **Do not recommend any solutions yet.**
-
-# Final Note
-Keep your analysis focused, clear, and aligned with the given responsibilities and data.
-"""
-
-
-reviewer_prompt = """
-# Role & Context
-You are: {person}
-You are in {team} with {analyst}, who will make an analysis and share it with you.
-You are tasked with assisting your analyst on the topic: {topic}
-
-# Data Source
-Here are the questionnaire results: {questionnaire}
-
-# Objective
-Your primary task is to create a constructive and insightful review based on the provided analysis and questionnaire results.
-
-# Guidelines
-1. **Constructive:** Provide actionable and helpful recommendations.
-2. **Specific:** Avoid generalities; include clear examples directly tied to the analysis.
-3. **Manageable:** Ensure your recommendations are practical and achievable for the customer.
-
-# Constraints
-- Base your recommendations **solely on the provided analysis**.
-- Stay **aligned with your role, expertise, and responsibilities**.
-- Avoid commenting on aspects outside your defined scope.
-
-# Final Note
-Focus on delivering a review that adds value, clarity, and direction to the analysis provided.
 """
 
 
 
-def analyst_node(state):
-    topic = state["team_topic"]
+def call_agent(state: AgentState) -> Command[Literal["HR_Agent", "BP_Agent", "IT_Agent", "KM_Agent", END]]:
+    agent_prompt=prompt.format(
+        name=state['name'],
+        role=state['role'],
+        topic=state['agent_topic'],
+        questions=state['agent_questionnaire'],
+        description=state['description'],
+    )
 
-    team_name = state["name"]
-    team_description = state["description"]
+    code_name = state["code_name"]
+    tools = create_tools(code_name)  # Create tools dynamically, excluding the current agent
 
-    reviewer_info = state["reviewer"]
-    analyst_info = state["analyst"]
+    agent = create_react_agent(llm, tools, state_modifier=agent_prompt)
 
-    questionnaire = state["team_questionnaire"]
+    print("Agent " + code_name + " has been invoked!")
 
-    print(f"Analyst node {team_name} activated.")
+    # # Генерация Mermaid-графа с улучшенным расположением и цветами
+    # graph_image = agent.get_graph(
+    #     xray=2,
+    # ).draw_mermaid_png()
+    #
+    # # Сохранение графа
+    # with open("react_graph_diagram.png", "wb") as file:
+    #     file.write(graph_image)
+    # print("Network graph diagram saved as 'react_graph_diagram.png'")
 
-    system_prompt = analyst_prompt.format(topic=topic,
-                                          team = team_name + "\n" + team_description,
-                                          reviewer = reviewer_info,
-                                          person = analyst_info,
-                                          questionnaire = questionnaire)
-
-    messages = state["messages"]
-
-    if len(messages) != 0:
-        last_message = "Your previous report: \n" + messages[-2].content +"\n\n\nReviewers recommendations: \n" + messages[-1].content
-    else:
-        last_message = ""
-
-    print("++++++++++++++++++++++++++++++++++++++++")
-    print(last_message)
-    print("++++++++++++++++++++++++++++++++++++++++")
-
-    llm_messages = [SystemMessage(content=system_prompt),
-                last_message
-                ]
-
-    return {"messages": [llm.invoke(llm_messages).content]}
-    # return {"messages": [AIMessage("Analyst answer " + state["analyst_prompt"][0:25])]  + state.get("messages", [])} # For test
-
-
-def reviewer_node(state):
-    topic = state["team_topic"]
-
-    team_name = state["name"]
-    team_description = state["description"]
-
-    reviewer_info = state["reviewer"]
-    analyst_info = state["analyst"]
-
-    questionnaire = state["team_questionnaire"]
-
-    print(f"Reviewer node {team_name} activated.")
-
-    system_prompt = reviewer_prompt.format(topic=topic,
-                                          team = team_name + "\n" + team_description,
-                                          analyst = analyst_info,
-                                          person = reviewer_info,
-                                          questionnaire = questionnaire)
+    return agent.invoke(state)
 
 
 
-    last_message = state["messages"][-1]
-    print("++++++++++++++++++++++++++++++++++++++++")
-    print(last_message)
-    print("++++++++++++++++++++++++++++++++++++++++")
-
-    messages = [SystemMessage(content=system_prompt),
-                last_message,
-                ]
 
 
-    return {"messages": [llm.invoke(messages).content]}
-    # return {"messages": [AIMessage("Reviewers answer " + state["reviewer_prompt"][0:25])] + state.get("messages", [])} # For test
 
 
-def should_continue(state: ResearchState):
-    messages = state.get("messages", [])
-    # Check if the number of messages is 6 or more
-    if len(messages) >= 7:
 
-        # Return the END constant and the overall state update
-        state["reviews"].append(messages[-1].content)
-        return END
 
-    # If the condition is not met, return the next node
-    return "Reviewer"
 
+
+
+
+
+
+
+
+
+
+
+
+# "HR_Agent": reActAgent,
+# "BP_Agent": reActAgent,
+# "IT_Agent": reActAgent,
+# "KM_Agent": reActAgent,
+
+
+# from graphNetwork.schemas import Response
+# from langchain_community.tools import TavilySearchResults
+#
+# from graphNetwork.states import OverallState, AgentState
+#
+# load_dotenv()
+#
+# prompt: PromptTemplate = hub.pull("hwchase17/react")
+# # Основной промпт
+#
+# base_prompt = """
+# You are an agent {name} specializing in {role}. Your task is to assist in analyzing and resolving key issues related to the topic "{topic}".
+# You have the following responsibilities:
+# {description}
+# """
+# # Дополнительные кусочки промпта
+#
+#
+# additional_prompts = {
+#     "initial_analysis": "\nPerform an initial analysis based on the questions provided: {questions}.",
+#     "respond_to_question": "\nYou received a question from {sender}. Please answer it using your expertise.",
+#     "final_analysis": "\nYou have completed all questions. Summarize your insights and provide a final analysis of the topic.",
+# }
+#
+# structured_llm = llm.with_structured_output(Response)
+#
+# react_agent_runnable = create_react_agent(tools=tools, llm=llm, prompt=prompt)
+#
+#
+# tool_executor = ToolNode(tools)
+# # Функция для построения текущего промпта
+#
+#
+# def build_agent_prompt(state: AgentState) -> str:
+#     """
+#     Создает текущий промпт для агента, основываясь на его состоянии и контексте.
+#     """
+#
+#     prompt = base_prompt.format(
+#         role=state["role"],
+#         name=state["name"],
+#         description=state["description"],
+#         topic=state["topic"],
+#     )
+#
+#     if state["questions_asked"] < 1:
+#         prompt = prompt + additional_prompts["initial_analysis"].format()
+#
+#     if state["questions_asked"] >= 3:
+#         prompt = prompt + additional_prompts["final_analysis"].format()
+#
+#     return prompt
+#
+#
+# def run_agent_reasoning_engine(state: AgentState):
+#
+#
+#
+#
+#
+#
+#     agent_outcome = react_agent_runnable.invoke(state)
+#     return {"agent_outcome": agent_outcome}
+#
+#
+# # def create_react_graph(state):
+# #     AGENT_REASON = "agent_reason"
+# #     ACT = "act"
+# #
+# #     def should_continue(state: AgentState)->str:
+# #         if isinstance(state["agent_outcome"], AgentFinish):
+# #             return END
+# #         return ACT
+# #
+# #     flow = StateGraph(AgentState)
+# #
+# #     flow.add_node(AGENT_REASON, run_agent_reasoning_engine)
+# #     flow.set_entry_point(AGENT_REASON)
+# #     flow.add_node(ACT, execute_tools)
+# #
+# #     flow.add_conditional_edges(AGENT_REASON, should_continue)
+# #
+# #     flow.add_edge(ACT, AGENT_REASON)
+# #
+# #     return flow.compile()
+#
+# def execute_tools(state: AgentState):
+#     agent_action = state["agent_outcome"]
+#     output = tool_executor.invoke(agent_action)
+#     return {"intermediate_steps": [(agent_action, str(output))]}
+#
 
 ==================
 
 report_writer_node.py
 CONTENT:
 ==================
-from dotenv import load_dotenv
+# Финальный сбор отчета
+from graphNetwork.states import OverallState
 
-from graphSupervisor.states import OverallState
-from langchain_openai import ChatOpenAI
-from langchain_core.messages import AIMessage, HumanMessage, SystemMessage
+
+def report_writer(state: OverallState):
+    # Сбор и вывод финального результата
+    pass
+==================
+
+initiate_func.py
+CONTENT:
+==================
 import os
 
-load_dotenv()
+from dotenv import load_dotenv
+from langchain_core.messages import SystemMessage, HumanMessage
+from langchain_openai import ChatOpenAI
+from langgraph.types import Send
 
+from graphNetwork.schemas import Perspectives
+from graphNetwork.states import OverallState
+
+
+load_dotenv()
 llm = ChatOpenAI(model_name=os.getenv("MODEL"))
 
-writing_instructions = """You are a senior consultant experienced in writing executive reports. Your goal is to write a comprehensive report based on the reviews provided by the analyst-reviewer teams.
-
-The report should be structured, concise, and actionable. It should include an executive summary, an introduction, a detailed analysis, and a set of recommendations.
-
-Here are the topic of task: {topic}
-
-Here are the questionnaire: {questionnaire}
-
-Here are reviews from teams: {reviews}.
-
-Write a report from provided.
+agents_creation_instructions = """
+You are tasked with creating AI agents-analysts. Follow these instructions:
+Use provided in prompts names
+1. Review the provided research topic.
+2. Generate four research teams strictly using provided names:
+    a. **HR_Agent**: Focused on HR issues like team dynamics, performance, and training.
+    b. **BP_Agent**: Specializing in process optimization and automation.
+    c. **KM_Agent**: Concentrating on knowledge sharing and tools.
+    d. **IT_Agent**: Addressing IT strategies and tools.
+3. Each agent must have explicitly provided name, role and description reflecting their responsibilities.
 """
 
-def report_writer_node(state: OverallState):
-    """ Node to summarize diagnosis and recommendations in a single report"""
-
-    print("... Write Report ...")
-    # Get state
+def initialize_agents_from_state(state: OverallState):
+    """
+    Initializes agents based on the provided overall state.
+    Combines agent creation and initialization.
+    """
     topic = state["topic"]
     questionnaire = state["questionnaire"]
-    reviews = state["reviews"]
+    questionnaire = "Here should be questions, but now this is just a test!"
 
-    # Generate question
-    system_message = writing_instructions.format(topic=topic, questionnaire=questionnaire, reviews=reviews)
-    report = llm.invoke([SystemMessage(content=system_message)])
+    print(f"Initializing agents for topic:\n\t{topic}")
 
-    # Write messages to state
-    return {"final_report": report}
+    # Use LLM to generate structured agent configurations
+    structured_llm = llm.with_structured_output(Perspectives)
+    system_message = SystemMessage(content=agents_creation_instructions)
+    human_message = HumanMessage(content=f"Generate the agents for the topic: {topic}.")
 
+    # Generate agent configurations
+    perspectives: Perspectives = structured_llm.invoke([system_message, human_message])
+
+    # Serialize agent data
+    serialized_agents = [
+        {
+            "code_name": agent.code_name,
+            "name": agent.name,
+            "role": agent.role,
+            "description": agent.description
+        }
+        for agent in perspectives.agents
+    ]
+
+    # Return initialized agents (could also return "Send" objects if needed)
+    return [
+        Send(
+            agent["code_name"],
+            {
+                "code_name": agent["code_name"],
+                "name": agent["name"],
+                "description": agent["description"],
+                "role": agent["role"],
+                "agent_topic": topic,
+                "agent_questionnaire": questionnaire,
+                "messages": [],
+                "current_analysis": "",
+                "questions_asked": 0,
+            }
+        )
+        for agent in serialized_agents
+    ]
 ==================
 
