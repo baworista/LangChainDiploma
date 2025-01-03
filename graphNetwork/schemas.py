@@ -1,7 +1,12 @@
+from typing import List
+
 from pydantic import BaseModel, Field
 
 
 class Agent(BaseModel):
+    code_name: str = Field(
+        description="Use only provided in system message names"
+    )
     name: str = Field(
         description="The human-like name of the analyst persona. "
                     "Ensure the name is realistic and fits the persona."
@@ -18,6 +23,13 @@ class Agent(BaseModel):
     @property
     def persona(self) -> str:
         return f"Name: {self.name}\nRole: {self.role}\nDescription: {self.description}\n"
+
+
+class Perspectives(BaseModel):
+    agents: List[Agent] = Field(
+        description="List of agents-analysts where each agents contains name, description and role",
+    )
+
 
 class Response(BaseModel):
     question: str = Field(
