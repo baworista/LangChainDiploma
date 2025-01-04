@@ -2,6 +2,7 @@ import operator
 from typing import List, Annotated, Sequence, TypedDict, Union, Dict
 from langgraph.graph import MessagesState
 from langchain_core.agents import AgentAction, AgentFinish
+from langgraph.prebuilt.chat_agent_executor import AgentState
 
 from graphNetwork.schemas import Agent
 
@@ -12,7 +13,7 @@ class OverallState(MessagesState):
     reviews: Annotated[List[str], operator.add]  # Four reviewers answers
 
 
-class AgentState(MessagesState):
+class CustomAgentState(AgentState):
     code_name: str
     name: str
     description: str
@@ -21,11 +22,6 @@ class AgentState(MessagesState):
     # Local analysts messages
     current_analysis: str
     questions_asked: int
+    reviews: Annotated[List[str], operator.add]  # Four reviewers answers
     questions_from_agents: Annotated[list[Dict[str, str]], operator.add]
     answers_from_agents: Annotated[list[Dict[str, str]], operator.add]
-
-    messages: Annotated[List[str], operator.add]
-    input: Dict[str, str]
-
-    agent_outcome: Union[AgentAction, AgentFinish, None]
-    intermediate_steps: Annotated[list[tuple[AgentAction, str]], operator.add]

@@ -3,7 +3,6 @@ import os
 from dotenv import load_dotenv
 from langchain_openai import ChatOpenAI
 from langgraph.graph import StateGraph, START, END
-
 from graphNetwork.nodes.initiate_func import initialize_agents_from_state
 from graphNetwork.nodes.react_agent_node import call_agent
 from graphNetwork.nodes.report_writer_node import report_writer

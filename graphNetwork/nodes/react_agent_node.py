@@ -1,18 +1,14 @@
 import os
 from typing import Annotated, Literal
-
 from dotenv import load_dotenv
+from langchain_core.agents import AgentFinish
 from langchain_core.tools import tool, InjectedToolCallId
 from langgraph.prebuilt import create_react_agent, InjectedState
-from langchain_core.agents import AgentFinish
-from langchain_core.prompts import PromptTemplate
 from langchain_openai import ChatOpenAI
 from langchain import hub
 from langgraph.constants import END
-from langgraph.prebuilt.chat_agent_executor import AgentState
+from graphNetwork.states import CustomAgentState
 from langgraph.types import Command
-from langgraph.graph import StateGraph
-from langgraph.prebuilt import ToolNode
 from langchain_community.tools import TavilySearchResults
 
 
@@ -22,12 +18,15 @@ llm = ChatOpenAI(model_name=os.getenv("MODEL"))
 @tool
 def ask_tool(question_to: str, question_from: str, question: str):
     """
-    Function to ask other agent a question
+    Asks another agent a question.
 
-    :param question_to: Who we want to ask
-    :param question_from: Current agent name
-    :param question:
-    :return: Command
+    This function enables an agent to ask a question to another agent. It updates the state
+    with the question and navigates to the target agent node in the parent graph.
+
+    :param question_to: Code name of the agent to ask the question to.
+    :param question_from: Code name of the current agent asking the question.
+    :param question: The content of the question to be asked.
+    :return: Command object to navigate to the target agent node with updated state.
     """
 
     print(question_from + " asks " + question_to + "!")
@@ -45,12 +44,15 @@ def ask_tool(question_to: str, question_from: str, question: str):
 @tool
 def answer_tool(answer_from: str, answer_to: str, answer: str):
     """
-    Function to answer other's agent questions.
+    Answers another agent's question.
 
-    :param answer_to: Agent who asked us and where should we send answer
-    :param answer_from: Current agent
-    :param answer:
-    :return: Command
+    This function enables an agent to answer a question from another agent. It updates the state
+    with the answer and navigates to the target agent node in the parent graph.
+
+    :param answer_to: Code name of the agent who asked the question and to whom the answer should be sent.
+    :param answer_from: Code name of the current agent providing the answer.
+    :param answer: The content of the answer to be provided.
+    :return: Command object to navigate to the target agent node with updated state.
     """
 
     print(answer_from + " answers to " + answer_to + "!")
@@ -65,32 +67,50 @@ def answer_tool(answer_from: str, answer_to: str, answer: str):
     )
 
 
-@tool
-def summary():
-    """Summarizes provided text"""
-    print("Report writer!")
-
-
 prompt = """
-You are an agent {name} specializing in {role}. Your task is to assist in analyzing and resolving key issues related to the topic "{topic}". 
+You are an agent {name} specializing in {role}. Your code name is {code_name}. Use it in question-asking tools.
+
+Your task is to assist in analyzing and resolving key issues related to the topic "{topic}".  
 You have the following responsibilities:
 {description}
 
-Your team consists of(one of them is you): 
+Your team consists of (one of them is you): 
     a. **HR_Agent**: Focused on HR issues like team dynamics, performance, and training.
     b. **BP_Agent**: Specializing in process optimization and automation.
     c. **KM_Agent**: Concentrating on knowledge sharing and tools.
     d. **IT_Agent**: Addressing IT strategies and tools.
 
-If this is a start of your work - make initial analysis.
-You can ask other agents for their opinion of your analysis ONE TIME.
-If you have questions from another agent - answer to them.
-When you have completed all questions. Summarize everything and provide a final analysis of the topic.
+### Working Process:
+1. **Initial Analysis**:  
+   - Start by creating an **Initial Analysis** based on the topic and your specific role. 
+   - The Initial Analysis will serve as the foundation for asking questions to other agents. 
+
+2. **Questioning Other Agents**:  
+   - After completing your Initial Analysis, formulate **one question** for each of the other three agents (**HR_Agent**, **BP_Agent**, **KM_Agent**, or **IT_Agent**).  
+   - These questions should clarify or enhance your understanding of their specific areas of expertise related to the topic.
+   - Use the `ask_tool` to send these questions. Ensure that your code name `{code_name}` is included in the question metadata.
+
+3. **Answering Questions**:  
+   - You will receive **three questions** from the other agents.  
+   - Answer each question using your **Initial Analysis**, your current context, and your memory of the discussion so far.  
+   - Providing answers to questions has the **highest priority**.
+
+4. **Final Summary**:  
+   - After answering the three incoming questions and asking three outgoing questions, use your full context, including your Initial Analysis, the answers you've given, and the responses you’ve received, to create a **Final Summary**.  
+   - The Final Summary should encapsulate your insights, recommendations, and conclusions related to the topic and your responsibilities.  
+
+### Important Notes:
+- You can only ask **one question per agent**.
+- Ensure your responses are detailed, accurate, and specific to your area of expertise.
+- Do not forget to include human-readable explanations and reasoning in all your interactions (Initial Analysis, questions, answers, and Final Summary).
 """
 
 
-def call_agent(state: AgentState) -> Command[Literal["HR_Agent", "BP_Agent", "IT_Agent", "KM_Agent", END]]:
+
+
+def call_agent(state: CustomAgentState):
     agent_prompt=prompt.format(
+        code_name=state['code_name'],
         name=state['name'],
         role=state['role'],
         topic=state['agent_topic'],
@@ -98,14 +118,18 @@ def call_agent(state: AgentState) -> Command[Literal["HR_Agent", "BP_Agent", "IT
         description=state['description'],
     )
 
-
-
     code_name = state["code_name"]
-    tools = [TavilySearchResults(max_results=1), ask_tool, answer_tool, summary] # Create tools dynamically, excluding the current agent
+    tools = [TavilySearchResults(max_results=1), ask_tool, answer_tool] # Create tools dynamically, excluding the current agent
 
-    agent = create_react_agent(llm, tools, state_modifier=agent_prompt)
+    agent = create_react_agent(llm, tools, state_modifier=agent_prompt, state_schema=CustomAgentState)
 
     print("Agent " + code_name + " has been invoked!")
+
+    # if "questions_from_agent" not in state or not state["questions_from_agents"]:
+    #     print("There is no questions")
+    # else:
+    #     for question in state["questions_from_agents"]:
+
 
     # # Генерация Mermaid-графа с улучшенным расположением и цветами
     # graph_image = agent.get_graph(
@@ -116,8 +140,15 @@ def call_agent(state: AgentState) -> Command[Literal["HR_Agent", "BP_Agent", "IT
     # with open("react_graph_diagram.png", "wb") as file:
     #     file.write(graph_image)
     # print("Network graph diagram saved as 'react_graph_diagram.png'")
+    response = agent.invoke(state)
+    return {"reviews": [response]}
 
-    return agent.invoke(state)
+
+
+
+
+
+
 
 
 
