@@ -1,22 +1,27 @@
 import operator
-from typing import List, Annotated, Sequence, TypedDict, Union
-
-from langchain_core.messages import BaseMessage
+from typing import List, Annotated, Sequence, TypedDict, Union, Dict
 from langgraph.graph import MessagesState
 from langchain_core.agents import AgentAction, AgentFinish
+from langgraph.prebuilt.chat_agent_executor import AgentState
 
-# Overall state f
-class OverallState(TypedDict):
+from graphNetwork.schemas import Agent
+
+
+class OverallState(MessagesState):
     topic: str
-    messages: Annotated[Sequence[BaseMessage], operator.add]
+    questionnaire: str
+    reviews: Annotated[List[str], operator.add]  # Four reviewers answers
 
 
-class AgentState(TypedDict):
-    """
-    The state of the agent.
-    """
-    agent_name: str
-    agent_descripion: str
-    input: str
-    agent_outcome: Union[AgentAction, AgentFinish, None]
-    intermediate_steps: Annotated[list[tuple[AgentAction, str]], operator.add]
+class CustomAgentState(AgentState):
+    code_name: str
+    name: str
+    description: str
+    agent_topic: str
+    agent_questionnaire: str
+    # Local analysts messages
+    current_analysis: str
+    questions_asked: int
+    reviews: Annotated[List[str], operator.add]  # Four reviewers answers
+    questions_from_agents: Annotated[list[Dict[str, str]], operator.add]
+    answers_from_agents: Annotated[list[Dict[str, str]], operator.add]
