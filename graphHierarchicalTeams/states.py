@@ -25,6 +25,10 @@ def deduplicate_merge(old_reviews: List[str], new_reviews: List[str]) -> List[st
 class OverallState(TypedDict):
     topic: str  # Overall topic of analysis
     questionnaire: str  # Questionnaire results or user input
-    reviews: Annotated[List[str], deduplicate_merge]  # Four reviewers answers
+
+    team_reviews: Annotated[List[str], deduplicate_merge]  # Four reviewers answers
+    subordinate_reviews: Annotated[List[str], deduplicate_merge]  # Four subordinate supervisors answers
     final_report: str  # Final report generated after all analysts complete their tasks
+
+    subordinates: List[Person]  # List of subordinate supervisors
     teams: List[ResearchTeam]

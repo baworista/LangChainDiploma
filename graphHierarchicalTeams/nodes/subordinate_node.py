@@ -90,11 +90,12 @@ def create_research_teams_tool(topic: str) -> dict:
     return {"teams": serialized_teams}
 
 
-def supervisor_node(state: OverallState):
+def subordinate_node(state: OverallState):
     """
     Supervisor node for orchestrating the research workflow.
     """
     # print("This is log info FROM SUPERVISOR about reviews list length: " + str(len(state["reviews"])))
+    print("Subordinate Node has been activated!")
 
     if "reviews" not in state:
         state["reviews"] = []

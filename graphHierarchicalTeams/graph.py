@@ -4,9 +4,9 @@ from langchain_openai import ChatOpenAI
 from langgraph.constants import START
 from langgraph.graph import StateGraph
 
-from graphHierarchicalTeams.nodes.main_supervisor import main_superivisor_node
+from graphHierarchicalTeams.nodes.supervisor import *
 from graphHierarchicalTeams.nodes.report_writer_node import *
-from graphHierarchicalTeams.nodes.supervisor_node import *
+from graphHierarchicalTeams.nodes.subordinate_node import *
 from graphHierarchicalTeams.nodes.team_node import *
 from graphHierarchicalTeams.states import *
 
@@ -41,7 +41,7 @@ def create_process_team_builder(process_name, subteams):
     :param subteams: Список названий команд (например, ["HR", "BP", "KM", "IT"]).
     """
     builder = StateGraph(OverallState)
-    builder.add_node(f"{process_name}_Supervisor", test_node)
+    builder.add_node(f"{process_name}_Supervisor", subordinate_node)
     builder.add_node(f"{process_name}_Report_Writer", test_node)
 
     # Добавляем команды
@@ -74,7 +74,7 @@ def create_main_graph(processes):
                                                      "Customer_Support", "R&D"]}.
     """
     builder = StateGraph(OverallState)
-    builder.add_node("Main_Supervisor", main_superivisor_node)
+    builder.add_node("Main_Supervisor", superivisor_node)
     builder.add_node("Main_Report_Writer", test_node)
 
     # Добавляем процессы
@@ -87,7 +87,7 @@ def create_main_graph(processes):
     builder.add_edge(START, "Main_Supervisor")
 
     # Добавляем условные связи
-    builder.add_conditional_edges("Main_Supervisor", define_edge,
+    builder.add_conditional_edges("Main_Supervisor", send_to_subordinate,
                                   [f"{process_name}_Team" for process_name in processes.keys()] +
                                   ["Main_Report_Writer", END])
 
@@ -113,9 +113,6 @@ graphHierarchical = app_builder.compile()
 
 graph_object = graphHierarchical.get_graph(xray=2)
 mermaid_code = graph_object.draw_mermaid()  # Генерация Mermaid-кода
-print("Generated Mermaid code:")
-print(mermaid_code)
-
 # Сохранить Mermaid-код в файл
 with open("whole_hierarchical_graph_diagram.mmd", "w") as file:
     file.write(mermaid_code)
@@ -125,12 +122,11 @@ print("Mermaid code saved as 'whole_hierarchical_graph_diagram.mmd'")
 # to convert mmd to png
 
 
-
 # Save as PNG
 graph_image = graphHierarchical.get_graph(xray=1).draw_mermaid_png()
 with open("hierarchical_graph_diagram.png", "wb") as file:
     file.write(graph_image)
-print("Saved as PNG 'hierarchical_graph_diagram.png'")
+print("Simplified version saved as PNG 'hierarchical_graph_diagram.png'")
 
 
 
@@ -147,22 +143,22 @@ user_input = {
     "questionnaire" :  data
 }
 
-# response = graphHierarchical.invoke(user_input, thread)
-#
-# # Assuming the response is already generated
-# final_report = response.get("final_report")
-#
-# if final_report:
-#     # Extract content from the final report
-#     report_content = final_report.content
-#
-#     # Define the output file path
-#     output_file_path = "output.md"
-#
-#     # Write the report content to the output.md file
-#     with open(output_file_path, "w", encoding="utf-8") as output_file:
-#         output_file.write(report_content)
-#
-#     print(f"Final report has been written to {output_file_path}")
-# else:
-#     print("Final report is missing.")
+response = graphHierarchical.invoke(user_input, thread)
+
+# Assuming the response is already generated
+final_report = response.get("final_report")
+
+if final_report:
+    # Extract content from the final report
+    report_content = final_report.content
+
+    # Define the output file path
+    output_file_path = "output.md"
+
+    # Write the report content to the output.md file
+    with open(output_file_path, "w", encoding="utf-8") as output_file:
+        output_file.write(report_content)
+
+    print(f"Final report has been written to {output_file_path}")
+else:
+    print("Final report is missing.")

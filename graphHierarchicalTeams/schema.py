@@ -49,6 +49,12 @@ class ResearchTeam(BaseModel):
         )
 
 
+class Subordinates(BaseModel):
+    subordinates: List[Person] = Field(
+        description="List of subordinate supervisors with their names, roles, and descriptions.",
+    )
+
+
 class Perspectives(BaseModel):
     teams: List[ResearchTeam] = Field(
         description="List of research teams where each team contains name, description and analyst - reviewer duo prompts",
