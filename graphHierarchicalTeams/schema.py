@@ -18,6 +18,15 @@ class Person(BaseModel):
         return f"Name: {self.name}\nRole: {self.role}\nDescription: {self.description}\n"
 
 
+class SubordinateTeam(BaseModel):
+    name: str = Field(
+        description="Use only provided in system message names"
+    )
+    subordinate: Person = Field(
+        description="Subordinate supervisor person"
+    )
+
+
 class ResearchTeam(BaseModel):
     name: str = Field(
         description="Use only provided in system message names"

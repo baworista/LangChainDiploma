@@ -18,9 +18,9 @@ subordinates_creation_instructions = """
 You are main supervisor in hierarchical architecture network. You are responsible for creating subordinates.
 Use provided in prompts names
 1. Review the provided research topic.
-2. Generate two subordinate supervisors strictly using provided names:
-    a. **Inside_Processes_Supervisor**: his team will consist of HR_Team, BP_Team, KM_Team, IT_Team and responsible for internal processes.
-    b. **Outside_Processes_Supervisor**: his team will consist of Sales_Team, Marketing_Team, PR_Team, Support_Team and responsible for external processes.
+2. Generate two subordinate teams strictly using provided names:
+    a. **Inside_Processes_Team**: his team will consist of it's subordinate, HR_Team, BP_Team, KM_Team, IT_Team and responsible for internal processes.
+    b. **Outside_Processes_Team**: his team will consist of it's subordinate, Sales_Team, Marketing_Team, PR_Team, Support_Team and responsible for external processes.
 3. Each subordinate supervisor must have explicitly provided name, description and prompts reflecting their responsibilities.
 """
 
@@ -55,7 +55,7 @@ def create_subordinates_tool(topic: str) -> dict:
     return {"subordinates": serialized_subordinates}
 
 
-def send_to_subordinate(state: OverallState):
+def supervisor_define_edge(state: OverallState):
     """
     Send the state to the subordinate.
     """
@@ -66,18 +66,17 @@ def send_to_subordinate(state: OverallState):
 
     print(f"Initializing subordinates for topic: \n\t{topic}")
 
-    # return [
-    #     Send(
-    #         subordinate["name"]
-    #     ) for subordinate in subordinates
-    # ]
-
     return [
-        Command(
-        # navigate to another agent node in the PARENT graph
-                goto=subordinate["name"]
+        Send(
+            subordinate["name"],
+            {
+                'topic': topic,
+                'questionnaire': subordinates,
+                'subordinates': subordinates,
+            }
         ) for subordinate in subordinates
     ]
+
 
 def superivisor_node(state: OverallState):
     """

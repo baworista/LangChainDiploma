@@ -3,7 +3,7 @@ from dotenv import load_dotenv
 from langchain_openai import ChatOpenAI
 from langgraph.constants import START
 from langgraph.graph import StateGraph
-
+import subprocess
 from graphHierarchicalTeams.nodes.supervisor import *
 from graphHierarchicalTeams.nodes.report_writer_node import *
 from graphHierarchicalTeams.nodes.subordinate_node import *
@@ -54,7 +54,7 @@ def create_process_team_builder(process_name, subteams):
     builder.add_edge(START, f"{process_name}_Supervisor")
 
     # Добавляем условные связи
-    builder.add_conditional_edges(f"{process_name}_Supervisor", define_edge,
+    builder.add_conditional_edges(f"{process_name}_Supervisor", subordinate_define_edge,
                                   [f"{team}_Team" for team in subteams] +
                                   [f"{process_name}_Report_Writer", END])
 
@@ -87,7 +87,7 @@ def create_main_graph(processes):
     builder.add_edge(START, "Main_Supervisor")
 
     # Добавляем условные связи
-    builder.add_conditional_edges("Main_Supervisor", send_to_subordinate,
+    builder.add_conditional_edges("Main_Supervisor", supervisor_define_edge,
                                   [f"{process_name}_Team" for process_name in processes.keys()] +
                                   ["Main_Report_Writer", END])
 
@@ -110,25 +110,18 @@ app_builder = create_main_graph(processes)
 graphHierarchical = app_builder.compile()
 
 
-
+# Получаем Mermaid-код
 graph_object = graphHierarchical.get_graph(xray=2)
-mermaid_code = graph_object.draw_mermaid()  # Генерация Mermaid-кода
-# Сохранить Mermaid-код в файл
+mermaid_code = graph_object.draw_mermaid()
+
+# Сохраняем Mermaid-код в файл
 with open("whole_hierarchical_graph_diagram.mmd", "w") as file:
     file.write(mermaid_code)
 print("Mermaid code saved as 'whole_hierarchical_graph_diagram.mmd'")
-# use
-# mmdc -i whole_hierarchical_graph_diagram.mmd -o whole_hierarchical_graph_diagram.png -s 2
-# to convert mmd to png
 
-
-# Save as PNG
-graph_image = graphHierarchical.get_graph(xray=1).draw_mermaid_png()
-with open("hierarchical_graph_diagram.png", "wb") as file:
-    file.write(graph_image)
-print("Simplified version saved as PNG 'hierarchical_graph_diagram.png'")
-
-
+# Mermaid to PNG
+subprocess.run(["mmdc", "-i", "whole_hierarchical_graph_diagram.mmd", "-o", "whole_hierarchical_graph_diagram.png", "-s", "5"])
+print("PNG saved as 'whole_hierarchical_graph_diagram.png'")
 
 
 # Thread configuration and graph input

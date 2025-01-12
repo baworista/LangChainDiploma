@@ -25,7 +25,7 @@ Use provided in prompts names
 """
 
 
-def define_edge(state: OverallState):
+def subordinate_define_edge(state: OverallState):
     """
     Initializes states for each research team.
     """
