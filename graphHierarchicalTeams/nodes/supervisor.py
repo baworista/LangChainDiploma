@@ -7,7 +7,7 @@ from langgraph.constants import Send
 from langgraph.types import Command
 from langgraph.constants import END
 
-from graphHierarchicalTeams.schema import Perspectives, Subordinates
+from graphHierarchicalTeams.schema import Perspectives, Subordinates, SubordinateTeam
 from graphHierarchicalTeams.states import OverallState
 
 load_dotenv()
@@ -15,13 +15,13 @@ llm = ChatOpenAI(model=os.getenv("MODEL_SUPERVISOR"))
 
 
 subordinates_creation_instructions = """
-You are main supervisor in hierarchical architecture network. You are responsible for creating subordinates.
+You are main supervisor in hierarchical architecture network. You are responsible for creating subordinate teams.
 Use provided in prompts names
 1. Review the provided research topic.
 2. Generate two subordinate teams strictly using provided names:
-    a. **Inside_Processes_Team**: his team will consist of it's subordinate, HR_Team, BP_Team, KM_Team, IT_Team and responsible for internal processes.
-    b. **Outside_Processes_Team**: his team will consist of it's subordinate, Sales_Team, Marketing_Team, PR_Team, Support_Team and responsible for external processes.
-3. Each subordinate supervisor must have explicitly provided name, description and prompts reflecting their responsibilities.
+    a. **Inside_Processes_Team**: this team will consist of it's subordinate supervisor and other little teams responsible for internal processes.
+    b. **Outside_Processes_Team**: this team will consist of it's subordinate supervisor and other little teams responsible for external processes.
+3. Each subordinate team must have explicitly provided name, description and prompts reflecting their responsibilities.
 """
 
 
@@ -31,28 +31,28 @@ def create_subordinates_tool(topic: str) -> dict:
     Generates a list of research teams based on the given topic.
     """
 
-    print(f"Creating subordinates on topic: \n\t{topic}")
+    print(f"Creating subordinate teams on topic: \n\t{topic}")
     structured_llm = llm.with_structured_output(Subordinates)
 
     # LLM Query
     system_message = SystemMessage(content=subordinates_creation_instructions)
-    human_message = HumanMessage(content=f"Generate subordinates for the topic: {topic}.")
+    human_message = HumanMessage(content=f"Generate subordinate teams for the topic: {topic}.")
 
     # Teams generation
-    subordinates: Subordinates = structured_llm.invoke([system_message, human_message])
+    subordinate_teams: Subordinates = structured_llm.invoke([system_message, human_message])
 
     # Serialize
-    serialized_subordinates = [
+    serialized_subordinate_teams = [
         {
-            "name": subordinate.name,
-            "role": subordinate.role,
-            "description": subordinate.description,
+            "name": subordinate_team.name,
+            "description": subordinate_team.description,
+            "subordinate": subordinate_team.subordinate,
         }
-        for subordinate in subordinates.subordinates
+        for subordinate_team in subordinate_teams.subordinates
     ]
 
-    print("Serialized subordinates created!" + str(serialized_subordinates))
-    return {"subordinates": serialized_subordinates}
+    print("Serialized subordinates created!" + str(serialized_subordinate_teams))
+    return {"subordinate_teams": serialized_subordinate_teams}
 
 
 def supervisor_define_edge(state: OverallState):
@@ -61,20 +61,22 @@ def supervisor_define_edge(state: OverallState):
     """
 
     topic = state["topic"]
-    subordinates = state["subordinates"]
     questionnaire = state["questionnaire"]
+    subordinate_teams = state["subordinate_teams"]
 
-    print(f"Initializing subordinates for topic: \n\t{topic}")
+    print(f"Initializing subordinate teams for topic: \n\t{topic}")
 
     return [
         Send(
-            subordinate["name"],
+            subordinate_team["name"],
             {
                 'topic': topic,
-                'questionnaire': subordinates,
-                'subordinates': subordinates,
+                'questionnaire': questionnaire,
+                'name': subordinate_team["name"],
+                'description': subordinate_team["description"],
+                'subordinate': subordinate_team['subordinate'],
             }
-        ) for subordinate in subordinates
+        ) for subordinate_team in subordinate_teams
     ]
 
 
@@ -82,10 +84,10 @@ def superivisor_node(state: OverallState):
     """
     Main supervisor node for orchestrating the research workflow.
     """
-    if "subordinates" not in state or not state["subordinates"]:
+    if "subordinate_teams" not in state or not state["subordinate_teams"]:
         # Generate teams and initialize states
         generated_subordinates = create_subordinates_tool.invoke({"topic": state["topic"]})
-        state["subordinates"] = generated_subordinates["subordinates"]
-        print("Subordinates created and added in state!")
+        state["subordinate_teams"] = generated_subordinates["subordinate_teams"]
+        print("Subordinate teams created and added in state!")
 
     return state

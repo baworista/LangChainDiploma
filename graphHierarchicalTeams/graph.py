@@ -18,18 +18,18 @@ def test_node(state: OverallState):
     return state
 
 
-def create_team_builder(team_name):
+def create_team_builder():
     """
     Создаёт граф команды с аналитиком и рецензентом.
     """
     team_builder = StateGraph(ResearchState)
-    team_builder.add_node(f"{team_name}_Analyst", analyst_node)
-    team_builder.add_node(f"{team_name}_Reviewer", reviewer_node)
+    team_builder.add_node(f"Analyst", analyst_node)
+    team_builder.add_node(f"Reviewer", reviewer_node)
 
-    team_builder.add_edge(START, f"{team_name}_Analyst")
-    team_builder.add_conditional_edges(f"{team_name}_Analyst", should_continue,
-                                       [f"{team_name}_Reviewer", END])
-    team_builder.add_edge(f"{team_name}_Reviewer", f"{team_name}_Analyst")
+    team_builder.add_edge(START, f"Analyst")
+    team_builder.add_conditional_edges(f"Analyst", should_continue,
+                                       [f"Reviewer", END])
+    team_builder.add_edge(f"Reviewer", f"Analyst")
     return team_builder
 
 
@@ -40,13 +40,13 @@ def create_process_team_builder(process_name, subteams):
     :param process_name: Название процесса (например, "Inside_Processes").
     :param subteams: Список названий команд (например, ["HR", "BP", "KM", "IT"]).
     """
-    builder = StateGraph(OverallState)
+    builder = StateGraph(SubordinateState)
     builder.add_node(f"{process_name}_Supervisor", subordinate_node)
-    builder.add_node(f"{process_name}_Report_Writer", test_node)
+    builder.add_node(f"Report_Writer", test_node)
 
     # Добавляем команды
     for team in subteams:
-        team_builder = create_team_builder(team)
+        team_builder = create_team_builder()
         builder.add_node(f"{team}_Team", team_builder.compile())
         builder.add_edge(f"{team}_Team", f"{process_name}_Supervisor")
 
@@ -56,10 +56,10 @@ def create_process_team_builder(process_name, subteams):
     # Добавляем условные связи
     builder.add_conditional_edges(f"{process_name}_Supervisor", subordinate_define_edge,
                                   [f"{team}_Team" for team in subteams] +
-                                  [f"{process_name}_Report_Writer", END])
+                                  [f"Report_Writer", END])
 
     # Связь с Report Writer
-    builder.add_edge(f"{process_name}_Report_Writer", f"{process_name}_Supervisor")
+    builder.add_edge(f"Report_Writer", f"{process_name}_Supervisor")
 
     return builder
 

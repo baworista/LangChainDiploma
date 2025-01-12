@@ -22,9 +22,25 @@ class SubordinateTeam(BaseModel):
     name: str = Field(
         description="Use only provided in system message names"
     )
+
+    description: str = Field(
+        description="Short description of what this team is response for."
+    )
+
     subordinate: Person = Field(
         description="Subordinate supervisor person"
     )
+
+    @property
+    def team(self) -> str:
+        """
+        Provides a detailed representation of the team
+        """
+        return (
+            f"Subordinate Team Name: {self.name}\n"
+            f"Description: {self.description}\n\n"
+            f"Subordinate :\n{self.subordinate}\n\n"
+        )
 
 
 class ResearchTeam(BaseModel):
@@ -59,8 +75,8 @@ class ResearchTeam(BaseModel):
 
 
 class Subordinates(BaseModel):
-    subordinates: List[Person] = Field(
-        description="List of subordinate supervisors with their names, roles, and descriptions.",
+    subordinates: List[SubordinateTeam] = Field(
+        description="List of subordinate teams with supervisor's name, role, and description.",
     )
 
 

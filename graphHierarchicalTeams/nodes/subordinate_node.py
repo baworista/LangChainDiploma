@@ -6,6 +6,7 @@ from langchain_openai import ChatOpenAI
 from langgraph.constants import Send
 from langgraph.constants import END
 
+from graphHierarchicalTeams.states import SubordinateState
 from graphSupervisor.states import OverallState, Perspectives
 
 
@@ -25,7 +26,7 @@ Use provided in prompts names
 """
 
 
-def subordinate_define_edge(state: OverallState):
+def subordinate_define_edge(state: SubordinateState):
     """
     Initializes states for each research team.
     """
@@ -90,7 +91,7 @@ def create_research_teams_tool(topic: str) -> dict:
     return {"teams": serialized_teams}
 
 
-def subordinate_node(state: OverallState):
+def subordinate_node(state: SubordinateState):
     """
     Supervisor node for orchestrating the research workflow.
     """
