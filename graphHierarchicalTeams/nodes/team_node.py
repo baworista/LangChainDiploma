@@ -134,7 +134,7 @@ def reviewer_node(state):
 def should_continue(state: ResearchState):
     messages = state.get("messages", [])
     # Check if the number of messages is 6 or more
-    if len(messages) >= 7:
+    if len(messages) >= 5:
 
         # Return the END constant and the overall state update
         state["reviews"].append(messages[-1].content)
