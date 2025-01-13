@@ -74,7 +74,7 @@ def analyst_node(state):
 
     questionnaire = state["team_questionnaire"]
 
-    analyst_name = state["analyst"].team_name
+    analyst_name = state["analyst"].name
     print(f"Analyst {analyst_name} from {team_name} activated.")
 
     system_prompt = analyst_prompt.format(topic=topic,
@@ -109,7 +109,7 @@ def reviewer_node(state):
 
     questionnaire = state["team_questionnaire"]
 
-    reviewer_name = state["reviewer"].team_name
+    reviewer_name = state["reviewer"].name
     print(f"Reviewer {reviewer_name} from {team_name} activated.")
 
     system_prompt = reviewer_prompt.format(topic=topic,
