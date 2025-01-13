@@ -66,7 +66,7 @@ Start your messages from your name!
 def analyst_node(state):
     topic = state["team_topic"]
 
-    team_name = state["name"]
+    team_name = state["team_name"]
     team_description = state["description"]
 
     reviewer_info = state["reviewer"]
@@ -101,7 +101,7 @@ def analyst_node(state):
 def reviewer_node(state):
     topic = state["team_topic"]
 
-    team_name = state["name"]
+    team_name = state["team_name"]
     team_description = state["description"]
 
     reviewer_info = state["reviewer"]

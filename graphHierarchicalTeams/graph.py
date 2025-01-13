@@ -14,9 +14,8 @@ load_dotenv()
 model = ChatOpenAI(temperature=0.1, model_name="gpt-4o-mini")
 
 def test_node(state: OverallState):
-    print("Test Node")
-    return state
-
+    print("Test node activated.")
+    print(state["subordinate_reviews"])
 
 def create_team_builder():
     """
@@ -42,7 +41,7 @@ def create_process_team_builder(process_name, subteams):
     """
     builder = StateGraph(SubordinateState)
     builder.add_node(f"{process_name}_Supervisor", subordinate_node)
-    builder.add_node(f"Report_Writer", test_node)
+    builder.add_node(f"Report_Writer", report_writer_node)
 
     # Добавляем команды
     for team in subteams:

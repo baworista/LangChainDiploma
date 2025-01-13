@@ -3,6 +3,7 @@ from langchain_openai import ChatOpenAI
 from langchain_core.messages import SystemMessage
 import os
 
+from graphHierarchicalTeams.states import SubordinateState
 from graphSupervisor.states import OverallState
 
 
@@ -24,7 +25,7 @@ Write a report from provided.
 """
 
 
-def report_writer_node(state: OverallState):
+def report_writer_node(state: SubordinateState):
     """ Node to summarize diagnosis and recommendations in a single report"""
 
     print("... Write Report ...")
@@ -38,4 +39,4 @@ def report_writer_node(state: OverallState):
     report = llm.invoke([SystemMessage(content=system_message)])
 
     # Write messages to state
-    return {"final_report": report}
+    return {"subordinate_reviews": state["subordinate_reviews"].append(report)}

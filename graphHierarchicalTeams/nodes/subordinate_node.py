@@ -57,9 +57,9 @@ def subordinate_define_edge(state: SubordinateState):
 
     return [
         Send(
-            team["name"],
+            team["team_name"],
             {
-                "name": team["name"],
+                "team_name": team["team_name"],
                 "team_topic": topic,  # Topic assigned to the analyst
                 "description": team["description"],
                 "team_questionnaire": questionnaire,
@@ -93,7 +93,7 @@ def create_research_teams_tool(topic: str, team_info: str) -> dict:
     # Serialize
     serialized_teams = [
         {
-            "name": team.name,
+            "team_name": team.name,
             "description": team.description,
             "analyst": team.analyst,
             "reviewer": team.reviewer,
@@ -116,7 +116,7 @@ def subordinate_node(state: SubordinateState):
 
     if "teams" not in state or not state["teams"]:
         # Generate teams and initialize states
-        curr_team = state["name"]
+        curr_team = state["subordinate_team_name"]
         if curr_team.startswith("Inside_Processes"):
             generated_teams = create_research_teams_tool.invoke({"topic": state["topic"], "team_info": inside_processes_teams_info})
         if curr_team.startswith("Outside_Processes"):

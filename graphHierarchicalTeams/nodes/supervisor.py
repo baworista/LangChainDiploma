@@ -44,7 +44,7 @@ def create_subordinates_tool(topic: str) -> dict:
     # Serialize
     serialized_subordinate_teams = [
         {
-            "name": subordinate_team.name,
+            "subordinate_team_name": subordinate_team.name,
             "description": subordinate_team.description,
             "subordinate": subordinate_team.subordinate,
         }
@@ -68,11 +68,11 @@ def supervisor_define_edge(state: OverallState):
 
     return [
         Send(
-            subordinate_team["name"],
+            subordinate_team["subordinate_team_name"],
             {
                 'topic': topic,
                 'questionnaire': questionnaire,
-                'name': subordinate_team["name"],
+                'subordinate_team_name': subordinate_team["subordinate_team_name"],
                 'description': subordinate_team["description"],
                 'subordinate': subordinate_team['subordinate'],
             }
