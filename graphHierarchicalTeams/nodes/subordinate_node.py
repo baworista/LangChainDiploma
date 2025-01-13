@@ -17,14 +17,25 @@ team_creation_instructions = """
 You are tasked with creating AI research teams, each consisting of an analyst and a reviewer. Follow these instructions:
 Use provided in prompts names
 1. Review the provided research topic.
-2. Generate four research teams strictly using provided names:
-    a. **HR_Team**: Focused on HR issues like team dynamics, performance, and training.
-    b. **BP_Team**: Specializing in process optimization and automation.
-    c. **KM_Team**: Concentrating on knowledge sharing and tools.
-    d. **IT_Team**: Addressing IT strategies and tools.
+2. Generate research teams strictly using provided names:
+    {teams_info}
 3. Each team must have explicitly provided name, description and prompts reflecting their responsibilities.
 """
 
+inside_processes_teams_info = """
+    a. HR_Team: Focused on HR issues like team dynamics, performance, and training.
+    b. BP_Team: Specializing in process optimization and automation.
+    c. KM_Team: Concentrating on knowledge sharing and tools.
+    d. IT_Team: Addressing IT strategies and tools.
+"""
+
+outside_processes_teams_info = """
+    a. Marketing_Team: Focused on market research, brand awareness, customer acquisition, and promotional strategies.
+    b. Finance_Team: Specializing in financial planning, budgeting, analysis of profitability, investment strategies, and risk management.  
+    c. Legal_Team: Concentrating on ensuring compliance with laws and regulations, drafting contracts, managing legal risks, and providing legal counsel.
+    d. Customer_Support_Team: Addressing customer inquiries, feedback, and resolving issues to ensure a positive customer experience and maintain satisfaction.
+    e. R&D_Team: Focused on innovation, developing new products or services, researching emerging technologies, and driving long-term business growth through product advancements.
+"""
 
 def subordinate_define_edge(state: SubordinateState):
     """
@@ -62,7 +73,7 @@ def subordinate_define_edge(state: SubordinateState):
 
 
 @tool
-def create_research_teams_tool(topic: str) -> dict:
+def create_research_teams_tool(topic: str, team_info: str) -> dict:
     """
     Generates a list of research teams based on the given topic.
     """
@@ -70,8 +81,10 @@ def create_research_teams_tool(topic: str) -> dict:
     print(f"Creating research teams on topic: \n\t{topic}")
     structured_llm = llm.with_structured_output(Perspectives)
 
+
     # LLM Query
-    system_message = SystemMessage(content=team_creation_instructions)
+    system_prompt = team_creation_instructions.format(teams_info=team_info)
+    system_message = SystemMessage(content=system_prompt)
     human_message = HumanMessage(content=f"Generate the teams for the topic: {topic}.")
 
     # Teams generation
@@ -103,7 +116,11 @@ def subordinate_node(state: SubordinateState):
 
     if "teams" not in state or not state["teams"]:
         # Generate teams and initialize states
-        generated_teams = create_research_teams_tool.invoke({"topic": state["topic"]})
+        curr_team = state["name"]
+        if curr_team.startswith("Inside_Processes"):
+            generated_teams = create_research_teams_tool.invoke({"topic": state["topic"], "team_info": inside_processes_teams_info})
+        if curr_team.startswith("Outside_Processes"):
+            generated_teams = create_research_teams_tool.invoke({"topic": state["topic"], "team_info": outside_processes_teams_info})
         state["teams"] = generated_teams["teams"]
 
     return state
