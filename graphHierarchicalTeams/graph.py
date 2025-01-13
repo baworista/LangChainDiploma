@@ -133,7 +133,7 @@ with open("../data/answer_1.json", "r") as file:
 
 user_input = {
     "topic": "Help a multinational manufacturing company in their journey to product management maturity.",
-    "questionnaire" :  data
+    "questionnaire" :  "Here should be the questionnaire results or user input. Now it's just a placeholder.",
 }
 
 response = graphHierarchical.invoke(user_input, thread)
