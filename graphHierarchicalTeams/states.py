@@ -8,7 +8,7 @@ from graphHierarchicalTeams.schema import Person, ResearchTeam, SubordinateTeam
 
 # Individual state for each analyst and reviewer team
 class ResearchState(MessagesState):
-    name: str
+    team_name: str
     team_topic: str
     description: str  # Description of team's responsibility and capabilities
     team_questionnaire: str # Questionnaire results or user input
@@ -22,7 +22,7 @@ def deduplicate_merge(old_reviews: List[str], new_reviews: List[str]) -> List[st
 
 
 class SubordinateState(TypedDict):
-    name: str
+    subordinate_team_name: str
     topic: str
     questionnaire: str # Questionnaire results or user input
     subordinate: Person
