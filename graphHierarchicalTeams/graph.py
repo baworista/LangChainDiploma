@@ -4,6 +4,9 @@ from langchain_openai import ChatOpenAI
 from langgraph.constants import START
 from langgraph.graph import StateGraph
 import subprocess
+
+from langgraph.prebuilt import ToolNode
+
 from graphHierarchicalTeams.nodes.supervisor import *
 from graphHierarchicalTeams.nodes.report_writer_node import *
 from graphHierarchicalTeams.nodes.subordinate_node import *
@@ -74,7 +77,8 @@ def create_main_graph(processes):
     """
     builder = StateGraph(OverallState)
     builder.add_node("Main_Supervisor", superivisor_node)
-    builder.add_node("Main_Report_Writer", test_node)
+    tool_node = ToolNode([report_writer_tool])
+    builder.add_node("Main_Report_Writer", tool_node)
 
     # Добавляем процессы
     for process_name, subteams in processes.items():
