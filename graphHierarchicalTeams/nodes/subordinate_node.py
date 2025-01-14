@@ -1,10 +1,13 @@
 import os
+from idlelib.undo import Command
+
 from dotenv import load_dotenv
 from langchain.tools import tool
 from langchain_core.messages import HumanMessage, SystemMessage
 from langchain_openai import ChatOpenAI
 from langgraph.constants import Send
 from langgraph.constants import END
+from sqlalchemy.orm.sync import update
 
 from graphHierarchicalTeams.states import SubordinateState
 from graphSupervisor.states import OverallState, Perspectives
@@ -43,7 +46,9 @@ def subordinate_define_edge(state: SubordinateState):
     """
     # print("This is log info FROM DEFINE_EDGE about reviews list length: " + str(len(state["reviews"])))
 
-    if "final_report" in state:
+    if "final_subordinate_report" in state:
+        report = state["final_subordinate_report"]
+        state["subordinate_reviews"].append(report)
         return END
 
     if len(state["reviews"]) >= 4:

@@ -1,4 +1,6 @@
 import os
+from typing import List
+
 from dotenv import load_dotenv
 from langchain.tools import tool
 from langchain_core.messages import HumanMessage, SystemMessage
@@ -22,6 +24,19 @@ Use provided in prompts names
     a. **Inside_Processes_Team**: this team will consist of it's subordinate supervisor and other little teams responsible for internal processes.
     b. **Outside_Processes_Team**: this team will consist of it's subordinate supervisor and other little teams responsible for external processes.
 3. Each subordinate team must have explicitly provided name, description and prompts reflecting their responsibilities.
+"""
+
+writing_instructions = """You are a senior consultant experienced in writing executive reports. Your goal is to write a comprehensive report based on the reviews provided by the analyst-reviewer teams.
+
+The report should be structured, concise, and actionable. It should include an executive summary, an introduction, a detailed analysis, and a set of recommendations.
+
+Here are the topic of task: {topic}
+
+Here are the questionnaire: {questionnaire}
+
+Here are reviews from teams: {reviews}.
+
+Write a report from provided.
 """
 
 
@@ -55,10 +70,34 @@ def create_subordinates_tool(topic: str) -> dict:
     return {"subordinate_teams": serialized_subordinate_teams}
 
 
+@tool
+def report_writer_tool(topic: str, questionnaire: str, reviews: List[str]):
+    """
+    Write a report based on the provided reviews.
+    :param topic:
+    :param questionnaire:
+    :param reviews:
+    :return:
+    """
+    print("Main supervisor's report tool has been activated!")
+    # Generate question
+    system_message = writing_instructions.format(topic=topic, questionnaire=questionnaire, reviews=reviews)
+    report = llm.invoke([SystemMessage(content=system_message)])
+
+    # Write messages to state
+    return report
+
+
 def supervisor_define_edge(state: OverallState):
     """
     Send the state to the subordinate.
     """
+
+    if "final_review" in state:
+        return END
+
+    if len(state["subordinate_reviews"]) >= 2:
+        state.update({"final_report": report_writer_tool.invoke({"topic": state["topic"], "questionnaire": state["questionnaire"], "reviews": state["subordinate_reviews"]})})
 
     topic = state["topic"]
     questionnaire = state["questionnaire"]
