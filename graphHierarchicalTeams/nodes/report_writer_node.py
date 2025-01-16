@@ -4,7 +4,6 @@ from langchain_core.messages import SystemMessage
 import os
 
 from graphHierarchicalTeams.states import SubordinateState
-from graphSupervisor.states import OverallState
 
 
 load_dotenv()

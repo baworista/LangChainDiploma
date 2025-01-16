@@ -1,15 +1,13 @@
 import os
 from typing import List
-
 from dotenv import load_dotenv
 from langchain.tools import tool
 from langchain_core.messages import HumanMessage, SystemMessage
 from langchain_openai import ChatOpenAI
 from langgraph.constants import Send
-from langgraph.types import Command
 from langgraph.constants import END
 
-from graphHierarchicalTeams.schema import Perspectives, Subordinates, SubordinateTeam
+from graphHierarchicalTeams.schema import Subordinates
 from graphHierarchicalTeams.states import OverallState
 
 load_dotenv()
@@ -71,7 +69,7 @@ def create_subordinates_tool(topic: str) -> dict:
 
 
 @tool
-def report_writer_tool(topic: str, questionnaire: str, reviews: List[str]):
+def report_writer_tool(topic: str, questionnaire, reviews: List[str]):
     """
     Write a report based on the provided reviews.
     :param topic:

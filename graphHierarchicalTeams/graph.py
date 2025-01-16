@@ -1,10 +1,7 @@
 import json
-from dotenv import load_dotenv
-from langchain_openai import ChatOpenAI
 from langgraph.constants import START
 from langgraph.graph import StateGraph
 import subprocess
-
 from langgraph.prebuilt import ToolNode
 
 from graphHierarchicalTeams.nodes.supervisor import *
@@ -39,28 +36,28 @@ def create_process_team_builder(process_name, subteams):
     """
     Creates a graph for a process with subteams.
 
-    :param process_name: Process name (ex. "Inside_Processes").
-    :param subteams: Teams list (ex. ["HR", "BP", "KM", "IT"]).
+    :param process_name: Process name (e.g., "Inside_Processes").
+    :param subteams: Teams list (e.g., ["HR", "BP", "KM", "IT"]).
     """
     builder = StateGraph(SubordinateState)
     builder.add_node(f"{process_name}_Supervisor", subordinate_node)
     builder.add_node(f"Report_Writer", report_writer_node)
 
-    # Добавляем команды
+    # Add teams
     for team in subteams:
         team_builder = create_team_builder()
         builder.add_node(f"{team}_Team", team_builder.compile())
         builder.add_edge(f"{team}_Team", f"{process_name}_Supervisor")
 
-    # Указываем начальную точку
+    # Set the starting point
     builder.add_edge(START, f"{process_name}_Supervisor")
 
-    # Добавляем условные связи
+    # Add conditional edges
     builder.add_conditional_edges(f"{process_name}_Supervisor", subordinate_define_edge,
                                   [f"{team}_Team" for team in subteams] +
                                   [f"Report_Writer", END])
 
-    # Связь с Report Writer
+    # Link with Report Writer
     builder.add_edge(f"Report_Writer", f"{process_name}_Supervisor")
 
     return builder
@@ -70,8 +67,8 @@ def create_main_graph(processes):
     """
     Creates a graph for the main process with subteams.
 
-    :param processes: Process and teams dict.
-                      Ex: {"Inside_Processes": ["HR", "BP", "KM", "IT"],
+    :param processes: Process and teams dictionary.
+                      Example: {"Inside_Processes": ["HR", "BP", "KM", "IT"],
                                "Outside_Processes": ["Marketing", "Finance", "Legal",
                                                      "Customer_Support", "R&D"]}.
     """
@@ -80,44 +77,44 @@ def create_main_graph(processes):
     tool_node = ToolNode([report_writer_tool])
     builder.add_node("Main_Report_Writer", tool_node)
 
-    # Добавляем процессы
+    # Add processes
     for process_name, subteams in processes.items():
         process_team_builder = create_process_team_builder(process_name, subteams)
         builder.add_node(f"{process_name}_Team", process_team_builder.compile())
         builder.add_edge(f"{process_name}_Team", "Main_Supervisor")
 
-    # Указываем начальную точку
+    # Set the starting point
     builder.add_edge(START, "Main_Supervisor")
 
-    # Добавляем условные связи
+    # Add conditional edges
     builder.add_conditional_edges("Main_Supervisor", supervisor_define_edge,
                                   [f"{process_name}_Team" for process_name in processes.keys()] +
                                   ["Main_Report_Writer", END])
 
-    # Связь с Report Writer
+    # Link with Report Writer
     builder.add_edge("Main_Report_Writer", "Main_Supervisor")
 
     return builder
 
 
-# Задаём процессы и их команды
+# Define processes and their teams
 processes = {
     "Inside_Processes": ["HR", "BP", "KM", "IT"],
     "Outside_Processes": ["Marketing", "Finance", "Legal", "Customer_Support", "R&D"]
 }
 
-# Создаём основной граф
+# Create the main graph
 app_builder = create_main_graph(processes)
 
-# Компилируем граф
+# Compile the graph
 graphHierarchical = app_builder.compile()
 
 
-# Получаем Mermaid-код
+# Get the Mermaid code
 graph_object = graphHierarchical.get_graph(xray=2)
 mermaid_code = graph_object.draw_mermaid()
 
-# Сохраняем Mermaid-код в файл
+# Save Mermaid code to file
 with open("whole_hierarchical_graph_diagram.mmd", "w") as file:
     file.write(mermaid_code)
 print("Mermaid code saved as 'whole_hierarchical_graph_diagram.mmd'")
@@ -136,7 +133,7 @@ with open("../data/answer_1.json", "r") as file:
 
 user_input = {
     "topic": "Help a multinational manufacturing company in their journey to product management maturity.",
-    "questionnaire" :  "Here should be the questionnaire results or user input. Now it's just a placeholder.",
+    "questionnaire" : data
 }
 
 response = graphHierarchical.invoke(user_input, thread)
