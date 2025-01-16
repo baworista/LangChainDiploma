@@ -4,7 +4,6 @@ from langchain_core.messages import SystemMessage
 import os
 
 from graphHierarchicalTeams.states import SubordinateState
-from graphSupervisor.states import OverallState
 
 
 load_dotenv()
@@ -39,4 +38,4 @@ def report_writer_node(state: SubordinateState):
     report = llm.invoke([SystemMessage(content=system_message)])
 
     # Write messages to state
-    return {"final_subordinate_report": report}
+    return {"final_subordinate_report": report.content}

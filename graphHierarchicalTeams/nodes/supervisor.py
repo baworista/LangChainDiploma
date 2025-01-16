@@ -1,15 +1,13 @@
 import os
 from typing import List
-
 from dotenv import load_dotenv
 from langchain.tools import tool
 from langchain_core.messages import HumanMessage, SystemMessage
 from langchain_openai import ChatOpenAI
 from langgraph.constants import Send
-from langgraph.types import Command
 from langgraph.constants import END
 
-from graphHierarchicalTeams.schema import Perspectives, Subordinates, SubordinateTeam
+from graphHierarchicalTeams.schema import Subordinates
 from graphHierarchicalTeams.states import OverallState
 
 load_dotenv()
@@ -71,7 +69,7 @@ def create_subordinates_tool(topic: str) -> dict:
 
 
 @tool
-def report_writer_tool(topic: str, questionnaire: str, reviews: List[str]):
+def report_writer_tool(topic: str, questionnaire, reviews: List[str]):
     """
     Write a report based on the provided reviews.
     :param topic:
@@ -93,11 +91,8 @@ def supervisor_define_edge(state: OverallState):
     Send the state to the subordinate.
     """
 
-    if "final_review" in state:
+    if "final_report" in state:
         return END
-
-    if len(state["subordinate_reviews"]) >= 2:
-        state.update({"final_report": report_writer_tool.invoke({"topic": state["topic"], "questionnaire": state["questionnaire"], "reviews": state["subordinate_reviews"]})})
 
     topic = state["topic"]
     questionnaire = state["questionnaire"]
@@ -112,6 +107,7 @@ def supervisor_define_edge(state: OverallState):
                 'topic': topic,
                 'questionnaire': questionnaire,
                 'subordinate_team_name': subordinate_team["subordinate_team_name"],
+                'subordinate_reviews': [],
                 'description': subordinate_team["description"],
                 'subordinate': subordinate_team['subordinate'],
             }
@@ -128,5 +124,14 @@ def superivisor_node(state: OverallState):
         generated_subordinates = create_subordinates_tool.invoke({"topic": state["topic"]})
         state["subordinate_teams"] = generated_subordinates["subordinate_teams"]
         print("Subordinate teams created and added in state!")
+
+    print("*" * 50)
+    print("Main supervisor's subordinate reviews")
+    print(state["subordinate_reviews"])
+    print("*" * 50)
+    if len(state["subordinate_reviews"]) >= 2:
+        state.update({"final_report": report_writer_tool.invoke(
+            {"topic": state["topic"], "questionnaire": state["questionnaire"],
+             "reviews": state["subordinate_reviews"]})})
 
     return state

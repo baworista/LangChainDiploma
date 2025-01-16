@@ -1,16 +1,13 @@
 import os
-from idlelib.undo import Command
-
 from dotenv import load_dotenv
 from langchain.tools import tool
 from langchain_core.messages import HumanMessage, SystemMessage
 from langchain_openai import ChatOpenAI
 from langgraph.constants import Send
 from langgraph.constants import END
-from sqlalchemy.orm.sync import update
 
 from graphHierarchicalTeams.states import SubordinateState
-from graphSupervisor.states import OverallState, Perspectives
+from graphHierarchicalTeams.schema import Perspectives
 
 
 load_dotenv()
@@ -44,11 +41,8 @@ def subordinate_define_edge(state: SubordinateState):
     """
     Initializes states for each research team.
     """
-    # print("This is log info FROM DEFINE_EDGE about reviews list length: " + str(len(state["reviews"])))
 
     if "final_subordinate_report" in state:
-        report = state["final_subordinate_report"]
-        state["subordinate_reviews"].append(report)
         return END
 
     if len(state["reviews"]) >= 4:
@@ -70,6 +64,7 @@ def subordinate_define_edge(state: SubordinateState):
                 "team_questionnaire": questionnaire,
                 "messages": [],
                 "reviews": [],
+                "subordinate_reviews": [],
                 "analyst": team["analyst"],
                 "reviewer": team["reviewer"],
             }
@@ -113,11 +108,7 @@ def subordinate_node(state: SubordinateState):
     """
     Supervisor node for orchestrating the research workflow.
     """
-    # print("This is log info FROM SUPERVISOR about reviews list length: " + str(len(state["reviews"])))
     print("Subordinate Node has been activated!")
-
-    if "reviews" not in state:
-        state["reviews"] = []
 
     if "teams" not in state or not state["teams"]:
         # Generate teams and initialize states
@@ -128,18 +119,8 @@ def subordinate_node(state: SubordinateState):
             generated_teams = create_research_teams_tool.invoke({"topic": state["topic"], "team_info": outside_processes_teams_info})
         state["teams"] = generated_teams["teams"]
 
+    if "final_subordinate_report" in state:
+        report = state["final_subordinate_report"]
+        state["subordinate_reviews"].append(report)
+
     return state
-
-
-# Example usage
-# if __name__ == "__main__":
-#     # Mock OverallState for demonstration
-#     state = OverallState(topic="Digital Transformation in Organizations")
-#
-#     print("initial_state: ", json.dumps(state, indent=4, ensure_ascii=False))
-#
-#     # Invoke the model with the tools and initial state
-#     supervisor_node(state)
-#
-#     # Print the updated state
-#     print("update_state:", json.dumps(state, indent=4, ensure_ascii=False))
