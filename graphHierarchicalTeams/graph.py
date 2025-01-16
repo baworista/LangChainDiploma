@@ -22,7 +22,7 @@ def test_node(state: OverallState):
 
 def create_team_builder():
     """
-    Создаёт граф команды с аналитиком и рецензентом.
+    Creates a graph for a team with an analyst and a reviewer.
     """
     team_builder = StateGraph(ResearchState)
     team_builder.add_node(f"Analyst", analyst_node)
@@ -37,10 +37,10 @@ def create_team_builder():
 
 def create_process_team_builder(process_name, subteams):
     """
-    Создаёт граф для процесса с заданными командами.
+    Creates a graph for a process with subteams.
 
-    :param process_name: Название процесса (например, "Inside_Processes").
-    :param subteams: Список названий команд (например, ["HR", "BP", "KM", "IT"]).
+    :param process_name: Process name (ex. "Inside_Processes").
+    :param subteams: Teams list (ex. ["HR", "BP", "KM", "IT"]).
     """
     builder = StateGraph(SubordinateState)
     builder.add_node(f"{process_name}_Supervisor", subordinate_node)
@@ -68,10 +68,10 @@ def create_process_team_builder(process_name, subteams):
 
 def create_main_graph(processes):
     """
-    Создаёт основной граф с заданными процессами.
+    Creates a graph for the main process with subteams.
 
-    :param processes: Словарь с процессами и их командами.
-                      Пример: {"Inside_Processes": ["HR", "BP", "KM", "IT"],
+    :param processes: Process and teams dict.
+                      Ex: {"Inside_Processes": ["HR", "BP", "KM", "IT"],
                                "Outside_Processes": ["Marketing", "Finance", "Legal",
                                                      "Customer_Support", "R&D"]}.
     """

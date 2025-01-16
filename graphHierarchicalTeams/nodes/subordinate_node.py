@@ -1,6 +1,5 @@
 import os
-from idlelib.undo import Command
-
+from langgraph.types import Command
 from dotenv import load_dotenv
 from langchain.tools import tool
 from langchain_core.messages import HumanMessage, SystemMessage
@@ -47,8 +46,6 @@ def subordinate_define_edge(state: SubordinateState):
     # print("This is log info FROM DEFINE_EDGE about reviews list length: " + str(len(state["reviews"])))
 
     if "final_subordinate_report" in state:
-        report = state["final_subordinate_report"]
-        state["subordinate_reviews"].append(report)
         return END
 
     if len(state["reviews"]) >= 4:
@@ -70,6 +67,7 @@ def subordinate_define_edge(state: SubordinateState):
                 "team_questionnaire": questionnaire,
                 "messages": [],
                 "reviews": [],
+                "subordinate_reviews": [],
                 "analyst": team["analyst"],
                 "reviewer": team["reviewer"],
             }
@@ -116,9 +114,6 @@ def subordinate_node(state: SubordinateState):
     # print("This is log info FROM SUPERVISOR about reviews list length: " + str(len(state["reviews"])))
     print("Subordinate Node has been activated!")
 
-    if "reviews" not in state:
-        state["reviews"] = []
-
     if "teams" not in state or not state["teams"]:
         # Generate teams and initialize states
         curr_team = state["subordinate_team_name"]
@@ -127,6 +122,13 @@ def subordinate_node(state: SubordinateState):
         if curr_team.startswith("Outside_Processes"):
             generated_teams = create_research_teams_tool.invoke({"topic": state["topic"], "team_info": outside_processes_teams_info})
         state["teams"] = generated_teams["teams"]
+
+    if "final_subordinate_report" in state:
+        report = state["final_subordinate_report"]
+        state["subordinate_reviews"].append(report)
+        # print("*" * 50)
+        # print(state["subordinate_reviews"])
+        # print("*" * 50)
 
     return state
 

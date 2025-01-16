@@ -93,11 +93,8 @@ def supervisor_define_edge(state: OverallState):
     Send the state to the subordinate.
     """
 
-    if "final_review" in state:
+    if "final_report" in state:
         return END
-
-    if len(state["subordinate_reviews"]) >= 2:
-        state.update({"final_report": report_writer_tool.invoke({"topic": state["topic"], "questionnaire": state["questionnaire"], "reviews": state["subordinate_reviews"]})})
 
     topic = state["topic"]
     questionnaire = state["questionnaire"]
@@ -112,6 +109,7 @@ def supervisor_define_edge(state: OverallState):
                 'topic': topic,
                 'questionnaire': questionnaire,
                 'subordinate_team_name': subordinate_team["subordinate_team_name"],
+                'subordinate_reviews': [],
                 'description': subordinate_team["description"],
                 'subordinate': subordinate_team['subordinate'],
             }
@@ -128,5 +126,14 @@ def superivisor_node(state: OverallState):
         generated_subordinates = create_subordinates_tool.invoke({"topic": state["topic"]})
         state["subordinate_teams"] = generated_subordinates["subordinate_teams"]
         print("Subordinate teams created and added in state!")
+
+    print("*" * 50)
+    print("Main supervisor's subordinate reviews")
+    print(state["subordinate_reviews"])
+    print("*" * 50)
+    if len(state["subordinate_reviews"]) >= 2:
+        state.update({"final_report": report_writer_tool.invoke(
+            {"topic": state["topic"], "questionnaire": state["questionnaire"],
+             "reviews": state["subordinate_reviews"]})})
 
     return state

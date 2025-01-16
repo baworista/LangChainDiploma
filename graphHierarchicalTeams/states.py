@@ -20,9 +20,11 @@ class ResearchState(MessagesState):
 def deduplicate_merge(old_reviews: List[str], new_reviews: List[str]) -> List[str]:
     return list(set(old_reviews).union(new_reviews))
 
+
 def merge_str(old_str: str, new_str: str) -> str:
     # Ensure that only one topic is returned
     return new_str
+
 
 class SubordinateState(TypedDict):
     subordinate_team_name: str
@@ -32,7 +34,7 @@ class SubordinateState(TypedDict):
     teams: List[ResearchTeam]
     reviews: Annotated[List[str], deduplicate_merge]  # Four teams analysis
     final_subordinate_report: str  # Final report generated after all analysts complete their tasks
-    subordinate_reviews: Annotated[List[str], deduplicate_merge]  # Two subordinate supervisors answers
+    subordinate_reviews: Annotated[List[str], operator.add]  # Two subordinate supervisors answers
 
 
 # Overall state for the supervisor
