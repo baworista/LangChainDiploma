@@ -17,7 +17,7 @@ def create_user_prompt(state):
     task = state.get("task", "NO SUBTASK YET")
     analysis = state.get("analysis", "NO ANALYSIS YET")
 
-    return USER_PROMPT_TEMPLATE.format(main_task=state["main_task"], task=task, questionare=state["questionare"], good_practices=state["good_practices"], analysis=analysis, questions=questions, processed_agents=", ".join(processed_agents))
+    return USER_PROMPT_TEMPLATE.format(main_task=state["main_task"], task=task, questionnaire=state["questionnaire"], good_practices=state["good_practices"], analysis=analysis, questions=questions, processed_agents=", ".join(processed_agents))
 
 def create_summary_agent_prompt(state):
-    return SUMMARY_AGENT_PROMPT_TEMPLATE.format(main_task=state["main_task"], analysis=state["analysis"], questionare=state["questionare"], good_practices=state["good_practices"], processed_agents=", ".join(state["processed_agents"]) if state["processed_agents"] else "None")
+    return SUMMARY_AGENT_PROMPT_TEMPLATE.format(main_task=state["main_task"], analysis=state["analysis"], questionnaire=state["questionnaire"], good_practices=state["good_practices"], processed_agents=", ".join(state["processed_agents"]) if state["processed_agents"] else "None")

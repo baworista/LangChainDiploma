@@ -6,7 +6,7 @@ USER_PROMPT_TEMPLATE = """
     {task}
 
     **Questionnaire:**
-    {questionare}
+    {questionnaire}
 
     **Best Practices:**
     {good_practices}

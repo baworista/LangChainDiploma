@@ -7,7 +7,7 @@ SUMMARY_AGENT_PROMPT_TEMPLATE = """
     **WHEN WRITING YOUR SUMMARY, INCLUDE THE FOLLOWING:**
     - Restate the main goal of the task: {main_task}.
     - Highlight key findings from the current analysis provided by agents: {analysis}.
-    - Here are the questionnaires: {questionare}.
+    - Here are the questionnaires: {questionnaire}.
     - Here are best practices: {good_practices}.
     - Mention which agents have already contributed: {processed_agents}.
     - Summarize the next steps or unanswered questions based on the analysis.
