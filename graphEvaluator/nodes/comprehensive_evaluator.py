@@ -1,0 +1,65 @@
+import os
+from dotenv import load_dotenv
+from langchain_core.messages import SystemMessage, HumanMessage
+from langchain_openai import ChatOpenAI
+
+from graphEvaluator.nodes.states import OverallState
+from graphEvaluator.schema import EvaluatorOutput
+
+load_dotenv()
+llm = ChatOpenAI(model_name=os.getenv("MODEL_SUPERVISOR"))
+
+evaluator_prompt = """
+    Task: You are a comprehensive evaluator reviewing the reports compiled by the different analysts on topic: {topic}.
+    With asked questions and answers on it: {questionnaire}
+    The names are anonymized to you be objective in your evaluation, so please don't use it anywhere except anonymized_name field.
+    You have access to the following reports:
+
+    Reports: {reports}
+
+    Evaluate each report based on the following criteria:
+    1. Relevance: How well does the report address the task?
+    2. Factuality: Does the report contain any factual errors?
+    3. Completeness: Does the report fully cover all aspects of the task (diagnosis and recommendations)?
+    4. Clarity: Is the report well-structured and easy to understand?
+    5. Actionability: Are the recommendations practical and applicable?
+
+    **Provide a score (1-5) for each criterion and include a brief explanation for each report.**
+    **Select the best one, and in description provide scores and comment for this report**
+    **Note: You are only one of several evaluators, so make your evaluation based on overall analysis, **
+"""
+
+
+def comprehensive_evaluator_node(state: OverallState):
+    print("Comprehensive Evaluator activated.")
+
+    reports = state["reports"]
+
+    # Step 1: Create anonymized mapping
+    anonymized_reports = {f"Report_{i + 1}": content for i, (arch, content) in enumerate(reports.items())}
+    reverse_mapping = {f"Report_{i + 1}": arch for i, arch in enumerate(reports.keys())}
+
+    structured_llm = llm.with_structured_output(EvaluatorOutput)
+
+
+    system_prompt = evaluator_prompt.format(
+        topic=state["topic"],
+        questionnaire=state["questionnaire"],
+        reports=anonymized_reports
+    )
+
+    # Step 2: LLM Query
+    system_message = SystemMessage(content=system_prompt)
+    output = structured_llm.invoke([system_message])
+
+    # Step 3: Extract relevant fields from the output
+    anonymized_name = output.anonymized_name  # Extract the anonymized name
+    description = output.description  # Extract the description
+
+    # Step 4: Map back the anonymized name to the original name
+    original_name = reverse_mapping.get(anonymized_name, anonymized_name)
+
+    # Step 5: Construct the result
+    detailed_result = {original_name: description}
+
+    return {"evaluator_reports": [detailed_result]}
