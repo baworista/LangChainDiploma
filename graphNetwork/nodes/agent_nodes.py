@@ -46,7 +46,7 @@ QUESTIONS: {ai_msg.questions}
                 "analysis": [ai_msg.analysis],
                 "task": ai_msg.task,
                 "questions": ai_msg.questions,
-                "processed_agents": [ai_msg.name],
+                "processed_agents": [ai_msg.name, ai_msg.next_agent],
             }
         )
 
