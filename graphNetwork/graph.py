@@ -14,7 +14,7 @@ def load_json(filename):
     with open(f"{DATA_PATH}{filename}", 'r', encoding='utf-8') as f:
         return json.load(f)
 
-questionare = load_json("answer_1.json")
+questionnaire = load_json("answer_1.json")
 good_practices = load_json("good_practices.json")
 
 # Build the state graph
@@ -53,7 +53,7 @@ with open("../data/good_practices.json", "r") as file:
 
 user_input = {
     "main_task": "Help a multinational manufacturing company in their journey to product management maturity.",
-    "questionare" : data,
+    "questionnaire" : data,
     "good_practices": gp
 }
 

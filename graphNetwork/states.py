@@ -10,7 +10,7 @@ def merge_str(old_str: str, new_str: str) -> str:
 class OveralState(TypedDict):
     questions: str = ""
     task: str = ""
-    questionare: str
+    questionnaire: str
     good_practices: str
     analysis: Annotated[List[str], operator.add]
     main_task: str
