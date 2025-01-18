@@ -10,12 +10,6 @@ from graphHierarchicalTeams.nodes.subordinate_node import *
 from graphHierarchicalTeams.nodes.team_node import *
 from graphHierarchicalTeams.states import *
 
-load_dotenv()
-model = ChatOpenAI(temperature=0.1, model_name="gpt-4o-mini")
-
-def test_node(state: OverallState):
-    print("Test node activated.")
-    print(state["subordinate_reviews"])
 
 def create_team_builder():
     """

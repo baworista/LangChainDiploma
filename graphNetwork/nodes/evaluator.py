@@ -1,7 +1,12 @@
+import os
+from dotenv import load_dotenv
+
 from langchain_core.messages import SystemMessage
 from langchain_openai import ChatOpenAI
 
-llm = ChatOpenAI(model="gpt-4o")
+load_dotenv()
+
+llm = ChatOpenAI(model_name=os.getenv("MODEL_SUPERVISOR"))
 
 
 # Функция для оценки через GPT-4
