@@ -2,6 +2,11 @@ import operator
 from typing import Annotated, TypedDict, List
 
 
+def merge_str(old_str: str, new_str: str) -> str:
+    # Ensure that only one topic is returned
+    return old_str
+
+
 class OveralState(TypedDict):
     questions: str = ""
     task: str = ""
