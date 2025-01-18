@@ -4,7 +4,7 @@ from langgraph.constants import END, START
 from langgraph.graph import StateGraph
 
 from graphNetwork.nodes.agent_nodes import *
-from graphNetwork.nodes.evaluator import evaluate_with_gpt4
+from evaluator import evaluate_with_gpt4
 from graphNetwork.nodes.report_writer_node import report_writer_node
 from graphNetwork.states import OveralState
 

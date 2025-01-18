@@ -13,7 +13,7 @@ llm = ChatOpenAI(model_name=os.getenv("MODEL_SUPERVISOR"))
 def evaluate_with_gpt4(state):
     prompt = """
     Task: {task}
-    Questionare: {questionare}
+    questionnaire: {questionnaire}
     Best Practices: {good_practices}
     Report: {report}
 
@@ -25,7 +25,7 @@ def evaluate_with_gpt4(state):
     5. Actionability: Are the recommendations practical and applicable?
 
     Provide a score (1-5) for each criterion and include a brief explanation.
-    """.format(task=state["main_task"], questionare=state["questionare"], good_practices=state["good_practices"], report=state["final_report"])
+    """.format(task=state["main_task"], questionnaire=state["questionnaire"], good_practices=state["good_practices"], report=state["final_report"])
     response = llm.invoke([SystemMessage(content=prompt)])
     print(response)
     return response
