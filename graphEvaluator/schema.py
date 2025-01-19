@@ -5,7 +5,10 @@ class EvaluatorOutput(BaseModel):
         description="Anonymized name of the report writer. Example: 'Report_1'",
     )
     description: str = Field(
-        description="Report's scores and comment",
+        description="Your output with best report's scores and short comment about other reports."
+                    "**Don't use names from anonymized_name field, like: 'Report_1', 'first report' and others.**\n"
+                    "To express best one use phrase 'this report' and to express other ones use phrase 'other reports'.\n"
+                    "Comment for other reports one should be short and without scores.",
     )
 
     @property
