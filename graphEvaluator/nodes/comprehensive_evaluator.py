@@ -12,7 +12,7 @@ llm = ChatOpenAI(model_name=os.getenv("MODEL_SUPERVISOR"))
 evaluator_prompt = """
     Task: You are a comprehensive evaluator reviewing the reports compiled by the different analysts on topic: {topic}.
     With asked questions and answers on it: {questionnaire}
-    The names are anonymized to you be objective in your evaluation, so please don't use it anywhere except anonymized_name field.
+    The names are anonymized to you be objective in your evaluation.
     You have access to the following reports:
 
     Reports: {reports}
@@ -23,11 +23,14 @@ evaluator_prompt = """
     3. Completeness: Does the report fully cover all aspects of the task (diagnosis and recommendations)?
     4. Clarity: Is the report well-structured and easy to understand?
     5. Actionability: Are the recommendations practical and applicable?
-
-    **Provide a score (1-5) for each criterion and include a brief explanation for each report.**
-    **Select the best one, and in description provide scores and comment for this report**
-    **Note: You are only one of several evaluators, so make your evaluation based on overall analysis, **
+    
+    **Provide a score (1-5) for each criterion and include a detailed and specific explanation for each report.**
+    **Ensure that your evaluation is critical and fair: Avoid giving the highest scores (5) unless the report clearly demonstrates exceptional quality in that criterion.**
+    **Identify the best report, but justify your choice by explicitly comparing it with the others.**
+    **Note: You are only one of several evaluators. Make your evaluation based on a balanced and unbiased analysis, avoiding assumptions or over-optimistic scoring.**
+    **Make short comment about how you rated other ones and why didn't you choose them as the best report**
 """
+
 
 
 def comprehensive_evaluator_node(state: OverallState):
