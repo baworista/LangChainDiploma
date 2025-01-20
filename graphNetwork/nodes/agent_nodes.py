@@ -13,7 +13,7 @@ load_dotenv()
 
 
 # Initialize LLM
-llm = ChatOpenAI(model=os.getenv("SUPERVISOR_MODEL"))
+llm = ChatOpenAI(model=os.getenv("MODEL_SUPERVISOR"))
 model = llm.with_structured_output(Output)
 
 from graphNetwork.prompts.generators import create_user_prompt, generate_agent_prompt
