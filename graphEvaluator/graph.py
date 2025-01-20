@@ -5,6 +5,7 @@ from langgraph.constants import END
 from langgraph.graph import StateGraph
 
 from graphEvaluator.nodes.comprehensive_evaluator import comprehensive_evaluator_node
+from graphEvaluator.nodes.individual_evaluator import individual_evaluator_node
 from graphEvaluator.nodes.report_compiler import report_compiler_node
 from graphEvaluator.nodes.states import OverallState
 
@@ -12,12 +13,14 @@ from graphEvaluator.nodes.states import OverallState
 app_builder = StateGraph(OverallState)
 
 app_builder.add_node("Report_Compiler", report_compiler_node)
-app_builder.add_node("Comprehensive_Evaluator", comprehensive_evaluator_node)
+# app_builder.add_node("Comprehensive_Evaluator", comprehensive_evaluator_node)
+app_builder.add_node("Individual_Evaluator", individual_evaluator_node)
 
 app_builder.set_entry_point("Report_Compiler")
-app_builder.add_edge("Report_Compiler", "Comprehensive_Evaluator")
+# app_builder.add_edge("Report_Compiler", "Comprehensive_Evaluator")
+app_builder.add_edge("Report_Compiler", "Individual_Evaluator")
 
-app_builder.add_edge("Comprehensive_Evaluator", END)
+app_builder.add_edge("Individual_Evaluator", END)
 # Compile the graph
 graphEvaluator = app_builder.compile()
 
