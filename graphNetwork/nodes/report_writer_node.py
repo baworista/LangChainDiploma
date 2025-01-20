@@ -6,7 +6,7 @@ from langchain_openai import ChatOpenAI
 from graphNetwork.prompts.generators import create_summary_agent_prompt
 from graphNetwork.states import OveralState
 
-llm = ChatOpenAI(model=os.getenv("MODEL"))
+llm = ChatOpenAI(model=os.getenv("MODEL_SUPERVISOR"))
 
 def report_writer_node(state: OveralState):
     """ Node to summarize diagnosis and recommendations in a single report"""

@@ -4,7 +4,6 @@ from langgraph.constants import END, START
 from langgraph.graph import StateGraph
 
 from graphNetwork.nodes.agent_nodes import *
-from evaluator import evaluate_with_gpt4
 from graphNetwork.nodes.report_writer_node import report_writer_node
 from graphNetwork.states import OveralState
 
@@ -27,12 +26,9 @@ builder.add_node("KM_Agent", KM_Agent)
 builder.add_node("IT_Agent", IT_Agent)
 
 builder.add_node("Summary_Agent", report_writer_node)
-builder.add_node("Evaluator_Agent", evaluate_with_gpt4)
 
 builder.add_edge(START, "Consulting_Agent")
-builder.add_edge("Summary_Agent", "Evaluator_Agent")
-builder.add_edge("Evaluator_Agent", END)
-
+builder.add_edge("Summary_Agent", END)
 graphNetwork = builder.compile()
 
 graph_image = graphNetwork.get_graph(xray=1).draw_mermaid_png()
