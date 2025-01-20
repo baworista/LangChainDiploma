@@ -5,42 +5,42 @@ from langgraph.constants import END
 from langgraph.graph import StateGraph
 
 from graphEvaluator.nodes.comprehensive_evaluator import comprehensive_evaluator_node
+from graphEvaluator.nodes.g_evaluator import g_eval_evaluator_node
 from graphEvaluator.nodes.individual_evaluator import individual_evaluator_node
 from graphEvaluator.nodes.report_compiler import report_compiler_node
 from graphEvaluator.nodes.states import OverallState
 
+def test():
+    pass
 
 app_builder = StateGraph(OverallState)
 
 app_builder.add_node("Report_Compiler", report_compiler_node)
-# app_builder.add_node("Comprehensive_Evaluator", comprehensive_evaluator_node)
+app_builder.add_node("Comprehensive_Evaluator", comprehensive_evaluator_node)
+app_builder.add_node("G-Eval_Node", g_eval_evaluator_node)
 app_builder.add_node("Individual_Evaluator", individual_evaluator_node)
+app_builder.add_node("Final_Evaluator", test)
 
 app_builder.set_entry_point("Report_Compiler")
-# app_builder.add_edge("Report_Compiler", "Comprehensive_Evaluator")
+app_builder.add_edge("Report_Compiler", "Comprehensive_Evaluator")
 app_builder.add_edge("Report_Compiler", "Individual_Evaluator")
+app_builder.add_edge("Report_Compiler", "G-Eval_Node")
 
-app_builder.add_edge("Individual_Evaluator", END)
+app_builder.add_edge("Comprehensive_Evaluator", "Final_Evaluator")
+app_builder.add_edge("G-Eval_Node", "Final_Evaluator")
+app_builder.add_edge("Individual_Evaluator", "Final_Evaluator")
+
+app_builder.add_edge("Final_Evaluator", END)
+
 # Compile the graph
 graphEvaluator = app_builder.compile()
 
 
 
-
-
-
-# Get the Mermaid code
-graph_object = graphEvaluator.get_graph(xray=2)
-mermaid_code = graph_object.draw_mermaid()
-
-# Save Mermaid code to file
-with open("evaluator_graph_diagram.mmd", "w") as file:
-    file.write(mermaid_code)
-print("Mermaid code saved as 'evaluator_graph_diagram.mmd'")
-
-# Mermaid to PNG
-subprocess.run(["mmdc", "-i", "evaluator_graph_diagram.mmd", "-o", "evaluator_graph_diagram.png", "-s", "5"])
-print("PNG saved as 'evaluator_graph_diagram.png'")
+graph_image = graphEvaluator.get_graph(xray=1).draw_mermaid_png()
+with open("evaluator_graph_diagram.png", "wb") as file:
+    file.write(graph_image)
+print("Saved as PNG 'evaluator_graph_diagram.png'")
 
 
 # Thread configuration and graph input
