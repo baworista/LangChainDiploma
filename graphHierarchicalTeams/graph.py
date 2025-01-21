@@ -10,10 +10,42 @@ from graphHierarchicalTeams.nodes.subordinate_node import *
 from graphHierarchicalTeams.nodes.team_node import *
 from graphHierarchicalTeams.states import *
 
+"""
+Module for creating and managing a hierarchical state graph for process-based team workflows.
+
+This module uses `langgraph` to build and compile a hierarchical state graph for processes 
+involving analysts, reviewers, and supervisors. It facilitates the creation of subteams, 
+process teams, and the overall workflow for generating structured reports.
+
+Key Features:
+- Define team workflows for analysts and reviewers.
+- Create process-specific graphs for subteams.
+- Build and compile a main graph that integrates all processes.
+- Generate a Mermaid diagram to visualize the state graph.
+- Use a compiled graph to process user input and produce a final report.
+
+Modules Used:
+    - json: For loading and handling JSON data.
+    - subprocess: For executing external commands (e.g., Mermaid CLI).
+    - langgraph: For managing state graphs and nodes.
+    - graphHierarchicalTeams: Custom module for nodes and states.
+
+Functions:
+    - create_team_builder: Creates a state graph for an individual team (analyst and reviewer).
+    - create_process_team_builder: Creates a graph for a process with multiple subteams.
+    - create_main_graph: Builds the main hierarchical graph for all processes.
+"""
 
 def create_team_builder():
     """
     Creates a graph for a team with an analyst and a reviewer.
+
+    The team builder defines a workflow where the analyst performs a needs analysis,
+    and the reviewer provides feedback. The workflow alternates between these roles until
+    a defined condition is met.
+
+    Returns:
+        StateGraph: A compiled state graph for the team workflow.
     """
     team_builder = StateGraph(ResearchState)
     team_builder.add_node(f"Analyst", analyst_node)
@@ -30,8 +62,15 @@ def create_process_team_builder(process_name, subteams):
     """
     Creates a graph for a process with subteams.
 
-    :param process_name: Process name (e.g., "Inside_Processes").
-    :param subteams: Teams list (e.g., ["HR", "BP", "KM", "IT"]).
+    Each subteam has its own workflow (analyst and reviewer), and the process supervisor
+    orchestrates the overall process.
+
+    Args:
+        process_name (str): The name of the process (e.g., "Inside_Processes").
+        subteams (list): A list of subteam names (e.g., ["HR", "BP", "KM", "IT"]).
+
+    Returns:
+        StateGraph: A compiled state graph for the process.
     """
     builder = StateGraph(SubordinateState)
     builder.add_node(f"{process_name}_Supervisor", subordinate_node)
@@ -59,12 +98,21 @@ def create_process_team_builder(process_name, subteams):
 
 def create_main_graph(processes):
     """
-    Creates a graph for the main process with subteams.
+    Creates a graph for the main hierarchical process with multiple processes and their subteams.
 
-    :param processes: Process and teams dictionary.
-                      Example: {"Inside_Processes": ["HR", "BP", "KM", "IT"],
-                               "Outside_Processes": ["Marketing", "Finance", "Legal",
-                                                     "Customer_Support", "R&D"]}.
+    The main graph integrates all process-specific graphs and adds a main supervisor node
+    for overall orchestration.
+
+    Args:
+        processes (dict): A dictionary where keys are process names and values are lists of subteam names.
+                          Example:
+                          {
+                              "Inside_Processes": ["HR", "BP", "KM", "IT"],
+                              "Outside_Processes": ["Marketing", "Finance", "Legal", "Customer_Support", "R&D"]
+                          }
+
+    Returns:
+        StateGraph: A compiled state graph for the entire hierarchical process.
     """
     builder = StateGraph(OverallState)
     builder.add_node("Main_Supervisor", superivisor_node)
@@ -149,3 +197,8 @@ if final_report:
     print(f"Final report has been written to {output_file_path}")
 else:
     print("Final report is missing.")
+
+# Additional Details:
+# - The compiled graph is visualized as a Mermaid diagram and saved as a PNG.
+# - The hierarchical workflow processes user input to generate a final structured report.
+# - The final report is saved as `output.md` if generated successfully.

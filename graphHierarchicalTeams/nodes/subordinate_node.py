@@ -9,6 +9,36 @@ from langgraph.constants import END
 from graphHierarchicalTeams.states import SubordinateState
 from graphHierarchicalTeams.schema import Perspectives
 
+"""
+Main module for managing AI research teams and orchestrating their workflows.
+
+This module provides tools and functions to define research teams, manage their states, and generate comprehensive reports.
+It utilizes a language model for team generation and report writing, based on structured prompts and state transitions.
+
+Modules Used:
+    - os: For accessing environment variables.
+    - dotenv: To load environment variables from a `.env` file.
+    - langchain.tools: To define tools within the LangChain framework.
+    - langchain_core.messages: For structuring messages for the language model.
+    - langchain_openai: For interacting with OpenAI's chat models.
+    - langgraph.constants: For using `Send` and `END` constants in the workflow.
+    - graphHierarchicalTeams.states: For managing subordinate states.
+    - graphHierarchicalTeams.schema: For defining the `Perspectives` schema.
+
+Environment Variables:
+    - MODEL_SUPERVISOR: Specifies the language model used for the supervisor tool.
+
+Functions:
+    - subordinate_define_edge: Defines the workflow edge for subordinate state transitions.
+    - create_research_teams_tool: Generates a list of research teams based on the given topic and structured instructions.
+    - subordinate_node: Acts as a supervisor node, managing the research workflow and team orchestration.
+
+Constants:
+    - team_creation_instructions: Instructions for generating research teams.
+    - inside_processes_teams_info: Team definitions for inside processes.
+    - outside_processes_teams_info: Team definitions for outside processes.
+"""
+
 
 load_dotenv()
 llm = ChatOpenAI(model=os.getenv("MODEL_SUPERVISOR"))
@@ -39,8 +69,20 @@ outside_processes_teams_info = """
 
 def subordinate_define_edge(state: SubordinateState):
     """
-    Initializes states for each research team.
-    """
+        Defines the next workflow state for subordinate nodes based on the current state.
+
+        Args:
+            state (SubordinateState): The current state object containing the following keys:
+                - "final_subordinate_report" (str, optional): The final report, if available.
+                - "reviews" (list): A list of reviews from teams.
+                - "topic" (str): The research topic.
+                - "teams" (list): A list of team details.
+                - "questionnaire" (str): The questionnaire associated with the task.
+
+        Returns:
+            str or list: Returns `END` if the final report is available, a string `"Report_Writer"` if sufficient reviews exist,
+                         or a list of `Send` objects to initialize team states.
+        """
 
     if "final_subordinate_report" in state:
         return END
@@ -75,7 +117,18 @@ def subordinate_define_edge(state: SubordinateState):
 @tool
 def create_research_teams_tool(topic: str, team_info: str) -> dict:
     """
-    Generates a list of research teams based on the given topic.
+    Generates research teams for a given topic using structured language model outputs.
+
+    Args:
+        topic (str): The research topic.
+        team_info (str): Details about the teams, including their names, descriptions, and roles.
+
+    Returns:
+        dict: A dictionary containing the generated teams with the following keys:
+            - "team_name" (str): The name of the team.
+            - "description" (str): A brief description of the team's purpose.
+            - "analyst" (str): The name of the analyst in the team.
+            - "reviewer" (str): The name of the reviewer in the team.
     """
 
     print(f"Creating research teams on topic: \n\t{topic}")
@@ -106,7 +159,18 @@ def create_research_teams_tool(topic: str, team_info: str) -> dict:
 
 def subordinate_node(state: SubordinateState):
     """
-    Supervisor node for orchestrating the research workflow.
+    Orchestrates the workflow for subordinate nodes by generating teams and handling reports.
+
+    Args:
+        state (SubordinateState): The current state object containing the following keys:
+            - "teams" (list, optional): A list of team details.
+            - "subordinate_team_name" (str): The name of the subordinate team.
+            - "topic" (str): The research topic.
+            - "final_subordinate_report" (str, optional): The final report, if available.
+            - "subordinate_reviews" (list): A list of subordinate reviews.
+
+    Returns:
+        SubordinateState: The updated state object with added or modified keys as necessary.
     """
     print("Subordinate Node has been activated!")
 

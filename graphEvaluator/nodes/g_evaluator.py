@@ -1,6 +1,5 @@
-import os
 from dotenv import load_dotenv
-from graphEvaluator.nodes.states import OverallState
+from graphEvaluator.states import OverallState
 
 # Install DeepEval library
 from deepeval.test_case import LLMTestCase, LLMTestCaseParams
@@ -37,8 +36,13 @@ def g_eval_evaluator_node(state: OverallState):
 
     results = []
 
+    anonymized_reports = {
+        report_data["anonymized_name"]: report_data["report"]
+        for real_name, report_data in reports.items()
+    }
+
     # Evaluate each report using G-Eval
-    for anonymized_name, report_content in reports.items():
+    for anonymized_name, report_content in anonymized_reports.items():
         print(f"Evaluating report: {anonymized_name}")
 
         report_results = []
@@ -69,6 +73,6 @@ def g_eval_evaluator_node(state: OverallState):
         })
 
     # Construct the final output
-    detailed_result = {"evaluator_reports": results}
+    detailed_result = {"g-evaluator": results}
 
-    return detailed_result
+    return {"evaluator_reports": [detailed_result]}

@@ -1,6 +1,5 @@
-import os
 from dotenv import load_dotenv
-from graphEvaluator.nodes.states import OverallState
+from graphEvaluator.states import OverallState
 
 # Install bert-score library
 # pip install bert-score

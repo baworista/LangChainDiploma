@@ -1,17 +1,14 @@
 import json
-import subprocess
 
 from langgraph.constants import END
 from langgraph.graph import StateGraph
 
 from graphEvaluator.nodes.comprehensive_evaluator import comprehensive_evaluator_node
+from graphEvaluator.nodes.final_evaluator import final_evaluator_node
 from graphEvaluator.nodes.g_evaluator import g_eval_evaluator_node
 from graphEvaluator.nodes.individual_evaluator import individual_evaluator_node
 from graphEvaluator.nodes.report_compiler import report_compiler_node
-from graphEvaluator.nodes.states import OverallState
-
-def test():
-    pass
+from graphEvaluator.states import OverallState
 
 app_builder = StateGraph(OverallState)
 
@@ -19,7 +16,7 @@ app_builder.add_node("Report_Compiler", report_compiler_node)
 app_builder.add_node("Comprehensive_Evaluator", comprehensive_evaluator_node)
 app_builder.add_node("G-Eval_Node", g_eval_evaluator_node)
 app_builder.add_node("Individual_Evaluator", individual_evaluator_node)
-app_builder.add_node("Final_Evaluator", test)
+app_builder.add_node("Final_Evaluator", final_evaluator_node)
 
 app_builder.set_entry_point("Report_Compiler")
 app_builder.add_edge("Report_Compiler", "Comprehensive_Evaluator")
@@ -59,14 +56,14 @@ user_input = {
 response = graphEvaluator.invoke(user_input, thread)
 
 # Assuming the response is already generated
-the_best_report = response.get("the_best_report")
+the_best_report = response.get("the_best_report_info")
 
 if the_best_report:
     # Extract content from the The best report
     report_content = the_best_report.content
 
     # Define the output file path
-    output_file_path = "the_best_report.md"
+    output_file_path = "the_best_report_info.md"
 
     # Write the report content to the output.md file
     with open(output_file_path, "w", encoding="utf-8") as output_file:
