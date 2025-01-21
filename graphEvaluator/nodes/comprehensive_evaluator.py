@@ -1,10 +1,10 @@
 import os
 from dotenv import load_dotenv
-from langchain_core.messages import SystemMessage, HumanMessage
+from langchain_core.messages import SystemMessage
 from langchain_openai import ChatOpenAI
 
-from graphEvaluator.nodes.states import OverallState
-from graphEvaluator.schema import EvaluatorOutput, StructuredEvaluatorOutput
+from graphEvaluator.states import OverallState
+from graphEvaluator.schema import StructuredEvaluatorOutput
 
 load_dotenv()
 llm = ChatOpenAI(model_name=os.getenv("MODEL_SUPERVISOR"))
@@ -51,7 +51,7 @@ def comprehensive_evaluator_node(state: OverallState):
     output = structured_llm.invoke([system_message])
 
     # Step 5: Construct the result
-    detailed_result = {"comprehensive_evaluator": output}
+    detailed_result = {"comprehensive_evaluator": output.reports}
 
     return {"evaluator_reports": [detailed_result]}
 

@@ -3,8 +3,8 @@ from dotenv import load_dotenv
 from langchain_core.messages import SystemMessage
 from langchain_openai import ChatOpenAI
 
-from graphEvaluator.nodes.states import OverallState
-from graphEvaluator.schema import StructuredEvaluatorOutput, EvaluatorOutput
+from graphEvaluator.states import OverallState
+from graphEvaluator.schema import EvaluatorOutput
 
 load_dotenv()
 llm = ChatOpenAI(model_name=os.getenv("MODEL_SUPERVISOR"))
@@ -55,8 +55,13 @@ def individual_evaluator_node(state: OverallState):
 
     results = []
 
-    # Iterate through each report
-    for anonymized_name, report_content in reports.items():
+    anonymized_reports = {
+        report_data["anonymized_name"]: report_data["report"]
+        for real_name, report_data in reports.items()
+    }
+
+    # Evaluate each report using G-Eval
+    for anonymized_name, report_content in anonymized_reports.items():
         print(f"Evaluating report: {anonymized_name}")
 
         # Evaluate the report in isolation

@@ -5,6 +5,33 @@ from langgraph.constants import END
 
 from graphHierarchicalTeams.states import ResearchState
 
+"""
+Module for managing the workflow of analysts and reviewers in a hierarchical team.
+
+This module provides functionality for:
+- Activating the `Analyst` node to perform a needs analysis.
+- Activating the `Reviewer` node to provide constructive feedback on the analysis.
+- Determining whether the workflow should continue or transition to the final state.
+
+It uses language models to generate analysis and reviews based on structured prompts and manages the state of the research process.
+
+Modules Used:
+    - os: For accessing environment variables.
+    - langchain_core.messages: For managing system messages.
+    - langchain_openai: For interacting with OpenAI's language model.
+    - langgraph.constants: For workflow state management (e.g., `END`).
+    - graphHierarchicalTeams.states: For managing the research state.
+
+Functions:
+    - analyst_node: Activates the analyst node to generate a needs analysis based on the questionnaire results.
+    - reviewer_node: Activates the reviewer node to provide feedback on the analysis.
+    - should_continue: Determines whether the workflow should transition to the final state or proceed.
+
+Constants:
+    - analyst_prompt: Template for the analyst's role, context, and guidelines.
+    - reviewer_prompt: Template for the reviewer's role, context, and guidelines.
+"""
+
 llm = ChatOpenAI(model_name=os.getenv("MODEL"))
 
 analyst_prompt = """
@@ -64,6 +91,25 @@ Start your messages from your name!
 
 
 def analyst_node(state):
+    """
+    Activates the analyst node to perform a needs analysis.
+
+    The analyst analyzes the current state of the customer based on the provided questionnaire results
+    and, if available, integrates feedback from the reviewer.
+
+    Args:
+        state (dict): The current state of the process containing the following keys:
+            - "team_topic" (str): The topic assigned to the team.
+            - "team_name" (str): The name of the team.
+            - "description" (str): A description of the team and its responsibilities.
+            - "reviewer" (str): Information about the reviewer in the team.
+            - "analyst" (str): Information about the analyst in the team.
+            - "team_questionnaire" (str): The questionnaire results to be analyzed.
+            - "messages" (list): A list of previous messages in the conversation.
+
+    Returns:
+        ResearchState: A dictionary containing updated messages after invoking the language model.
+    """
     topic = state["team_topic"]
 
     team_name = state["team_name"]
@@ -98,6 +144,25 @@ def analyst_node(state):
 
 
 def reviewer_node(state):
+    """
+    Activates the reviewer node to provide feedback on the analyst's analysis.
+
+    The reviewer creates constructive and actionable recommendations based on the analyst's analysis
+    and the provided questionnaire results.
+
+    Args:
+        state (dict): The current state of the process containing the following keys:
+            - "team_topic" (str): The topic assigned to the team.
+            - "team_name" (str): The name of the team.
+            - "description" (str): A description of the team and its responsibilities.
+            - "reviewer" (str): Information about the reviewer in the team.
+            - "analyst" (str): Information about the analyst in the team.
+            - "team_questionnaire" (str): The questionnaire results to be analyzed.
+            - "messages" (list): A list of previous messages in the conversation.
+
+    Returns:
+        dict: A dictionary containing updated messages after invoking the language model.
+    """
     topic = state["team_topic"]
 
     team_name = state["team_name"]
@@ -130,6 +195,20 @@ def reviewer_node(state):
 
 
 def should_continue(state: ResearchState):
+    """
+    Determines whether the workflow should continue or transition to the final state.
+
+    If the number of messages reaches the defined limit, appends the last message
+    to the reviews list and ends the workflow. Otherwise, transitions to the next node.
+
+    Args:
+        state (ResearchState): The current research state containing the following keys:
+            - "messages" (list): A list of messages exchanged in the workflow.
+            - "reviews" (list): A list to store final reviews.
+
+    Returns:
+        str: Returns `END` if the workflow should end; otherwise, transitions to "Reviewer".
+    """
     messages = state.get("messages", [])
     # Check if the number of messages is 6 or more
     if len(messages) >= 5:
