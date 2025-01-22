@@ -1,3 +1,19 @@
+"""
+Module for managing the interaction between analysts and reviewers in a supervisor workflow.
+
+This module defines nodes for the `Analyst` and `Reviewer` roles in a research team, facilitating
+a structured exchange of analyses and feedback. It also provides a mechanism to determine the
+next workflow step based on the state of the conversation.
+
+Functions:
+    - analyst_node: Handles the needs analysis performed by the analyst.
+    - reviewer_node: Handles the feedback and review provided by the reviewer.
+    - should_continue: Determines whether to proceed to the next step or end the workflow.
+
+Constants:
+    - analyst_prompt: Template for the analyst's role, context, and guidelines.
+    - reviewer_prompt: Template for the reviewer's role, context, and guidelines.
+"""
 import os
 from langchain_core.messages import SystemMessage
 from langchain_openai import ChatOpenAI
@@ -64,6 +80,25 @@ Start your messages from your name!
 
 
 def analyst_node(state):
+    """
+    Handles the needs analysis performed by the analyst.
+
+    This function generates a structured analysis based on the provided questionnaire results and
+    optionally integrates feedback from the reviewer if available.
+
+    Args:
+        state (ResearchState): The current state of the research team containing:
+            - "team_topic" (str): The topic assigned to the team.
+            - "name" (str): The name of the team.
+            - "description" (str): A description of the team's responsibilities.
+            - "reviewer" (Person): Information about the reviewer.
+            - "analyst" (Person): Information about the analyst.
+            - "team_questionnaire" (str): The questionnaire results.
+            - "messages" (list): Previous messages exchanged in the workflow.
+
+    Returns:
+        dict: Updated state with the analyst's analysis added to the "messages".
+    """
     topic = state["team_topic"]
 
     team_name = state["name"]
@@ -99,6 +134,25 @@ def analyst_node(state):
 
 
 def reviewer_node(state):
+    """
+    Handles the feedback and review provided by the reviewer.
+
+    This function generates constructive feedback based on the analyst's analysis and the provided
+    questionnaire results.
+
+    Args:
+        state (ResearchState): The current state of the research team containing:
+            - "team_topic" (str): The topic assigned to the team.
+            - "name" (str): The name of the team.
+            - "description" (str): A description of the team's responsibilities.
+            - "reviewer" (Person): Information about the reviewer.
+            - "analyst" (Person): Information about the analyst.
+            - "team_questionnaire" (str): The questionnaire results.
+            - "messages" (list): Previous messages exchanged in the workflow.
+
+    Returns:
+        dict: Updated state with the reviewer's feedback added to the "messages".
+    """
     topic = state["team_topic"]
 
     team_name = state["name"]
@@ -132,6 +186,20 @@ def reviewer_node(state):
 
 
 def should_continue(state: ResearchState):
+    """
+    Determines whether to proceed to the next step or end the workflow.
+
+    If the number of messages reaches the defined threshold, the final review is appended to the
+    "reviews" list in the state, and the workflow ends. Otherwise, it transitions to the reviewer node.
+
+    Args:
+        state (ResearchState): The current state of the research team containing:
+            - "messages" (list): Previous messages exchanged in the workflow.
+            - "reviews" (list): List of final reviews collected.
+
+    Returns:
+        str: Returns `END` if the workflow should end, or "Reviewer" for the next step.
+    """
     messages = state.get("messages", [])
     # Check if the number of messages is 6 or more
     if len(messages) >= 7:

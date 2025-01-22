@@ -1,10 +1,3 @@
-from dotenv import load_dotenv
-from langchain_openai import ChatOpenAI
-from langchain_core.messages import SystemMessage
-import os
-
-from graphHierarchicalTeams.states import SubordinateState
-
 """
 Main module for generating a comprehensive report based on input data from subordinate states.
 
@@ -24,6 +17,14 @@ Functions:
 Environment Variables:
     - MODEL: The name of the model to be used by the language model.
 """
+
+from dotenv import load_dotenv
+from langchain_openai import ChatOpenAI
+from langchain_core.messages import SystemMessage
+import os
+
+from graphHierarchicalTeams.states import SubordinateState
+
 
 
 load_dotenv()

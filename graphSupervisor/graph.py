@@ -1,3 +1,36 @@
+"""
+Module for building and executing a supervisor workflow for a supervisor-led research process.
+
+This module uses LangGraph to create a supervisor state graph consisting of teams (analyst and reviewer)
+and supervisory nodes. The workflow facilitates generating structured analyses, reviews, and a final executive report.
+
+Key Features:
+- Define subgraphs for individual research teams.
+- Build a supervisor state graph connecting teams and the supervisor.
+- Generate a visual representation of the state graph as a PNG file.
+- Execute the state graph to process user input and produce a final report.
+
+Modules Used:
+    - json: For handling JSON data.
+    - langgraph.constants: Provides constants like START and END for defining graph transitions.
+    - langgraph.graph: Core library for creating and managing state graphs.
+    - graphSupervisor.nodes: Custom nodes for supervisor, report writer, and team roles.
+    - graphSupervisor.states: Custom states for the overall and team-specific workflows.
+    - dotenv: For loading environment variables.
+    - langchain_openai: For interacting with OpenAI's language models.
+
+Functions:
+    - create_team_builder: Creates a state graph for a single research team (analyst and reviewer).
+
+Graph Workflow:
+1. **Supervisor Node:** Initializes the workflow, assigns teams, and monitors progress.
+2. **Team Nodes:** Each team node alternates between analyst and reviewer roles until conditions are met.
+3. **Report Writer Node:** Consolidates team outputs into a final report.
+
+Outputs:
+- Mermaid diagram saved as a PNG file (`supervisor_graph_diagram.png`).
+- Final report generated from the workflow and saved as `output.md`.
+"""
 import json
 from langgraph.constants import START
 from langgraph.graph import StateGraph
@@ -14,6 +47,21 @@ model = ChatOpenAI(temperature=0.1, model_name="gpt-4o-mini")
 
 # Define subgraphs
 def create_team_builder():
+    """
+    Creates a state graph for a single research team.
+
+    Each team alternates between two roles:
+    - Analyst: Performs needs analysis based on questionnaire results.
+    - Reviewer: Provides constructive feedback on the analyst's analysis.
+
+    Edges:
+    - START -> Analyst
+    - Analyst -> Reviewer or END (conditional)
+    - Reviewer -> Analyst
+
+    Returns:
+        StateGraph: A compiled state graph for a single research team.
+    """
     team_builder = StateGraph(ResearchState)
     team_builder.add_node("Analyst", analyst_node)
     team_builder.add_node("Reviewer", reviewer_node)

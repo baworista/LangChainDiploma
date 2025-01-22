@@ -1,3 +1,43 @@
+"""
+Dictionary defining the roles, missions, and responsibilities of various agents in the workflow.
+
+The `AGENTS_DEFINITIONS` dictionary provides a structured description of each agent's role,
+primary mission, responsibilities, and domain. This structure allows the agents to perform
+their tasks within specific areas of expertise and collaborate effectively to achieve
+organizational goals.
+
+Agent Roles:
+    - HR_Agent: Focuses on Human Resources, improving the employee lifecycle and aligning HR strategies with goals.
+    - IT_Agent: Specializes in technology infrastructure and IT solutions to enhance operational efficiency.
+    - BP_Agent: Focuses on business processes, optimizing workflows and ensuring operational alignment.
+    - KM_Agent: Addresses knowledge management, improving knowledge sharing and resource accessibility.
+    - Consulting_Agent: Provides high-level strategic analysis and recommendations.
+
+Structure of Each Agent:
+    - agent_role (str): The title or designation of the agent.
+    - primary_mission (str): The main purpose or objective of the agent.
+    - primary_responsibilities (str): A summary of the agent's key responsibilities.
+    - responsibility_1 (str): A specific responsibility aligned with the agent's role.
+    - responsibility_2 (str): Another specific responsibility aligned with the agent's role.
+    - domain (str): The area or domain of expertise for the agent.
+
+Example:
+    AGENTS_DEFINITIONS = {
+        "HR_Agent": {
+            "agent_role": "HR Agent",
+            "primary_mission": "providing expert analysis and actionable recommendations in Human Resources (HR)",
+            "primary_responsibilities": "optimize the employee lifecycle, enhance satisfaction, and align HR strategies with organizational goals",
+            "responsibility_1": "Analyze HR-specific data (e.g., surveys, best practices) to identify challenges and opportunities for improvement.",
+            "responsibility_2": "Develop actionable recommendations to improve employee performance, satisfaction, and development.",
+            "domain": "HR domain"
+        },
+        ...
+    }
+"""
+
+
+
+
 AGENTS_DEFINITIONS = {
     "HR_Agent": {
         "agent_role": "HR Agent",

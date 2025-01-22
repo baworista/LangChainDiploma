@@ -1,9 +1,37 @@
+"""
+Module for managing agent-based workflows in a network.
+
+This module initializes agents to handle various tasks using a structured language model.
+Agents communicate using prompts and states, progressing through the workflow until completion.
+
+Key Features:
+- Initialize agents with specific roles (e.g., Consulting, HR, BP, KM, IT).
+- Use prompts to guide agent tasks and generate responses.
+- Process responses to determine the next agent and update the workflow state.
+
+Modules Used:
+    - os: For environment variable management.
+    - dotenv: For loading environment variables from a `.env` file.
+    - langchain_openai: For interacting with OpenAI's language model.
+    - langgraph.types: For managing commands and transitions between agents.
+    - graphNetwork.states: Custom states for managing the workflow.
+    - graphNetwork.schemas: Custom schema definitions for structured outputs.
+    - graphNetwork.prompts.generators: Utilities for generating user and agent prompts.
+
+Functions:
+    - agent_handler: Handles the execution of a generic agent, including prompt generation and response processing.
+    - Consulting_Agent: Executes the Consulting Agent's workflow.
+    - HR_Agent: Executes the HR Agent's workflow.
+    - BP_Agent: Executes the BP Agent's workflow.
+    - KM_Agent: Executes the KM Agent's workflow.
+    - IT_Agent: Executes the IT Agent's workflow.
+"""
 import os
 
 from dotenv import load_dotenv
 from langchain_openai import ChatOpenAI
 from langgraph.types import Command
-from graphNetwork.states import OveralState
+from graphNetwork.states import OverallState
 from graphNetwork.schemas import Output
 
 
@@ -20,7 +48,21 @@ from graphNetwork.prompts.generators import create_user_prompt, generate_agent_p
 
 
 # Generic agent handler
-def agent_handler(state: OveralState, agent_prompt: str):
+def agent_handler(state: OverallState, agent_prompt: str):
+    """
+    Handles the execution of a generic agent.
+
+    This function creates a structured prompt for the agent, invokes the language model,
+    and processes the response to determine the next agent or update the state.
+
+    Args:
+        state (OverallState): The current state of the workflow.
+        agent_prompt (str): The prompt specific to the agent's role and tasks.
+
+    Returns:
+        dict or Command: A dictionary with the updated state if the workflow ends, or a
+                         `Command` object with instructions for the next agent.
+    """
     user_prompt = create_user_prompt(state)
 
     messages = [
@@ -53,17 +95,62 @@ QUESTIONS: {ai_msg.questions}
     return {"analysis": [ai_msg.analysis]}
 
 # Define agents
-def Consulting_Agent(state: OveralState):
+def Consulting_Agent(state: OverallState):
+    """
+    Executes the Consulting Agent's workflow.
+
+    Args:
+        state (OverallState): The current state of the workflow.
+
+    Returns:
+        dict or Command: Updated state or transition command.
+    """
     return agent_handler(state, generate_agent_prompt("Consulting_Agent"))
 
-def HR_Agent(state: OveralState):
+def HR_Agent(state: OverallState):
+    """
+    Executes the HR Agent's workflow.
+
+    Args:
+        state (OverallState): The current state of the workflow.
+
+    Returns:
+        dict or Command: Updated state or transition command.
+    """
     return agent_handler(state, generate_agent_prompt("HR_Agent"))
 
-def BP_Agent(state: OveralState):
+def BP_Agent(state: OverallState):
+    """
+    Executes the BP Agent's workflow.
+
+    Args:
+        state (OverallState): The current state of the workflow.
+
+    Returns:
+        dict or Command: Updated state or transition command.
+    """
     return agent_handler(state, generate_agent_prompt("BP_Agent"))
 
-def KM_Agent(state: OveralState):
+def KM_Agent(state: OverallState):
+    """
+    Executes the KM Agent's workflow.
+
+    Args:
+        state (OverallState): The current state of the workflow.
+
+    Returns:
+        dict or Command: Updated state or transition command.
+    """
     return agent_handler(state, generate_agent_prompt("KM_Agent"))
 
-def IT_Agent(state: OveralState):
+def IT_Agent(state: OverallState):
+    """
+    Executes the IT Agent's workflow.
+
+    Args:
+        state (OverallState): The current state of the workflow.
+
+    Returns:
+        dict or Command: Updated state or transition command.
+    """
     return agent_handler(state, generate_agent_prompt("IT_Agent"))

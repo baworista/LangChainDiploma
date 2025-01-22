@@ -1,20 +1,8 @@
-import json
-from langgraph.constants import START
-from langgraph.graph import StateGraph
-import subprocess
-from langgraph.prebuilt import ToolNode
-
-from graphHierarchicalTeams.nodes.supervisor import *
-from graphHierarchicalTeams.nodes.report_writer_node import *
-from graphHierarchicalTeams.nodes.subordinate_node import *
-from graphHierarchicalTeams.nodes.team_node import *
-from graphHierarchicalTeams.states import *
-
 """
 Module for creating and managing a hierarchical state graph for process-based team workflows.
 
-This module uses `langgraph` to build and compile a hierarchical state graph for processes 
-involving analysts, reviewers, and supervisors. It facilitates the creation of subteams, 
+This module uses `langgraph` to build and compile a hierarchical state graph for processes
+involving analysts, reviewers, and supervisors. It facilitates the creation of subteams,
 process teams, and the overall workflow for generating structured reports.
 
 Key Features:
@@ -35,6 +23,18 @@ Functions:
     - create_process_team_builder: Creates a graph for a process with multiple subteams.
     - create_main_graph: Builds the main hierarchical graph for all processes.
 """
+import json
+from langgraph.constants import START
+from langgraph.graph import StateGraph
+import subprocess
+from langgraph.prebuilt import ToolNode
+
+from graphHierarchicalTeams.nodes.supervisor import *
+from graphHierarchicalTeams.nodes.report_writer_node import *
+from graphHierarchicalTeams.nodes.subordinate_node import *
+from graphHierarchicalTeams.nodes.team_node import *
+from graphHierarchicalTeams.states import *
+
 
 def create_team_builder():
     """

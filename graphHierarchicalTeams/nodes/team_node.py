@@ -1,10 +1,3 @@
-import os
-from langchain_core.messages import SystemMessage
-from langchain_openai import ChatOpenAI
-from langgraph.constants import END
-
-from graphHierarchicalTeams.states import ResearchState
-
 """
 Module for managing the workflow of analysts and reviewers in a hierarchical team.
 
@@ -31,6 +24,13 @@ Constants:
     - analyst_prompt: Template for the analyst's role, context, and guidelines.
     - reviewer_prompt: Template for the reviewer's role, context, and guidelines.
 """
+import os
+from langchain_core.messages import SystemMessage
+from langchain_openai import ChatOpenAI
+from langgraph.constants import END
+
+from graphHierarchicalTeams.states import ResearchState
+
 
 llm = ChatOpenAI(model_name=os.getenv("MODEL"))
 

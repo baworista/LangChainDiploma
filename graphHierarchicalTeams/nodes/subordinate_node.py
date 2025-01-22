@@ -1,14 +1,3 @@
-import os
-from dotenv import load_dotenv
-from langchain.tools import tool
-from langchain_core.messages import HumanMessage, SystemMessage
-from langchain_openai import ChatOpenAI
-from langgraph.constants import Send
-from langgraph.constants import END
-
-from graphHierarchicalTeams.states import SubordinateState
-from graphHierarchicalTeams.schema import Perspectives
-
 """
 Main module for managing AI research teams and orchestrating their workflows.
 
@@ -38,6 +27,17 @@ Constants:
     - inside_processes_teams_info: Team definitions for inside processes.
     - outside_processes_teams_info: Team definitions for outside processes.
 """
+import os
+from dotenv import load_dotenv
+from langchain.tools import tool
+from langchain_core.messages import HumanMessage, SystemMessage
+from langchain_openai import ChatOpenAI
+from langgraph.constants import Send
+from langgraph.constants import END
+
+from graphHierarchicalTeams.states import SubordinateState
+from graphHierarchicalTeams.schema import Perspectives
+
 
 
 load_dotenv()

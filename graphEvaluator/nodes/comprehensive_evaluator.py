@@ -1,3 +1,37 @@
+"""
+Module for evaluating team-generated reports using a comprehensive evaluator node.
+
+This module defines the `comprehensive_evaluator_node` function, which leverages a
+language model to evaluate reports submitted by different teams based on predefined
+criteria. The evaluation is anonymized to ensure objectivity and fairness.
+
+Functionality:
+    - Accepts the workflow state, including the task topic, questionnaire, and reports.
+    - Anonymizes report data to prevent bias.
+    - Evaluates each report on five criteria: relevance, factuality, completeness, clarity, and actionability.
+    - Returns a structured evaluation report.
+
+Evaluation Criteria:
+1. **Relevance**: How well the report addresses the task.
+2. **Factuality**: Whether the report contains any factual errors.
+3. **Completeness**: Whether the report fully covers all aspects of the task, including diagnosis and recommendations.
+4. **Clarity**: Whether the report is well-structured and easy to understand.
+5. **Actionability**: Whether the recommendations are practical and applicable.
+
+Guidelines for Evaluation:
+    - Provide a score (1-5) for each criterion, with detailed justifications.
+    - Avoid over-optimistic scoring; scores of 5 should only be given for exceptional quality.
+    - Ensure a balanced and unbiased evaluation, explicitly comparing reports where necessary.
+
+Dependencies:
+    - langchain_core.messages: For creating system messages for the language model.
+    - langchain_openai: For interacting with OpenAI's language model.
+    - graphEvaluator.states: Contains the `OverallState` definition for the workflow state.
+    - graphEvaluator.schema: Defines the `StructuredEvaluatorOutput` for structured evaluations.
+
+Functions:
+    - comprehensive_evaluator_node: The core function for evaluating reports based on the workflow state.
+"""
 import os
 from dotenv import load_dotenv
 from langchain_core.messages import SystemMessage
@@ -31,6 +65,31 @@ evaluator_prompt = """
 """
 
 def comprehensive_evaluator_node(state: OverallState):
+    """
+    Evaluates reports submitted by teams using predefined criteria and generates a structured evaluation report.
+
+    Args:
+        state (OverallState): The current workflow state, which includes:
+            - "topic" (str): The topic of the task being evaluated.
+            - "questionnaire" (str): The questionnaire data provided for the task.
+            - "reports" (dict): A dictionary containing anonymized reports submitted by teams.
+
+    Returns:
+        dict: A dictionary containing structured evaluation reports under the key `evaluator_reports`.
+
+    Example:
+        state = {
+            "topic": "Optimize organizational IT systems.",
+            "questionnaire": "Survey responses about IT satisfaction.",
+            "reports": {
+                "Report_1": "Details about IT infrastructure.",
+                "Report_2": "Details about team collaboration."
+            }
+        }
+
+        output = comprehensive_evaluator_node(state)
+        print(output["evaluator_reports"])
+    """
     print("Comprehensive Evaluator activated.")
 
     reports = state["reports"]

@@ -1,11 +1,8 @@
-from typing import List
-from pydantic import BaseModel, Field
-
 """
 Module defining data models for hierarchical teams using Pydantic.
 
-This module provides structured representations for persons, subordinate teams, 
-research teams, and their hierarchical relationships. It uses Pydantic to enforce 
+This module provides structured representations for persons, subordinate teams,
+research teams, and their hierarchical relationships. It uses Pydantic to enforce
 validation and provides helper methods to present detailed representations of the entities.
 
 Classes:
@@ -15,6 +12,9 @@ Classes:
     - Subordinates: A container for multiple subordinate teams.
     - Perspectives: A container for multiple research teams.
 """
+from typing import List
+from pydantic import BaseModel, Field
+
 
 class Person(BaseModel):
     """

@@ -1,15 +1,3 @@
-import os
-from typing import List
-from dotenv import load_dotenv
-from langchain.tools import tool
-from langchain_core.messages import HumanMessage, SystemMessage
-from langchain_openai import ChatOpenAI
-from langgraph.constants import Send
-from langgraph.constants import END
-
-from graphHierarchicalTeams.schema import Subordinates
-from graphHierarchicalTeams.states import OverallState
-
 """
 Main module for managing the hierarchical architecture network, including the creation of subordinate teams
 and the generation of comprehensive reports.
@@ -42,6 +30,18 @@ Constants:
     - subordinates_creation_instructions: Instructions for creating subordinate teams.
     - writing_instructions: Guidelines for generating structured reports.
 """
+import os
+from typing import List
+from dotenv import load_dotenv
+from langchain.tools import tool
+from langchain_core.messages import HumanMessage, SystemMessage
+from langchain_openai import ChatOpenAI
+from langgraph.constants import Send
+from langgraph.constants import END
+
+from graphHierarchicalTeams.schema import Subordinates
+from graphHierarchicalTeams.states import OverallState
+
 
 load_dotenv()
 llm = ChatOpenAI(model=os.getenv("MODEL_SUPERVISOR"))
