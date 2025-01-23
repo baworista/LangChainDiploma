@@ -1,5 +1,5 @@
 """
-Module: summary_agent_prompt_template
+Module: summary_agent_prompt_template.
 
 This module defines the template for generating prompts for a summary agent in a multi-agent system.
 

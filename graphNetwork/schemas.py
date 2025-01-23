@@ -1,5 +1,5 @@
 """
-Module: output_structure
+Module: output_structure.
 
 This module defines the `Output` class, a Pydantic model for structuring messages exchanged 
 between agents in a multi-agent system. Each instance of the `Output` class represents the 
