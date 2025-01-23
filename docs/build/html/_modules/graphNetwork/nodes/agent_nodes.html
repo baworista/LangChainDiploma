@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>graphNetwork.nodes.agent_nodes &#8212; LangChainDiploma 1.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/basic.css?v=686e5160" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/alabaster.css?v=27fed22d" />
+    <script src="../../../_static/documentation_options.js?v=f2a433a1"></script>
+    <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for graphNetwork.nodes.agent_nodes</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Module for managing agent-based workflows in a network.</span>
+
+<span class="sd">This module initializes agents to handle various tasks using a structured language model.</span>
+<span class="sd">Agents communicate using prompts and states, progressing through the workflow until completion.</span>
+
+<span class="sd">Key Features:</span>
+<span class="sd">- Initialize agents with specific roles (e.g., Consulting, HR, BP, KM, IT).</span>
+<span class="sd">- Use prompts to guide agent tasks and generate responses.</span>
+<span class="sd">- Process responses to determine the next agent and update the workflow state.</span>
+
+<span class="sd">Modules Used:</span>
+<span class="sd">    - os: For environment variable management.</span>
+<span class="sd">    - dotenv: For loading environment variables from a `.env` file.</span>
+<span class="sd">    - langchain_openai: For interacting with OpenAI&#39;s language model.</span>
+<span class="sd">    - langgraph.types: For managing commands and transitions between agents.</span>
+<span class="sd">    - graphNetwork.states: Custom states for managing the workflow.</span>
+<span class="sd">    - graphNetwork.schemas: Custom schema definitions for structured outputs.</span>
+<span class="sd">    - graphNetwork.prompts.generators: Utilities for generating user and agent prompts.</span>
+
+<span class="sd">Functions:</span>
+<span class="sd">    - agent_handler: Handles the execution of a generic agent, including prompt generation and response processing.</span>
+<span class="sd">    - Consulting_Agent: Executes the Consulting Agent&#39;s workflow.</span>
+<span class="sd">    - HR_Agent: Executes the HR Agent&#39;s workflow.</span>
+<span class="sd">    - BP_Agent: Executes the BP Agent&#39;s workflow.</span>
+<span class="sd">    - KM_Agent: Executes the KM Agent&#39;s workflow.</span>
+<span class="sd">    - IT_Agent: Executes the IT Agent&#39;s workflow.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">dotenv</span><span class="w"> </span><span class="kn">import</span> <span class="n">load_dotenv</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langchain_openai</span><span class="w"> </span><span class="kn">import</span> <span class="n">ChatOpenAI</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.types</span><span class="w"> </span><span class="kn">import</span> <span class="n">Command</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">graphNetwork.states</span><span class="w"> </span><span class="kn">import</span> <span class="n">OverallState</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">graphNetwork.schemas</span><span class="w"> </span><span class="kn">import</span> <span class="n">Output</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">graphNetwork.prompts.generators</span><span class="w"> </span><span class="kn">import</span> <span class="n">create_user_prompt</span><span class="p">,</span> <span class="n">generate_agent_prompt</span>
+
+<span class="n">load_dotenv</span><span class="p">()</span>
+
+<span class="c1"># Initialize LLM</span>
+<span class="n">llm</span> <span class="o">=</span> <span class="n">ChatOpenAI</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;MODEL_SUPERVISOR&quot;</span><span class="p">))</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">llm</span><span class="o">.</span><span class="n">with_structured_output</span><span class="p">(</span><span class="n">Output</span><span class="p">)</span>
+
+<div class="viewcode-block" id="agent_handler">
+<a class="viewcode-back" href="../../../graphNetwork.nodes.html#graphNetwork.nodes.agent_nodes.agent_handler">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">agent_handler</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">OverallState</span><span class="p">,</span> <span class="n">agent_prompt</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Handle the execution of a generic agent.</span>
+
+<span class="sd">    This function creates a structured prompt for the agent, invokes the language model,</span>
+<span class="sd">    and processes the response to determine the next agent or update the workflow state.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        state (OverallState): The current state of the workflow.</span>
+<span class="sd">        agent_prompt (str): The prompt specific to the agent&#39;s role and tasks.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        dict or Command: A dictionary with the updated state if the workflow ends, or a `Command` object with</span>
+<span class="sd">            instructions for the next agent.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        ValueError: If the language model response is invalid or incomplete.</span>
+
+<span class="sd">    Examples:</span>
+<span class="sd">        updated_state = agent_handler(state, &quot;Agent Prompt Example&quot;)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">user_prompt</span> <span class="o">=</span> <span class="n">create_user_prompt</span><span class="p">(</span><span class="n">state</span><span class="p">)</span>
+
+    <span class="n">messages</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="p">{</span><span class="s2">&quot;role&quot;</span><span class="p">:</span> <span class="s2">&quot;system&quot;</span><span class="p">,</span> <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="n">agent_prompt</span><span class="p">},</span>
+        <span class="p">{</span><span class="s2">&quot;role&quot;</span><span class="p">:</span> <span class="s2">&quot;user&quot;</span><span class="p">,</span> <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="n">user_prompt</span><span class="p">}</span>
+    <span class="p">]</span>
+    <span class="n">ai_msg</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">invoke</span><span class="p">(</span><span class="n">messages</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">RESPONSE</span><span class="se">\n</span><span class="s2">&quot; </span>
+<span class="si">{ai_msg.analysis}</span>
+<span class="s2">==========================</span><span class="se">\n</span>
+<span class="s2">NEXT AGENT: </span><span class="si">{ai_msg.next_agent}</span>
+<span class="s2">TASK: </span><span class="si">{ai_msg.task}</span>
+<span class="s2">QUESTIONS: </span><span class="si">{ai_msg.questions}</span>
+<span class="s2">==========================</span><span class="se">\n</span>
+<span class="s2">    &quot;&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ai_msg</span><span class="o">=</span><span class="n">ai_msg</span><span class="p">))</span>
+
+    <span class="k">if</span> <span class="n">ai_msg</span><span class="o">.</span><span class="n">next_agent</span> <span class="o">!=</span> <span class="s2">&quot;__end__&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">Command</span><span class="p">(</span>
+            <span class="n">goto</span><span class="o">=</span><span class="n">ai_msg</span><span class="o">.</span><span class="n">next_agent</span><span class="p">,</span>
+            <span class="n">update</span><span class="o">=</span><span class="p">{</span>
+                <span class="s2">&quot;analysis&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">ai_msg</span><span class="o">.</span><span class="n">analysis</span><span class="p">],</span>
+                <span class="s2">&quot;task&quot;</span><span class="p">:</span> <span class="n">ai_msg</span><span class="o">.</span><span class="n">task</span><span class="p">,</span>
+                <span class="s2">&quot;questions&quot;</span><span class="p">:</span> <span class="n">ai_msg</span><span class="o">.</span><span class="n">questions</span><span class="p">,</span>
+                <span class="s2">&quot;processed_agents&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">ai_msg</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">ai_msg</span><span class="o">.</span><span class="n">next_agent</span><span class="p">],</span>
+            <span class="p">}</span>
+        <span class="p">)</span>
+
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;analysis&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">ai_msg</span><span class="o">.</span><span class="n">analysis</span><span class="p">]}</span></div>
+
+
+<div class="viewcode-block" id="Consulting_Agent">
+<a class="viewcode-back" href="../../../graphNetwork.nodes.html#graphNetwork.nodes.agent_nodes.Consulting_Agent">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">Consulting_Agent</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">OverallState</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Execute the Consulting Agent&#39;s workflow.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        state (OverallState): The current state of the workflow.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        dict or Command: Updated state or transition command.</span>
+
+<span class="sd">    Examples:</span>
+<span class="sd">        result = Consulting_Agent(current_state)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">agent_handler</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">generate_agent_prompt</span><span class="p">(</span><span class="s2">&quot;Consulting_Agent&quot;</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="HR_Agent">
+<a class="viewcode-back" href="../../../graphNetwork.nodes.html#graphNetwork.nodes.agent_nodes.HR_Agent">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">HR_Agent</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">OverallState</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Execute the HR Agent&#39;s workflow.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        state (OverallState): The current state of the workflow.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        dict or Command: Updated state or transition command.</span>
+
+<span class="sd">    Examples:</span>
+<span class="sd">        result = HR_Agent(current_state)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">agent_handler</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">generate_agent_prompt</span><span class="p">(</span><span class="s2">&quot;HR_Agent&quot;</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="BP_Agent">
+<a class="viewcode-back" href="../../../graphNetwork.nodes.html#graphNetwork.nodes.agent_nodes.BP_Agent">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">BP_Agent</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">OverallState</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Execute the BP Agent&#39;s workflow.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        state (OverallState): The current state of the workflow.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        dict or Command: Updated state or transition command.</span>
+
+<span class="sd">    Examples:</span>
+<span class="sd">        result = BP_Agent(current_state)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">agent_handler</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">generate_agent_prompt</span><span class="p">(</span><span class="s2">&quot;BP_Agent&quot;</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="KM_Agent">
+<a class="viewcode-back" href="../../../graphNetwork.nodes.html#graphNetwork.nodes.agent_nodes.KM_Agent">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">KM_Agent</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">OverallState</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Execute the KM Agent&#39;s workflow.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        state (OverallState): The current state of the workflow.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        dict or Command: Updated state or transition command.</span>
+
+<span class="sd">    Examples:</span>
+<span class="sd">        result = KM_Agent(current_state)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">agent_handler</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">generate_agent_prompt</span><span class="p">(</span><span class="s2">&quot;KM_Agent&quot;</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="IT_Agent">
+<a class="viewcode-back" href="../../../graphNetwork.nodes.html#graphNetwork.nodes.agent_nodes.IT_Agent">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">IT_Agent</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">OverallState</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Execute the IT Agent&#39;s workflow.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        state (OverallState): The current state of the workflow.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        dict or Command: Updated state or transition command.</span>
+
+<span class="sd">    Examples:</span>
+<span class="sd">        result = IT_Agent(current_state)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">agent_handler</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">generate_agent_prompt</span><span class="p">(</span><span class="s2">&quot;IT_Agent&quot;</span><span class="p">))</span></div>
+
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../../index.html">LangChainDiploma</a></h1>
+
+
+
+
+
+
+
+
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2025, Fedir Zhuk, Aleksander Ignacik.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.1.3</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>graphEvaluator.nodes package &#8212; LangChainDiploma 1.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="_static/basic.css?v=686e5160" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=27fed22d" />
+    <script src="_static/documentation_options.js?v=f2a433a1"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="graphevaluator-nodes-package">
+<h1>graphEvaluator.nodes package<a class="headerlink" href="#graphevaluator-nodes-package" title="Link to this heading">¶</a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading">¶</a></h2>
+</section>
+<section id="module-graphEvaluator.nodes.comprehensive_evaluator">
+<span id="graphevaluator-nodes-comprehensive-evaluator-module"></span><h2>graphEvaluator.nodes.comprehensive_evaluator module<a class="headerlink" href="#module-graphEvaluator.nodes.comprehensive_evaluator" title="Link to this heading">¶</a></h2>
+<p>Module for evaluating team-generated reports using a comprehensive evaluator node.</p>
+<p>This module defines the <cite>comprehensive_evaluator_node</cite> function, which evaluates reports submitted by
+different teams based on predefined criteria using a language model. The evaluation process is anonymized
+to ensure fairness and objectivity, and each report is scored on five key criteria.</p>
+<dl class="simple">
+<dt>Functionality:</dt><dd><ul class="simple">
+<li><p>Accepts the current workflow state, including the topic, questionnaire, and reports.</p></li>
+<li><p>Anonymizes report data to prevent bias in evaluations.</p></li>
+<li><p>Scores reports based on relevance, factuality, completeness, clarity, and actionability.</p></li>
+<li><p>Returns structured evaluation results in a standardized format for further processing.</p></li>
+</ul>
+</dd>
+<dt>Evaluation Criteria:</dt><dd><ol class="arabic simple">
+<li><p><strong>Relevance</strong>: How well the report addresses the task.</p></li>
+<li><p><strong>Factuality</strong>: Whether the report contains any factual errors.</p></li>
+<li><p><strong>Completeness</strong>: Coverage of all aspects of the task, including diagnosis and recommendations.</p></li>
+<li><p><strong>Clarity</strong>: Whether the report is well-structured and easy to understand.</p></li>
+<li><p><strong>Actionability</strong>: Practicality and applicability of the recommendations.</p></li>
+</ol>
+</dd>
+<dt>Dependencies:</dt><dd><ul class="simple">
+<li><p><cite>langchain_core.messages</cite>: For generating system prompts for the language model.</p></li>
+<li><p><cite>langchain_openai</cite>: For querying OpenAI’s language model.</p></li>
+<li><p><cite>graphEvaluator.states</cite>: Defines the <cite>OverallState</cite> workflow structure.</p></li>
+<li><p><cite>graphEvaluator.schema</cite>: Provides the <cite>StructuredEvaluatorOutput</cite> for standardized evaluations.</p></li>
+</ul>
+</dd>
+<dt>Functions:</dt><dd><ul class="simple">
+<li><p>comprehensive_evaluator_node: Evaluates reports using a language model and returns structured results.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py function">
+<dt class="sig sig-object py" id="graphEvaluator.nodes.comprehensive_evaluator.comprehensive_evaluator_node">
+<span class="sig-prename descclassname"><span class="pre">graphEvaluator.nodes.comprehensive_evaluator.</span></span><span class="sig-name descname"><span class="pre">comprehensive_evaluator_node</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="graphEvaluator.html#graphEvaluator.states.OverallState" title="graphEvaluator.states.OverallState"><span class="pre">OverallState</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/graphEvaluator/nodes/comprehensive_evaluator.html#comprehensive_evaluator_node"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#graphEvaluator.nodes.comprehensive_evaluator.comprehensive_evaluator_node" title="Link to this definition">¶</a></dt>
+<dd><p>Evaluate team-generated reports using a comprehensive language model.</p>
+<p>This function processes reports provided in the workflow state, anonymizes their data, and evaluates
+them based on predefined criteria. The results include structured feedback and scores for each report.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>state</strong> (<a class="reference internal" href="graphEvaluator.html#graphEvaluator.states.OverallState" title="graphEvaluator.states.OverallState"><em>OverallState</em></a>) – The current workflow state, which includes:
+- topic (str): The topic being evaluated.
+- questionnaire (str): Questions and answers used for evaluation.
+- reports (dict): A dictionary of anonymized reports submitted by teams.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A structured evaluation report, containing scores and feedback for each report.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<dl>
+<dt>state = {</dt><dd><p>“topic”: “Optimize organizational IT systems.”,
+“questionnaire”: “Survey responses about IT satisfaction.”,
+“reports”: {</p>
+<blockquote>
+<div><p>“Report_1”: “Details about IT infrastructure.”,
+“Report_2”: “Details about team collaboration.”</p>
+</div></blockquote>
+<p>}</p>
+</dd>
+</dl>
+<p>}</p>
+<p>output = comprehensive_evaluator_node(state)
+print(output[“evaluator_reports”])</p>
+</dd></dl>
+
+</section>
+<section id="module-graphEvaluator.nodes.final_evaluator">
+<span id="graphevaluator-nodes-final-evaluator-module"></span><h2>graphEvaluator.nodes.final_evaluator module<a class="headerlink" href="#module-graphEvaluator.nodes.final_evaluator" title="Link to this heading">¶</a></h2>
+<p>Module for selecting the best report in a multi-agent system.</p>
+<p>This module defines the <cite>final_evaluator_node</cite> function, which uses a language model to analyze
+reports, feedback, and context to identify the best submission and justify the choice.</p>
+<dl class="simple">
+<dt>Functionality:</dt><dd><ul class="simple">
+<li><p>Analyzes topic, questionnaire, reports, and evaluator feedback.</p></li>
+<li><p>Selects the best report based on evaluation criteria (e.g., relevance, clarity).</p></li>
+<li><p>Outputs the selected report and justification for its choice.</p></li>
+</ul>
+</dd>
+<dt>Dependencies:</dt><dd><ul class="simple">
+<li><p><cite>langchain_core.messages</cite>: For generating system prompts.</p></li>
+<li><p><cite>langchain_openai</cite>: For querying OpenAI’s language model.</p></li>
+<li><p><cite>graphEvaluator.states</cite>: Provides the <cite>OverallState</cite> definition.</p></li>
+</ul>
+</dd>
+<dt>Function:</dt><dd><ul class="simple">
+<li><p><cite>final_evaluator_node</cite>: Evaluates and selects the best report.</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<dl>
+<dt>state = {</dt><dd><p>“topic”: “Improve team collaboration.”,
+“questionnaire”: “Survey on team dynamics.”,
+“reports”: {</p>
+<blockquote>
+<div><p>“Report_1”: “Analysis of team performance.”,
+“Report_2”: “Collaboration improvement strategies.”</p>
+</div></blockquote>
+<p>},
+“evaluator_reports”: [</p>
+<blockquote>
+<div><p>{“Report_1”: {“clarity”: 4, “actionability”: 3}},
+{“Report_2”: {“clarity”: 5, “actionability”: 4}}</p>
+</div></blockquote>
+<p>]</p>
+</dd>
+</dl>
+<p>}</p>
+<p>output = final_evaluator_node(state)
+print(output[“the_best_report_info”])</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="graphEvaluator.nodes.final_evaluator.final_evaluator_node">
+<span class="sig-prename descclassname"><span class="pre">graphEvaluator.nodes.final_evaluator.</span></span><span class="sig-name descname"><span class="pre">final_evaluator_node</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="graphEvaluator.html#graphEvaluator.states.OverallState" title="graphEvaluator.states.OverallState"><span class="pre">OverallState</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/graphEvaluator/nodes/final_evaluator.html#final_evaluator_node"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#graphEvaluator.nodes.final_evaluator.final_evaluator_node" title="Link to this definition">¶</a></dt>
+<dd><p>Select the best report from the provided submissions and justifies the choice.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>state</strong> (<a class="reference internal" href="graphEvaluator.html#graphEvaluator.states.OverallState" title="graphEvaluator.states.OverallState"><em>OverallState</em></a>) – The current state of the workflow, containing:
+- topic (str): The main topic of the evaluation.
+- questionnaire (str): Questionnaire used for report evaluation.
+- reports (dict): Reports submitted by agents.
+- evaluator_reports (list): Feedback from other evaluators.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A dictionary with the key <cite>the_best_report_info</cite>, containing the best report
+and the justification for its selection.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<dl>
+<dt>state = {</dt><dd><p>“topic”: “Optimize collaboration.”,
+“questionnaire”: “Survey data.”,
+“reports”: {</p>
+<blockquote>
+<div><p>“Report_1”: “Detailed analysis.”,
+“Report_2”: “Strategies for improvement.”</p>
+</div></blockquote>
+<p>},
+“evaluator_reports”: [</p>
+<blockquote>
+<div><p>{“Report_1”: {“clarity”: 4, “actionability”: 3}},
+{“Report_2”: {“clarity”: 5, “actionability”: 4}}</p>
+</div></blockquote>
+<p>]</p>
+</dd>
+</dl>
+<p>}</p>
+<p>output = final_evaluator_node(state)
+print(output[“the_best_report_info”])</p>
+</dd></dl>
+
+</section>
+<section id="module-graphEvaluator.nodes.g_evaluator">
+<span id="graphevaluator-nodes-g-evaluator-module"></span><h2>graphEvaluator.nodes.g_evaluator module<a class="headerlink" href="#module-graphEvaluator.nodes.g_evaluator" title="Link to this heading">¶</a></h2>
+<p>Module for evaluating reports using the G-Eval framework.</p>
+<p>Defines the <cite>g_eval_evaluator_node</cite> function, which evaluates reports based on multiple criteria
+(relevance, factuality, completeness, clarity, and actionability) using the G-Eval metric.</p>
+<dl class="simple">
+<dt>Functionality:</dt><dd><ul class="simple">
+<li><p>Processes anonymized reports.</p></li>
+<li><p>Evaluates each report based on predefined criteria.</p></li>
+<li><p>Returns detailed scores and comments for each criterion.</p></li>
+</ul>
+</dd>
+<dt>Dependencies:</dt><dd><ul class="simple">
+<li><p><cite>dotenv</cite>: Loads environment variables.</p></li>
+<li><p><cite>graphEvaluator.states</cite>: Provides the <cite>OverallState</cite> structure.</p></li>
+<li><p><cite>deepeval</cite>: Supplies G-Eval metrics and test cases.</p></li>
+</ul>
+</dd>
+<dt>Function:</dt><dd><ul class="simple">
+<li><p><cite>g_eval_evaluator_node</cite>: Main function for evaluating reports.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py function">
+<dt class="sig sig-object py" id="graphEvaluator.nodes.g_evaluator.g_eval_evaluator_node">
+<span class="sig-prename descclassname"><span class="pre">graphEvaluator.nodes.g_evaluator.</span></span><span class="sig-name descname"><span class="pre">g_eval_evaluator_node</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="graphEvaluator.html#graphEvaluator.states.OverallState" title="graphEvaluator.states.OverallState"><span class="pre">OverallState</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/graphEvaluator/nodes/g_evaluator.html#g_eval_evaluator_node"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#graphEvaluator.nodes.g_evaluator.g_eval_evaluator_node" title="Link to this definition">¶</a></dt>
+<dd><p>Evaluate reports using G-Eval metrics and generates detailed feedback.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>state</strong> (<a class="reference internal" href="graphEvaluator.html#graphEvaluator.states.OverallState" title="graphEvaluator.states.OverallState"><em>OverallState</em></a>) – <p>Current workflow state containing:
+- reports (dict): Dictionary of reports with:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>anonymized_name (str): The anonymized report name.</p></li>
+<li><p>report (str): Content of the report.</p></li>
+</ul>
+</div></blockquote>
+</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Results of G-Eval evaluation under the <cite>evaluator_reports</cite> key.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<dl>
+<dt>state = {</dt><dd><dl class="simple">
+<dt>“reports”: {</dt><dd><p>“Report_1”: {“anonymized_name”: “Anonymized_1”, “report”: “Content 1”},
+“Report_2”: {“anonymized_name”: “Anonymized_2”, “report”: “Content 2”}</p>
+</dd>
+</dl>
+<p>}</p>
+</dd>
+</dl>
+<p>}</p>
+<p>output = g_eval_evaluator_node(state)
+print(output[“evaluator_reports”])</p>
+</dd></dl>
+
+</section>
+<section id="module-graphEvaluator.nodes.individual_evaluator">
+<span id="graphevaluator-nodes-individual-evaluator-module"></span><h2>graphEvaluator.nodes.individual_evaluator module<a class="headerlink" href="#module-graphEvaluator.nodes.individual_evaluator" title="Link to this heading">¶</a></h2>
+<p>Module for evaluating individual reports in a multi-agent system.</p>
+<p>This module defines functions to evaluate reports in isolation based on predefined criteria.
+Each report is assessed independently to ensure objective and unbiased results.
+The evaluation includes detailed scores and comments for each criterion, along with
+an overall summary.</p>
+<dl class="simple">
+<dt>Functionality:</dt><dd><ul class="simple">
+<li><dl class="simple">
+<dt>Evaluates reports on the following criteria:</dt><dd><ol class="arabic simple">
+<li><p>Relevance: How well the report addresses the task.</p></li>
+<li><p>Factuality: Whether the report contains any factual errors.</p></li>
+<li><p>Completeness: Coverage of all task aspects (diagnosis and recommendations).</p></li>
+<li><p>Clarity: Whether the report is well-structured and easy to understand.</p></li>
+<li><p>Actionability: Practicality and applicability of the recommendations.</p></li>
+</ol>
+</dd>
+</dl>
+</li>
+<li><p>Processes all reports in the workflow state individually.</p></li>
+<li><p>Outputs structured results for each report.</p></li>
+</ul>
+</dd>
+<dt>Dependencies:</dt><dd><ul class="simple">
+<li><p><cite>langchain_core.messages</cite>: For generating system prompts.</p></li>
+<li><p><cite>langchain_openai</cite>: For querying the OpenAI language model.</p></li>
+<li><p><cite>graphEvaluator.states</cite>: Defines the <cite>OverallState</cite> structure.</p></li>
+<li><p><cite>graphEvaluator.schema</cite>: Provides the <cite>EvaluatorOutput</cite> structure.</p></li>
+</ul>
+</dd>
+<dt>Functions:</dt><dd><ul class="simple">
+<li><p><cite>evaluate_single_report</cite>: Evaluates a single report and returns structured feedback.</p></li>
+<li><p><cite>individual_evaluator_node</cite>: Processes all reports in the state and compiles evaluation results.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py function">
+<dt class="sig sig-object py" id="graphEvaluator.nodes.individual_evaluator.evaluate_single_report">
+<span class="sig-prename descclassname"><span class="pre">graphEvaluator.nodes.individual_evaluator.</span></span><span class="sig-name descname"><span class="pre">evaluate_single_report</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">report</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">topic</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">questionnaire</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="graphEvaluator.html#graphEvaluator.schema.EvaluatorOutput" title="graphEvaluator.schema.EvaluatorOutput"><span class="pre">EvaluatorOutput</span></a></span></span><a class="reference internal" href="_modules/graphEvaluator/nodes/individual_evaluator.html#evaluate_single_report"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#graphEvaluator.nodes.individual_evaluator.evaluate_single_report" title="Link to this definition">¶</a></dt>
+<dd><p>Evaluate a single report in isolation using an LLM.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>report</strong> (<em>str</em>) – The content of the report to evaluate.</p></li>
+<li><p><strong>topic</strong> (<em>str</em>) – The main topic of the evaluation.</p></li>
+<li><p><strong>questionnaire</strong> (<em>str</em>) – The questionnaire data used for the report.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Structured evaluation results with scores and comments.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="graphEvaluator.html#graphEvaluator.schema.EvaluatorOutput" title="graphEvaluator.schema.EvaluatorOutput">EvaluatorOutput</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="graphEvaluator.nodes.individual_evaluator.individual_evaluator_node">
+<span class="sig-prename descclassname"><span class="pre">graphEvaluator.nodes.individual_evaluator.</span></span><span class="sig-name descname"><span class="pre">individual_evaluator_node</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="graphEvaluator.html#graphEvaluator.states.OverallState" title="graphEvaluator.states.OverallState"><span class="pre">OverallState</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/graphEvaluator/nodes/individual_evaluator.html#individual_evaluator_node"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#graphEvaluator.nodes.individual_evaluator.individual_evaluator_node" title="Link to this definition">¶</a></dt>
+<dd><p>Process and evaluates all reports individually, returning structured results.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>state</strong> (<a class="reference internal" href="graphEvaluator.html#graphEvaluator.states.OverallState" title="graphEvaluator.states.OverallState"><em>OverallState</em></a>) – Current workflow state, including:
+- topic (str): The evaluation topic.
+- questionnaire (str): Questions guiding the reports.
+- reports (dict): Dictionary of anonymized reports with their content.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Structured evaluation results under the <cite>evaluator_reports</cite> key.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-graphEvaluator.nodes.report_compiler">
+<span id="graphevaluator-nodes-report-compiler-module"></span><h2>graphEvaluator.nodes.report_compiler module<a class="headerlink" href="#module-graphEvaluator.nodes.report_compiler" title="Link to this heading">¶</a></h2>
+<p>Module for compiling and loading reports in a multi-agent system.</p>
+<p>This module provides functionality to load reports from specified architectures,
+assign anonymized names, and update the system state for further processing.</p>
+<dl class="simple">
+<dt>Functionality:</dt><dd><ul class="simple">
+<li><p>Loads reports from file paths based on architecture names.</p></li>
+<li><p>Compiles the reports into a dictionary with anonymized names.</p></li>
+<li><p>Updates the system state to include the compiled reports.</p></li>
+</ul>
+</dd>
+<dt>Dependencies:</dt><dd><ul class="simple">
+<li><p><cite>os</cite>: For handling file paths and checking file existence.</p></li>
+<li><p><cite>graphEvaluator.states.OverallState</cite>: Defines the state structure for managing the workflow.</p></li>
+</ul>
+</dd>
+<dt>Functions:</dt><dd><ul class="simple">
+<li><p><cite>load_reports</cite>: Loads reports from specified architectures into a dictionary.</p></li>
+<li><p><cite>report_compiler_node</cite>: Compiles reports, assigns anonymized names, and updates the state.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py function">
+<dt class="sig sig-object py" id="graphEvaluator.nodes.report_compiler.load_reports">
+<span class="sig-prename descclassname"><span class="pre">graphEvaluator.nodes.report_compiler.</span></span><span class="sig-name descname"><span class="pre">load_reports</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">architectures</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/graphEvaluator/nodes/report_compiler.html#load_reports"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#graphEvaluator.nodes.report_compiler.load_reports" title="Link to this definition">¶</a></dt>
+<dd><p>Load reports from the specified architectures into a dictionary.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>architectures</strong> (<em>List</em><em>[</em><em>str</em><em>]</em>) – List of architecture names representing different report sources.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A dictionary where keys are architecture names and values are the report content.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict[str, str]</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<p>architectures = [“Architecture1”, “Architecture2”]
+reports = load_reports(architectures)
+print(reports)</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="graphEvaluator.nodes.report_compiler.report_compiler_node">
+<span class="sig-prename descclassname"><span class="pre">graphEvaluator.nodes.report_compiler.</span></span><span class="sig-name descname"><span class="pre">report_compiler_node</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="graphEvaluator.html#graphEvaluator.states.OverallState" title="graphEvaluator.states.OverallState"><span class="pre">OverallState</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/graphEvaluator/nodes/report_compiler.html#report_compiler_node"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#graphEvaluator.nodes.report_compiler.report_compiler_node" title="Link to this definition">¶</a></dt>
+<dd><p>Compile reports into a dictionary with anonymized names and updates the system state.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>state</strong> (<a class="reference internal" href="graphEvaluator.html#graphEvaluator.states.OverallState" title="graphEvaluator.states.OverallState"><em>OverallState</em></a>) – Current system state containing:
+- reports (list): List of architecture names to load reports from.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><dl class="simple">
+<dt>Updated state with compiled reports, including:</dt><dd><ul class="simple">
+<li><p>”real_name”: Original architecture name.</p></li>
+<li><p>”anonymized_name”: Anonymized name for the report.</p></li>
+<li><p>”report”: Report content.</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="graphEvaluator.html#graphEvaluator.states.OverallState" title="graphEvaluator.states.OverallState">OverallState</a></p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<dl class="simple">
+<dt>state = {</dt><dd><p>“reports”: [“Architecture1”, “Architecture2”]</p>
+</dd>
+</dl>
+<p>}
+updated_state = report_compiler_node(state)
+print(updated_state[“reports”])</p>
+</dd></dl>
+
+</section>
+<section id="module-graphEvaluator.nodes">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-graphEvaluator.nodes" title="Link to this heading">¶</a></h2>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">LangChainDiploma</a></h1>
+
+
+
+
+
+
+
+
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2025, Fedir Zhuk, Aleksander Ignacik.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.1.3</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      
+      |
+      <a href="_sources/graphEvaluator.nodes.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

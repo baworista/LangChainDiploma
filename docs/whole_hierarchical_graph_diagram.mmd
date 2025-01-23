@@ -1,0 +1,145 @@
+%%{init: {'flowchart': {'curve': 'linear'}}}%%
+graph TD;
+	__start__([<p>__start__</p>]):::first
+	Main_Supervisor(Main_Supervisor)
+	Main_Report_Writer(Main_Report_Writer)
+	Inside_Processes_Team___start__(<p>__start__</p>)
+	Inside_Processes_Team_Inside_Processes_Supervisor(Inside_Processes_Supervisor)
+	Inside_Processes_Team_Report_Writer(Report_Writer)
+	Inside_Processes_Team_HR_Team___start__(<p>__start__</p>)
+	Inside_Processes_Team_HR_Team_Analyst(Analyst)
+	Inside_Processes_Team_HR_Team_Reviewer(Reviewer)
+	Inside_Processes_Team_HR_Team___end__(<p>__end__</p>)
+	Inside_Processes_Team_BP_Team___start__(<p>__start__</p>)
+	Inside_Processes_Team_BP_Team_Analyst(Analyst)
+	Inside_Processes_Team_BP_Team_Reviewer(Reviewer)
+	Inside_Processes_Team_BP_Team___end__(<p>__end__</p>)
+	Inside_Processes_Team_KM_Team___start__(<p>__start__</p>)
+	Inside_Processes_Team_KM_Team_Analyst(Analyst)
+	Inside_Processes_Team_KM_Team_Reviewer(Reviewer)
+	Inside_Processes_Team_KM_Team___end__(<p>__end__</p>)
+	Inside_Processes_Team_IT_Team___start__(<p>__start__</p>)
+	Inside_Processes_Team_IT_Team_Analyst(Analyst)
+	Inside_Processes_Team_IT_Team_Reviewer(Reviewer)
+	Inside_Processes_Team_IT_Team___end__(<p>__end__</p>)
+	Inside_Processes_Team___end__(<p>__end__</p>)
+	Outside_Processes_Team___start__(<p>__start__</p>)
+	Outside_Processes_Team_Outside_Processes_Supervisor(Outside_Processes_Supervisor)
+	Outside_Processes_Team_Report_Writer(Report_Writer)
+	Outside_Processes_Team_Marketing_Team___start__(<p>__start__</p>)
+	Outside_Processes_Team_Marketing_Team_Analyst(Analyst)
+	Outside_Processes_Team_Marketing_Team_Reviewer(Reviewer)
+	Outside_Processes_Team_Marketing_Team___end__(<p>__end__</p>)
+	Outside_Processes_Team_Finance_Team___start__(<p>__start__</p>)
+	Outside_Processes_Team_Finance_Team_Analyst(Analyst)
+	Outside_Processes_Team_Finance_Team_Reviewer(Reviewer)
+	Outside_Processes_Team_Finance_Team___end__(<p>__end__</p>)
+	Outside_Processes_Team_Legal_Team___start__(<p>__start__</p>)
+	Outside_Processes_Team_Legal_Team_Analyst(Analyst)
+	Outside_Processes_Team_Legal_Team_Reviewer(Reviewer)
+	Outside_Processes_Team_Legal_Team___end__(<p>__end__</p>)
+	Outside_Processes_Team_Customer_Support_Team___start__(<p>__start__</p>)
+	Outside_Processes_Team_Customer_Support_Team_Analyst(Analyst)
+	Outside_Processes_Team_Customer_Support_Team_Reviewer(Reviewer)
+	Outside_Processes_Team_Customer_Support_Team___end__(<p>__end__</p>)
+	Outside_Processes_Team_R_D_Team___start__(<p>__start__</p>)
+	Outside_Processes_Team_R_D_Team_Analyst(Analyst)
+	Outside_Processes_Team_R_D_Team_Reviewer(Reviewer)
+	Outside_Processes_Team_R_D_Team___end__(<p>__end__</p>)
+	Outside_Processes_Team___end__(<p>__end__</p>)
+	__end__([<p>__end__</p>]):::last
+	Inside_Processes_Team___end__ --> Main_Supervisor;
+	Main_Report_Writer --> Main_Supervisor;
+	Outside_Processes_Team___end__ --> Main_Supervisor;
+	__start__ --> Main_Supervisor;
+	Main_Supervisor -.-> Inside_Processes_Team___start__;
+	Main_Supervisor -.-> Outside_Processes_Team___start__;
+	Main_Supervisor -.-> Main_Report_Writer;
+	Main_Supervisor -.-> __end__;
+	subgraph Inside_Processes_Team
+	Inside_Processes_Team_BP_Team___end__ --> Inside_Processes_Team_Inside_Processes_Supervisor;
+	Inside_Processes_Team_HR_Team___end__ --> Inside_Processes_Team_Inside_Processes_Supervisor;
+	Inside_Processes_Team_IT_Team___end__ --> Inside_Processes_Team_Inside_Processes_Supervisor;
+	Inside_Processes_Team_KM_Team___end__ --> Inside_Processes_Team_Inside_Processes_Supervisor;
+	Inside_Processes_Team_Report_Writer --> Inside_Processes_Team_Inside_Processes_Supervisor;
+	Inside_Processes_Team___start__ --> Inside_Processes_Team_Inside_Processes_Supervisor;
+	Inside_Processes_Team_Inside_Processes_Supervisor -.-> Inside_Processes_Team_HR_Team___start__;
+	Inside_Processes_Team_Inside_Processes_Supervisor -.-> Inside_Processes_Team_BP_Team___start__;
+	Inside_Processes_Team_Inside_Processes_Supervisor -.-> Inside_Processes_Team_KM_Team___start__;
+	Inside_Processes_Team_Inside_Processes_Supervisor -.-> Inside_Processes_Team_IT_Team___start__;
+	Inside_Processes_Team_Inside_Processes_Supervisor -.-> Inside_Processes_Team_Report_Writer;
+	Inside_Processes_Team_Inside_Processes_Supervisor -.-> Inside_Processes_Team___end__;
+	subgraph HR_Team
+	Inside_Processes_Team_HR_Team_Reviewer --> Inside_Processes_Team_HR_Team_Analyst;
+	Inside_Processes_Team_HR_Team___start__ --> Inside_Processes_Team_HR_Team_Analyst;
+	Inside_Processes_Team_HR_Team_Analyst -.-> Inside_Processes_Team_HR_Team_Reviewer;
+	Inside_Processes_Team_HR_Team_Analyst -.-> Inside_Processes_Team_HR_Team___end__;
+	end
+	subgraph BP_Team
+	Inside_Processes_Team_BP_Team_Reviewer --> Inside_Processes_Team_BP_Team_Analyst;
+	Inside_Processes_Team_BP_Team___start__ --> Inside_Processes_Team_BP_Team_Analyst;
+	Inside_Processes_Team_BP_Team_Analyst -.-> Inside_Processes_Team_BP_Team_Reviewer;
+	Inside_Processes_Team_BP_Team_Analyst -.-> Inside_Processes_Team_BP_Team___end__;
+	end
+	subgraph KM_Team
+	Inside_Processes_Team_KM_Team_Reviewer --> Inside_Processes_Team_KM_Team_Analyst;
+	Inside_Processes_Team_KM_Team___start__ --> Inside_Processes_Team_KM_Team_Analyst;
+	Inside_Processes_Team_KM_Team_Analyst -.-> Inside_Processes_Team_KM_Team_Reviewer;
+	Inside_Processes_Team_KM_Team_Analyst -.-> Inside_Processes_Team_KM_Team___end__;
+	end
+	subgraph IT_Team
+	Inside_Processes_Team_IT_Team_Reviewer --> Inside_Processes_Team_IT_Team_Analyst;
+	Inside_Processes_Team_IT_Team___start__ --> Inside_Processes_Team_IT_Team_Analyst;
+	Inside_Processes_Team_IT_Team_Analyst -.-> Inside_Processes_Team_IT_Team_Reviewer;
+	Inside_Processes_Team_IT_Team_Analyst -.-> Inside_Processes_Team_IT_Team___end__;
+	end
+	end
+	subgraph Outside_Processes_Team
+	Outside_Processes_Team_Customer_Support_Team___end__ --> Outside_Processes_Team_Outside_Processes_Supervisor;
+	Outside_Processes_Team_Finance_Team___end__ --> Outside_Processes_Team_Outside_Processes_Supervisor;
+	Outside_Processes_Team_Legal_Team___end__ --> Outside_Processes_Team_Outside_Processes_Supervisor;
+	Outside_Processes_Team_Marketing_Team___end__ --> Outside_Processes_Team_Outside_Processes_Supervisor;
+	Outside_Processes_Team_R_D_Team___end__ --> Outside_Processes_Team_Outside_Processes_Supervisor;
+	Outside_Processes_Team_Report_Writer --> Outside_Processes_Team_Outside_Processes_Supervisor;
+	Outside_Processes_Team___start__ --> Outside_Processes_Team_Outside_Processes_Supervisor;
+	Outside_Processes_Team_Outside_Processes_Supervisor -.-> Outside_Processes_Team_Marketing_Team___start__;
+	Outside_Processes_Team_Outside_Processes_Supervisor -.-> Outside_Processes_Team_Finance_Team___start__;
+	Outside_Processes_Team_Outside_Processes_Supervisor -.-> Outside_Processes_Team_Legal_Team___start__;
+	Outside_Processes_Team_Outside_Processes_Supervisor -.-> Outside_Processes_Team_Customer_Support_Team___start__;
+	Outside_Processes_Team_Outside_Processes_Supervisor -.-> Outside_Processes_Team_R_D_Team___start__;
+	Outside_Processes_Team_Outside_Processes_Supervisor -.-> Outside_Processes_Team_Report_Writer;
+	Outside_Processes_Team_Outside_Processes_Supervisor -.-> Outside_Processes_Team___end__;
+	subgraph Marketing_Team
+	Outside_Processes_Team_Marketing_Team_Reviewer --> Outside_Processes_Team_Marketing_Team_Analyst;
+	Outside_Processes_Team_Marketing_Team___start__ --> Outside_Processes_Team_Marketing_Team_Analyst;
+	Outside_Processes_Team_Marketing_Team_Analyst -.-> Outside_Processes_Team_Marketing_Team_Reviewer;
+	Outside_Processes_Team_Marketing_Team_Analyst -.-> Outside_Processes_Team_Marketing_Team___end__;
+	end
+	subgraph Finance_Team
+	Outside_Processes_Team_Finance_Team_Reviewer --> Outside_Processes_Team_Finance_Team_Analyst;
+	Outside_Processes_Team_Finance_Team___start__ --> Outside_Processes_Team_Finance_Team_Analyst;
+	Outside_Processes_Team_Finance_Team_Analyst -.-> Outside_Processes_Team_Finance_Team_Reviewer;
+	Outside_Processes_Team_Finance_Team_Analyst -.-> Outside_Processes_Team_Finance_Team___end__;
+	end
+	subgraph Legal_Team
+	Outside_Processes_Team_Legal_Team_Reviewer --> Outside_Processes_Team_Legal_Team_Analyst;
+	Outside_Processes_Team_Legal_Team___start__ --> Outside_Processes_Team_Legal_Team_Analyst;
+	Outside_Processes_Team_Legal_Team_Analyst -.-> Outside_Processes_Team_Legal_Team_Reviewer;
+	Outside_Processes_Team_Legal_Team_Analyst -.-> Outside_Processes_Team_Legal_Team___end__;
+	end
+	subgraph Customer_Support_Team
+	Outside_Processes_Team_Customer_Support_Team_Reviewer --> Outside_Processes_Team_Customer_Support_Team_Analyst;
+	Outside_Processes_Team_Customer_Support_Team___start__ --> Outside_Processes_Team_Customer_Support_Team_Analyst;
+	Outside_Processes_Team_Customer_Support_Team_Analyst -.-> Outside_Processes_Team_Customer_Support_Team_Reviewer;
+	Outside_Processes_Team_Customer_Support_Team_Analyst -.-> Outside_Processes_Team_Customer_Support_Team___end__;
+	end
+	subgraph R&D_Team
+	Outside_Processes_Team_R_D_Team_Reviewer --> Outside_Processes_Team_R_D_Team_Analyst;
+	Outside_Processes_Team_R_D_Team___start__ --> Outside_Processes_Team_R_D_Team_Analyst;
+	Outside_Processes_Team_R_D_Team_Analyst -.-> Outside_Processes_Team_R_D_Team_Reviewer;
+	Outside_Processes_Team_R_D_Team_Analyst -.-> Outside_Processes_Team_R_D_Team___end__;
+	end
+	end
+	classDef default fill:#f2f0ff,line-height:1.2
+	classDef first fill-opacity:0
+	classDef last fill:#bfb6fc

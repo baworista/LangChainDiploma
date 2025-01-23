@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>graphHierarchicalTeams.graph &#8212; LangChainDiploma 1.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="../../_static/basic.css?v=686e5160" />
+    <link rel="stylesheet" type="text/css" href="../../_static/alabaster.css?v=27fed22d" />
+    <script src="../../_static/documentation_options.js?v=f2a433a1"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for graphHierarchicalTeams.graph</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Module for creating and managing a hierarchical state graph for process-based team workflows.</span>
+
+<span class="sd">This module uses `langgraph` to build and compile a hierarchical state graph for processes</span>
+<span class="sd">involving analysts, reviewers, and supervisors. It facilitates the creation of subteams,</span>
+<span class="sd">process teams, and the overall workflow for generating structured reports.</span>
+
+<span class="sd">Key Features:</span>
+<span class="sd">- Define team workflows for analysts and reviewers.</span>
+<span class="sd">- Create process-specific graphs for subteams.</span>
+<span class="sd">- Build and compile a main graph that integrates all processes.</span>
+<span class="sd">- Generate a Mermaid diagram to visualize the state graph.</span>
+<span class="sd">- Use a compiled graph to process user input and produce a final report.</span>
+
+<span class="sd">Modules Used:</span>
+<span class="sd">    - json: For loading and handling JSON data.</span>
+<span class="sd">    - subprocess: For executing external commands (e.g., Mermaid CLI).</span>
+<span class="sd">    - langgraph: For managing state graphs and nodes.</span>
+<span class="sd">    - graphHierarchicalTeams: Custom module for nodes and states.</span>
+
+<span class="sd">Functions:</span>
+<span class="sd">    - create_team_builder: Creates a state graph for an individual team (analyst and reviewer).</span>
+<span class="sd">    - create_process_team_builder: Creates a graph for a process with multiple subteams.</span>
+<span class="sd">    - create_main_graph: Builds the main hierarchical graph for all processes.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">START</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.graph</span><span class="w"> </span><span class="kn">import</span> <span class="n">StateGraph</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">subprocess</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.prebuilt</span><span class="w"> </span><span class="kn">import</span> <span class="n">ToolNode</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">graphHierarchicalTeams.nodes.supervisor</span><span class="w"> </span><span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">graphHierarchicalTeams.nodes.report_writer_node</span><span class="w"> </span><span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">graphHierarchicalTeams.nodes.subordinate_node</span><span class="w"> </span><span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">graphHierarchicalTeams.nodes.team_node</span><span class="w"> </span><span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">graphHierarchicalTeams.states</span><span class="w"> </span><span class="kn">import</span> <span class="o">*</span>
+
+
+<div class="viewcode-block" id="create_team_builder">
+<a class="viewcode-back" href="../../graphHierarchicalTeams.html#graphHierarchicalTeams.graph.create_team_builder">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">create_team_builder</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Create a graph for a team with an analyst and a reviewer.</span>
+
+<span class="sd">    The team builder defines a workflow where the analyst performs a needs analysis,</span>
+<span class="sd">    and the reviewer provides feedback. The workflow alternates between these roles until</span>
+<span class="sd">    a defined condition is met.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        StateGraph: A compiled state graph for the team workflow.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">team_builder</span> <span class="o">=</span> <span class="n">StateGraph</span><span class="p">(</span><span class="n">ResearchState</span><span class="p">)</span>
+    <span class="n">team_builder</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Analyst&quot;</span><span class="p">,</span> <span class="n">analyst_node</span><span class="p">)</span>
+    <span class="n">team_builder</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Reviewer&quot;</span><span class="p">,</span> <span class="n">reviewer_node</span><span class="p">)</span>
+
+    <span class="n">team_builder</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">START</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Analyst&quot;</span><span class="p">)</span>
+    <span class="n">team_builder</span><span class="o">.</span><span class="n">add_conditional_edges</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Analyst&quot;</span><span class="p">,</span> <span class="n">should_continue</span><span class="p">,</span>
+                                       <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;Reviewer&quot;</span><span class="p">,</span> <span class="n">END</span><span class="p">])</span>
+    <span class="n">team_builder</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Reviewer&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Analyst&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">team_builder</span></div>
+
+
+
+<div class="viewcode-block" id="create_process_team_builder">
+<a class="viewcode-back" href="../../graphHierarchicalTeams.html#graphHierarchicalTeams.graph.create_process_team_builder">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">create_process_team_builder</span><span class="p">(</span><span class="n">process_name</span><span class="p">,</span> <span class="n">subteams</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Create a graph for a process with subteams.</span>
+
+<span class="sd">    Each subteam has its own workflow (analyst and reviewer), and the process supervisor</span>
+<span class="sd">    orchestrates the overall process.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        process_name (str): The name of the process (e.g., &quot;Inside_Processes&quot;).</span>
+<span class="sd">        subteams (list): A list of subteam names (e.g., [&quot;HR&quot;, &quot;BP&quot;, &quot;KM&quot;, &quot;IT&quot;]).</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        StateGraph: A compiled state graph for the process.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">builder</span> <span class="o">=</span> <span class="n">StateGraph</span><span class="p">(</span><span class="n">SubordinateState</span><span class="p">)</span>
+    <span class="n">builder</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">process_name</span><span class="si">}</span><span class="s2">_Supervisor&quot;</span><span class="p">,</span> <span class="n">subordinate_node</span><span class="p">)</span>
+    <span class="n">builder</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Report_Writer&quot;</span><span class="p">,</span> <span class="n">report_writer_node</span><span class="p">)</span>
+
+    <span class="c1"># Add teams</span>
+    <span class="k">for</span> <span class="n">team</span> <span class="ow">in</span> <span class="n">subteams</span><span class="p">:</span>
+        <span class="n">team_builder</span> <span class="o">=</span> <span class="n">create_team_builder</span><span class="p">()</span>
+        <span class="n">builder</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">team</span><span class="si">}</span><span class="s2">_Team&quot;</span><span class="p">,</span> <span class="n">team_builder</span><span class="o">.</span><span class="n">compile</span><span class="p">())</span>
+        <span class="n">builder</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">team</span><span class="si">}</span><span class="s2">_Team&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">process_name</span><span class="si">}</span><span class="s2">_Supervisor&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Set the starting point</span>
+    <span class="n">builder</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">START</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">process_name</span><span class="si">}</span><span class="s2">_Supervisor&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Add conditional edges</span>
+    <span class="n">builder</span><span class="o">.</span><span class="n">add_conditional_edges</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">process_name</span><span class="si">}</span><span class="s2">_Supervisor&quot;</span><span class="p">,</span> <span class="n">subordinate_define_edge</span><span class="p">,</span>
+                                  <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">team</span><span class="si">}</span><span class="s2">_Team&quot;</span> <span class="k">for</span> <span class="n">team</span> <span class="ow">in</span> <span class="n">subteams</span><span class="p">]</span> <span class="o">+</span>
+                                  <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;Report_Writer&quot;</span><span class="p">,</span> <span class="n">END</span><span class="p">])</span>
+
+    <span class="c1"># Link with Report Writer</span>
+    <span class="n">builder</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Report_Writer&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">process_name</span><span class="si">}</span><span class="s2">_Supervisor&quot;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">builder</span></div>
+
+
+
+<div class="viewcode-block" id="create_main_graph">
+<a class="viewcode-back" href="../../graphHierarchicalTeams.html#graphHierarchicalTeams.graph.create_main_graph">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">create_main_graph</span><span class="p">(</span><span class="n">processes</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Create a graph for the main hierarchical process with multiple processes and their subteams.</span>
+
+<span class="sd">    The main graph integrates all process-specific graphs and adds a main supervisor node</span>
+<span class="sd">    for overall orchestration.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        processes (dict): A dictionary where keys are process names and values are lists of subteam names.</span>
+<span class="sd">                          Example:</span>
+<span class="sd">                          {</span>
+<span class="sd">                              &quot;Inside_Processes&quot;: [&quot;HR&quot;, &quot;BP&quot;, &quot;KM&quot;, &quot;IT&quot;],</span>
+<span class="sd">                              &quot;Outside_Processes&quot;: [&quot;Marketing&quot;, &quot;Finance&quot;, &quot;Legal&quot;, &quot;Customer_Support&quot;, &quot;R&amp;D&quot;]</span>
+<span class="sd">                          }</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        StateGraph: A compiled state graph for the entire hierarchical process.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">builder</span> <span class="o">=</span> <span class="n">StateGraph</span><span class="p">(</span><span class="n">OverallState</span><span class="p">)</span>
+    <span class="n">builder</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="s2">&quot;Main_Supervisor&quot;</span><span class="p">,</span> <span class="n">superivisor_node</span><span class="p">)</span>
+    <span class="n">tool_node</span> <span class="o">=</span> <span class="n">ToolNode</span><span class="p">([</span><span class="n">report_writer_tool</span><span class="p">])</span>
+    <span class="n">builder</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="s2">&quot;Main_Report_Writer&quot;</span><span class="p">,</span> <span class="n">tool_node</span><span class="p">)</span>
+
+    <span class="c1"># Add processes</span>
+    <span class="k">for</span> <span class="n">process_name</span><span class="p">,</span> <span class="n">subteams</span> <span class="ow">in</span> <span class="n">processes</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">process_team_builder</span> <span class="o">=</span> <span class="n">create_process_team_builder</span><span class="p">(</span><span class="n">process_name</span><span class="p">,</span> <span class="n">subteams</span><span class="p">)</span>
+        <span class="n">builder</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">process_name</span><span class="si">}</span><span class="s2">_Team&quot;</span><span class="p">,</span> <span class="n">process_team_builder</span><span class="o">.</span><span class="n">compile</span><span class="p">())</span>
+        <span class="n">builder</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">process_name</span><span class="si">}</span><span class="s2">_Team&quot;</span><span class="p">,</span> <span class="s2">&quot;Main_Supervisor&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Set the starting point</span>
+    <span class="n">builder</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">START</span><span class="p">,</span> <span class="s2">&quot;Main_Supervisor&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Add conditional edges</span>
+    <span class="n">builder</span><span class="o">.</span><span class="n">add_conditional_edges</span><span class="p">(</span><span class="s2">&quot;Main_Supervisor&quot;</span><span class="p">,</span> <span class="n">supervisor_define_edge</span><span class="p">,</span>
+                                  <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">process_name</span><span class="si">}</span><span class="s2">_Team&quot;</span> <span class="k">for</span> <span class="n">process_name</span> <span class="ow">in</span> <span class="n">processes</span><span class="o">.</span><span class="n">keys</span><span class="p">()]</span> <span class="o">+</span>
+                                  <span class="p">[</span><span class="s2">&quot;Main_Report_Writer&quot;</span><span class="p">,</span> <span class="n">END</span><span class="p">])</span>
+
+    <span class="c1"># Link with Report Writer</span>
+    <span class="n">builder</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s2">&quot;Main_Report_Writer&quot;</span><span class="p">,</span> <span class="s2">&quot;Main_Supervisor&quot;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">builder</span></div>
+
+
+
+<span class="c1"># Define processes and their teams</span>
+<span class="n">processes</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;Inside_Processes&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;HR&quot;</span><span class="p">,</span> <span class="s2">&quot;BP&quot;</span><span class="p">,</span> <span class="s2">&quot;KM&quot;</span><span class="p">,</span> <span class="s2">&quot;IT&quot;</span><span class="p">],</span>
+    <span class="s2">&quot;Outside_Processes&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;Marketing&quot;</span><span class="p">,</span> <span class="s2">&quot;Finance&quot;</span><span class="p">,</span> <span class="s2">&quot;Legal&quot;</span><span class="p">,</span> <span class="s2">&quot;Customer_Support&quot;</span><span class="p">,</span> <span class="s2">&quot;R&amp;D&quot;</span><span class="p">]</span>
+<span class="p">}</span>
+
+<span class="c1"># Create the main graph</span>
+<span class="n">app_builder</span> <span class="o">=</span> <span class="n">create_main_graph</span><span class="p">(</span><span class="n">processes</span><span class="p">)</span>
+
+<span class="c1"># Compile the graph</span>
+<span class="n">graphHierarchical</span> <span class="o">=</span> <span class="n">app_builder</span><span class="o">.</span><span class="n">compile</span><span class="p">()</span>
+
+
+<span class="c1"># Get the Mermaid code</span>
+<span class="n">graph_object</span> <span class="o">=</span> <span class="n">graphHierarchical</span><span class="o">.</span><span class="n">get_graph</span><span class="p">(</span><span class="n">xray</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">mermaid_code</span> <span class="o">=</span> <span class="n">graph_object</span><span class="o">.</span><span class="n">draw_mermaid</span><span class="p">()</span>
+
+<span class="c1"># Save Mermaid code to file</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;whole_hierarchical_graph_diagram.mmd&quot;</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+    <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">mermaid_code</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Mermaid code saved as &#39;whole_hierarchical_graph_diagram.mmd&#39;&quot;</span><span class="p">)</span>
+
+<span class="c1"># Mermaid to PNG</span>
+<span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">([</span><span class="s2">&quot;mmdc&quot;</span><span class="p">,</span> <span class="s2">&quot;-i&quot;</span><span class="p">,</span> <span class="s2">&quot;whole_hierarchical_graph_diagram.mmd&quot;</span><span class="p">,</span> <span class="s2">&quot;-o&quot;</span><span class="p">,</span> <span class="s2">&quot;whole_hierarchical_graph_diagram.png&quot;</span><span class="p">,</span> <span class="s2">&quot;-s&quot;</span><span class="p">,</span> <span class="s2">&quot;5&quot;</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;PNG saved as &#39;whole_hierarchical_graph_diagram.png&#39;&quot;</span><span class="p">)</span>
+
+
+<span class="c1"># Thread configuration and graph input</span>
+<span class="n">thread</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;configurable&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;thread_id&quot;</span><span class="p">:</span> <span class="s2">&quot;1&quot;</span><span class="p">}}</span>
+
+<span class="c1"># Load from file</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;../data/answer_1.json&quot;</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+
+<span class="n">user_input</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;topic&quot;</span><span class="p">:</span> <span class="s2">&quot;Help a multinational manufacturing company in their journey to product management maturity.&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;questionnaire&quot;</span> <span class="p">:</span> <span class="n">data</span>
+<span class="p">}</span>
+
+<span class="n">response</span> <span class="o">=</span> <span class="n">graphHierarchical</span><span class="o">.</span><span class="n">invoke</span><span class="p">(</span><span class="n">user_input</span><span class="p">,</span> <span class="n">thread</span><span class="p">)</span>
+
+<span class="c1"># Assuming the response is already generated</span>
+<span class="n">final_report</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;final_report&quot;</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="n">final_report</span><span class="p">:</span>
+    <span class="c1"># Extract content from the final report</span>
+    <span class="n">report_content</span> <span class="o">=</span> <span class="n">final_report</span><span class="o">.</span><span class="n">content</span>
+
+    <span class="c1"># Define the output file path</span>
+    <span class="n">output_file_path</span> <span class="o">=</span> <span class="s2">&quot;output.md&quot;</span>
+
+    <span class="c1"># Write the report content to the output.md file</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">output_file_path</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">output_file</span><span class="p">:</span>
+        <span class="n">output_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">report_content</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Final report has been written to </span><span class="si">{</span><span class="n">output_file_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Final report is missing.&quot;</span><span class="p">)</span>
+
+<span class="c1"># Additional Details:</span>
+<span class="c1"># - The compiled graph is visualized as a Mermaid diagram and saved as a PNG.</span>
+<span class="c1"># - The hierarchical workflow processes user input to generate a final structured report.</span>
+<span class="c1"># - The final report is saved as `output.md` if generated successfully.</span>
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../index.html">LangChainDiploma</a></h1>
+
+
+
+
+
+
+
+
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2025, Fedir Zhuk, Aleksander Ignacik.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.1.3</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>
