@@ -26,6 +26,7 @@ Functions:
     - KM_Agent: Executes the KM Agent's workflow.
     - IT_Agent: Executes the IT Agent's workflow.
 """
+
 import os
 
 from dotenv import load_dotenv
@@ -33,35 +34,34 @@ from langchain_openai import ChatOpenAI
 from langgraph.types import Command
 from graphNetwork.states import OverallState
 from graphNetwork.schemas import Output
-
-
+from graphNetwork.prompts.generators import create_user_prompt, generate_agent_prompt
 
 load_dotenv()
-
-
 
 # Initialize LLM
 llm = ChatOpenAI(model=os.getenv("MODEL_SUPERVISOR"))
 model = llm.with_structured_output(Output)
 
-from graphNetwork.prompts.generators import create_user_prompt, generate_agent_prompt
-
-
-# Generic agent handler
 def agent_handler(state: OverallState, agent_prompt: str):
     """
-    Handles the execution of a generic agent.
+    Handle the execution of a generic agent.
 
     This function creates a structured prompt for the agent, invokes the language model,
-    and processes the response to determine the next agent or update the state.
+    and processes the response to determine the next agent or update the workflow state.
 
     Args:
         state (OverallState): The current state of the workflow.
         agent_prompt (str): The prompt specific to the agent's role and tasks.
 
     Returns:
-        dict or Command: A dictionary with the updated state if the workflow ends, or a
-                         `Command` object with instructions for the next agent.
+        dict or Command: A dictionary with the updated state if the workflow ends, or a `Command` object with
+            instructions for the next agent.
+
+    Raises:
+        ValueError: If the language model response is invalid or incomplete.
+
+    Examples:
+        updated_state = agent_handler(state, "Agent Prompt Example")
     """
     user_prompt = create_user_prompt(state)
 
@@ -94,63 +94,77 @@ QUESTIONS: {ai_msg.questions}
 
     return {"analysis": [ai_msg.analysis]}
 
-# Define agents
 def Consulting_Agent(state: OverallState):
     """
-    Executes the Consulting Agent's workflow.
+    Execute the Consulting Agent's workflow.
 
     Args:
         state (OverallState): The current state of the workflow.
 
     Returns:
         dict or Command: Updated state or transition command.
+
+    Examples:
+        result = Consulting_Agent(current_state)
     """
     return agent_handler(state, generate_agent_prompt("Consulting_Agent"))
 
 def HR_Agent(state: OverallState):
     """
-    Executes the HR Agent's workflow.
+    Execute the HR Agent's workflow.
 
     Args:
         state (OverallState): The current state of the workflow.
 
     Returns:
         dict or Command: Updated state or transition command.
+
+    Examples:
+        result = HR_Agent(current_state)
     """
     return agent_handler(state, generate_agent_prompt("HR_Agent"))
 
 def BP_Agent(state: OverallState):
     """
-    Executes the BP Agent's workflow.
+    Execute the BP Agent's workflow.
 
     Args:
         state (OverallState): The current state of the workflow.
 
     Returns:
         dict or Command: Updated state or transition command.
+
+    Examples:
+        result = BP_Agent(current_state)
     """
     return agent_handler(state, generate_agent_prompt("BP_Agent"))
 
 def KM_Agent(state: OverallState):
     """
-    Executes the KM Agent's workflow.
+    Execute the KM Agent's workflow.
 
     Args:
         state (OverallState): The current state of the workflow.
 
     Returns:
         dict or Command: Updated state or transition command.
+
+    Examples:
+        result = KM_Agent(current_state)
     """
     return agent_handler(state, generate_agent_prompt("KM_Agent"))
 
 def IT_Agent(state: OverallState):
     """
-    Executes the IT Agent's workflow.
+    Execute the IT Agent's workflow.
 
     Args:
         state (OverallState): The current state of the workflow.
 
     Returns:
         dict or Command: Updated state or transition command.
+
+    Examples:
+        result = IT_Agent(current_state)
     """
     return agent_handler(state, generate_agent_prompt("IT_Agent"))
