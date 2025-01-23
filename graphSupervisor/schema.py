@@ -13,13 +13,14 @@ Classes:
 
 Attributes in each class are well-defined using Pydantic's `Field` for validation and metadata.
 """
+
 from typing import List
 from pydantic import BaseModel, Field
 
 
 class Person(BaseModel):
     """
-    Represents an individual in a research team with attributes defining their role and focus.
+    Represent an individual in a research team with attributes defining their role and focus.
 
     Attributes:
         name (str): The name of the person.
@@ -29,6 +30,7 @@ class Person(BaseModel):
     Properties:
         persona (str): A formatted string summarizing the person's details.
     """
+
     name: str = Field(
         description="Human-like person's name"
     )
@@ -42,7 +44,7 @@ class Person(BaseModel):
     @property
     def persona(self) -> str:
         """
-        Provides a formatted representation of the person's details.
+        Provide a formatted representation of the person's details.
 
         Returns:
             str: A string containing the name, role, and description of the person.
@@ -52,7 +54,7 @@ class Person(BaseModel):
 
 class ResearchTeam(BaseModel):
     """
-    Represents a research team with a specific focus and roles for its members.
+    Represent a research team with a specific focus and roles for its members.
 
     Attributes:
         name (str): The name of the team (must use predefined names).
@@ -63,6 +65,7 @@ class ResearchTeam(BaseModel):
     Properties:
         team (str): A formatted string summarizing the team's details, including the analyst and reviewer personas.
     """
+
     name: str = Field(
         description="Use only provided in system message names"
     )
@@ -82,7 +85,7 @@ class ResearchTeam(BaseModel):
     @property
     def team(self) -> str:
         """
-        Provides a detailed representation of the research team's structure and members.
+        Provide a detailed representation of the research team's structure and members.
 
         Returns:
             str: A string summarizing the team's name, description, and member details.
@@ -97,11 +100,12 @@ class ResearchTeam(BaseModel):
 
 class Perspectives(BaseModel):
     """
-    Represents a collection of research teams.
+    Represent a collection of research teams.
 
     Attributes:
         teams (List[ResearchTeam]): A list of research teams, each consisting of a name, description, and assigned analyst and reviewer.
     """
+
     teams: List[ResearchTeam] = Field(
         description="List of research teams where each team contains name, description and analyst - reviewer duo prompts",
     )

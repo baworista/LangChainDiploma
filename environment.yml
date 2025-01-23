@@ -114,7 +114,7 @@ dependencies:
       - babel==2.16.0
       - bert-score==0.3.13
       - dataclasses-json==0.6.7
-      - deepeval==2.1.9
+      - deepeval==2.2.5
       - deprecated==1.2.15
       - distro==1.9.0
       - docutils==0.21.2

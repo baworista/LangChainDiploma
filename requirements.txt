@@ -22,7 +22,7 @@ click==8.1.7
 contourpy==1.3.1
 cycler==0.11.0
 dataclasses-json==0.6.7
-deepeval==2.1.9
+deepeval==2.2.5
 deprecated==1.2.15
 distro==1.9.0
 docutils==0.21.2

@@ -14,6 +14,7 @@ Functions:
 Annotations:
     - Annotated: Used for specifying custom merge or combination behaviors for fields.
 """
+
 import operator
 from typing import List, Annotated
 from langgraph.graph import MessagesState
@@ -36,6 +37,7 @@ class ResearchState(MessagesState):
         analyst (Person): Information about the analyst in the team.
         reviewer (Person): Information about the reviewer in the team.
     """
+
     name: str
     team_topic: str
     description: str  # Description of team's responsibility and capabilities
@@ -47,7 +49,7 @@ class ResearchState(MessagesState):
 
 def deduplicate_merge(old_reviews: List[str], new_reviews: List[str]) -> List[str]:
     """
-    Merges two lists of strings, removing duplicates.
+    Merge two lists of strings, removing duplicates.
 
     This function is used to combine old and new reviews in a way that ensures no duplicates are present.
 
@@ -63,7 +65,7 @@ def deduplicate_merge(old_reviews: List[str], new_reviews: List[str]) -> List[st
 # Overall state for the supervisor
 class OverallState(TypedDict):
     """
-    Represents the overall state managed by the supervisor.
+    Represent the overall state managed by the supervisor.
 
     Attributes:
         topic (str): The overall topic of analysis.
@@ -72,6 +74,7 @@ class OverallState(TypedDict):
         final_report (str): The final report generated after all analysts complete their tasks.
         teams (List[ResearchTeam]): A list of research teams participating in the workflow.
     """
+
     topic: str  # Overall topic of analysis
     questionnaire: str  # Questionnaire results or user input
     reviews: Annotated[List[str], deduplicate_merge]  # Four reviewers answers
