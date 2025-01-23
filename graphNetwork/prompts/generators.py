@@ -1,10 +1,9 @@
 """
-Module for generating prompts for agents, users, and summary agents in a network workflow.
+Module: prompt_generation.
 
-This module defines utility functions to create structured prompts for:
-1. Agents based on their roles and responsibilities.
-2. Users to guide their inputs in the workflow.
-3. Summary agents to consolidate analyses and generate final reports.
+This module provides functions to generate structured prompts for agents, users, and summary agents
+within a network workflow. These prompts are dynamically created based on agent roles, responsibilities,
+and the current state of the workflow.
 
 Modules and Constants Used:
     - AGENT_PROMPT_TEMPLATE: Template for agent-specific prompts.
@@ -15,7 +14,7 @@ Modules and Constants Used:
 Functions:
     - generate_agent_prompt: Generates a prompt for a specific agent based on its definition.
     - create_user_prompt: Generates a prompt for the user based on the current workflow state.
-    - create_summary_agent_prompt: Generates a prompt for the summary agent based on the current workflow state.
+    - create_summary_agent_prompt: Generates a prompt for the summary agent to consolidate analyses and reports.
 """
 
 from graphNetwork.prompts.prompt_templates import AGENT_PROMPT_TEMPLATE
@@ -26,7 +25,7 @@ from graphNetwork.prompts.user_prompt import USER_PROMPT_TEMPLATE
 
 def generate_agent_prompt(agent_name):
     """
-    Generates a prompt for a specific agent based on its role and responsibilities.
+    Generate a prompt for a specific agent based on its role and responsibilities.
 
     Args:
         agent_name (str): The name of the agent (e.g., "HR_Agent", "IT_Agent").
@@ -50,17 +49,17 @@ def generate_agent_prompt(agent_name):
 
 def create_user_prompt(state):
     """
-    Generates a user prompt based on the current workflow state.
+    Generate a user prompt based on the current workflow state.
 
     Args:
         state (dict): The current state of the workflow, containing:
-            - "main_task" (str): The primary task being addressed.
-            - "task" (str): The current subtask.
-            - "questionnaire" (str): The questionnaire data provided by the user.
-            - "good_practices" (str): Best practices relevant to the workflow.
-            - "analysis" (str): The analysis results from agents.
-            - "questions" (str or list): Questions asked during the workflow.
-            - "processed_agents" (list): Agents that have already been processed.
+            main_task (str): The primary task being addressed.
+            task (str): The current subtask.
+            questionnaire (str): The questionnaire data provided by the user.
+            good_practices (str): Best practices relevant to the workflow.
+            analysis (str): The analysis results from agents.
+            questions (str or list, optional): Questions asked during the workflow. Defaults to "NO QUESTIONS".
+            processed_agents (list, optional): Agents that have already been processed. Defaults to an empty list.
 
     Returns:
         str: A formatted prompt string for the user.
@@ -74,7 +73,7 @@ def create_user_prompt(state):
             "analysis": "Initial analysis...",
             "questions": ["What are the main blockers?"],
             "processed_agents": ["HR_Agent", "IT_Agent"],
-        }
+            }
         prompt = create_user_prompt(state)
         print(prompt)
     """
@@ -87,15 +86,15 @@ def create_user_prompt(state):
 
 def create_summary_agent_prompt(state):
     """
-    Generates a prompt for the summary agent to consolidate analyses and generate a final report.
+    Generate a prompt for the summary agent to consolidate analyses and generate a final report.
 
     Args:
         state (dict): The current state of the workflow, containing:
-            - "main_task" (str): The primary task being addressed.
-            - "analysis" (str): Consolidated analysis results.
-            - "questionnaire" (str): The questionnaire data provided by the user.
-            - "good_practices" (str): Best practices relevant to the workflow.
-            - "processed_agents" (list): Agents that have already been processed.
+            main_task (str): The primary task being addressed.
+            analysis (str): Consolidated analysis results.
+            questionnaire (str): The questionnaire data provided by the user.
+            good_practices (str): Best practices relevant to the workflow.
+            processed_agents (list, optional): Agents that have already been processed. Defaults to an empty list.
 
     Returns:
         str: A formatted prompt string for the summary agent.
@@ -107,7 +106,7 @@ def create_summary_agent_prompt(state):
             "questionnaire": "Questionnaire data...",
             "good_practices": "Recommended tools and practices...",
             "processed_agents": ["KM_Agent", "BP_Agent"],
-        }
+             }
         prompt = create_summary_agent_prompt(state)
         print(prompt)
     """

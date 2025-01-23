@@ -1,5 +1,7 @@
 """
-Template for generating prompts for a summary agent in a multi-agent system.
+Module: summary_agent_prompt_template.
+
+This module defines the template for generating prompts for a summary agent in a multi-agent system.
 
 The `SUMMARY_AGENT_PROMPT_TEMPLATE` is designed for a summary agent whose primary goal is to
 compile a comprehensive and actionable executive report. This report synthesizes the analyses
@@ -12,25 +14,25 @@ Purpose:
     - Summarize contributions from agents and identify next steps or unanswered questions.
 
 Template Variables:
-    - main_task (str): The primary goal or focus of the task being addressed.
-    - analysis (str): A summary of the findings and analyses provided by agents.
-    - questionnaire (str): The questionnaire data relevant to the task.
-    - good_practices (str): Best practices to consider in the analysis.
-    - processed_agents (str): A list of agents that have already contributed to the task.
+    main_task (str): The primary goal or focus of the task being addressed.
+    analysis (str): A summary of the findings and analyses provided by agents.
+    questionnaire (str): The questionnaire data relevant to the task.
+    good_practices (str): Best practices to consider in the analysis.
+    processed_agents (str): A list of agents that have already contributed to the task.
 
 Sections of the Prompt:
-1. **Main Goal**: Clarifies the purpose of the summary agent's report.
-2. **Content to Include**:
-    - Restate the main goal of the task.
-    - Highlight key findings from the agent analyses.
-    - Reference questionnaires and best practices.
-    - Identify contributing agents and their inputs.
-    - Summarize next steps or unresolved issues.
-3. **Guidelines**:
-    - Ensure clarity and conciseness in the report.
-    - Avoid duplicating prior agent analyses.
-    - Focus on actionable insights and recommendations.
-4. **Structured Response Format**: Instructs the agent to follow a specific structure in the report.
+    1. **Main Goal**: Clarifies the purpose of the summary agent's report.
+    2. **Content to Include**:
+        - Restate the main goal of the task.
+        - Highlight key findings from the agent analyses.
+        - Reference questionnaires and best practices.
+        - Identify contributing agents and their inputs.
+        - Summarize next steps or unresolved issues.
+    3. **Guidelines**:
+        - Ensure clarity and conciseness in the report.
+        - Avoid duplicating prior agent analyses.
+        - Focus on actionable insights and recommendations.
+    4. **Structured Response Format**: Instructs the agent to follow a specific structure in the report.
 
 Usage Example:
     state = {
@@ -39,8 +41,7 @@ Usage Example:
         "questionnaire": "Survey data highlighting pain points in collaboration.",
         "good_practices": "Industry standards for effective team collaboration.",
         "processed_agents": ["HR_Agent", "IT_Agent"],
-    }
-
+         }
     prompt = SUMMARY_AGENT_PROMPT_TEMPLATE.format(**state)
     print(prompt)
 
