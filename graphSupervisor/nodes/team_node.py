@@ -14,6 +14,7 @@ Constants:
     - analyst_prompt: Template for the analyst's role, context, and guidelines.
     - reviewer_prompt: Template for the reviewer's role, context, and guidelines.
 """
+
 import os
 from langchain_core.messages import SystemMessage
 from langchain_openai import ChatOpenAI
@@ -81,7 +82,7 @@ Start your messages from your name!
 
 def analyst_node(state):
     """
-    Handles the needs analysis performed by the analyst.
+    Handle the needs analysis performed by the analyst.
 
     This function generates a structured analysis based on the provided questionnaire results and
     optionally integrates feedback from the reviewer if available.
@@ -135,7 +136,7 @@ def analyst_node(state):
 
 def reviewer_node(state):
     """
-    Handles the feedback and review provided by the reviewer.
+    Handle the feedback and review provided by the reviewer.
 
     This function generates constructive feedback based on the analyst's analysis and the provided
     questionnaire results.
@@ -187,7 +188,7 @@ def reviewer_node(state):
 
 def should_continue(state: ResearchState):
     """
-    Determines whether to proceed to the next step or end the workflow.
+    Determine whether to proceed to the next step or end the workflow.
 
     If the number of messages reaches the defined threshold, the final review is appended to the
     "reviews" list in the state, and the workflow ends. Otherwise, it transitions to the reviewer node.

@@ -31,6 +31,7 @@ Outputs:
 - Mermaid diagram saved as a PNG file (`supervisor_graph_diagram.png`).
 - Final report generated from the workflow and saved as `output.md`.
 """
+
 import json
 from langgraph.constants import START
 from langgraph.graph import StateGraph
@@ -48,7 +49,7 @@ model = ChatOpenAI(temperature=0.1, model_name="gpt-4o-mini")
 # Define subgraphs
 def create_team_builder():
     """
-    Creates a state graph for a single research team.
+    Create a state graph for a single research team.
 
     Each team alternates between two roles:
     - Analyst: Performs needs analysis based on questionnaire results.

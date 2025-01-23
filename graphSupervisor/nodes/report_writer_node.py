@@ -18,6 +18,7 @@ Functions:
 Constants:
     - writing_instructions: Template for generating the report using the language model.
 """
+
 from dotenv import load_dotenv
 from langchain_openai import ChatOpenAI
 from langchain_core.messages import SystemMessage
@@ -46,7 +47,7 @@ Write a report from provided.
 
 def report_writer_node(state: OverallState):
     """
-    Generates a comprehensive report based on the provided state.
+    Generate a comprehensive report based on the provided state.
 
     This function collects the topic, questionnaire, and reviews from the `OverallState`
     and uses a language model to create a structured executive report. The generated report
@@ -61,7 +62,6 @@ def report_writer_node(state: OverallState):
     Returns:
         OverallState: Updates the state with the generated report under the key "final_report".
     """
-
     print("... Write Report ...")
     # Get state
     topic = state["topic"]

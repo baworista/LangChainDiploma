@@ -26,6 +26,7 @@ Functions:
 Constants:
     - team_creation_instructions: Instructions for generating research teams using the language model.
 """
+
 import os
 from dotenv import load_dotenv
 from langchain.tools import tool
@@ -55,7 +56,7 @@ Use provided in prompts names
 
 def define_edge(state: OverallState):
     """
-    Defines transitions between research team states based on the current state.
+    Define transitions between research team states based on the current state.
 
     If the final report is already generated, the workflow ends. Otherwise, transitions
     are defined based on the number of reviews and the presence of teams in the state.
@@ -106,7 +107,7 @@ def define_edge(state: OverallState):
 @tool
 def create_research_teams_tool(topic: str) -> dict:
     """
-    Creates a list of research teams for a given topic using structured language model outputs.
+    Create a list of research teams for a given topic using structured language model outputs.
 
     Args:
         topic (str): The research topic to base the teams on.
@@ -118,7 +119,6 @@ def create_research_teams_tool(topic: str) -> dict:
             - "analyst" (Person): The analyst assigned to the team.
             - "reviewer" (Person): The reviewer assigned to the team.
     """
-
     print(f"Creating research teams on topic: \n\t{topic}")
     structured_llm = llm.with_structured_output(Perspectives)
 
@@ -145,7 +145,7 @@ def create_research_teams_tool(topic: str) -> dict:
 
 def supervisor_node(state: OverallState):
     """
-    Orchestrates the workflow for the research process.
+    Orchestrate the workflow for the research process.
 
     This function initializes the overall state, generates research teams if not already present,
     and manages transitions based on the state.
@@ -170,17 +170,3 @@ def supervisor_node(state: OverallState):
         state["teams"] = generated_teams["teams"]
 
     return state
-
-
-# Example usage
-# if __name__ == "__main__":
-#     # Mock OverallState for demonstration
-#     state = OverallState(topic="Digital Transformation in Organizations")
-#
-#     print("initial_state: ", json.dumps(state, indent=4, ensure_ascii=False))
-#
-#     # Invoke the model with the tools and initial state
-#     supervisor_node(state)
-#
-#     # Print the updated state
-#     print("update_state:", json.dumps(state, indent=4, ensure_ascii=False))
