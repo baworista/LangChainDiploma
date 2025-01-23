@@ -1,6 +1,5 @@
 """
-Main module for managing the hierarchical architecture network, including the creation of subordinate teams
-and the generation of comprehensive reports.
+Main module for managing the hierarchical architecture network, including the creation of subordinate teams and the generation of comprehensive reports.
 
 This module enables the orchestration of workflows for a hierarchical system, where the main supervisor node
 oversees subordinate teams. It provides tools for creating teams, managing their states, and compiling final reports
@@ -30,6 +29,7 @@ Constants:
     - subordinates_creation_instructions: Instructions for creating subordinate teams.
     - writing_instructions: Guidelines for generating structured reports.
 """
+
 import os
 from typing import List
 from dotenv import load_dotenv
@@ -74,7 +74,7 @@ Write a report from provided.
 @tool
 def create_subordinates_tool(topic: str) -> dict:
     """
-    Generates subordinate teams based on the given topic.
+    Generate subordinate teams based on the given topic.
 
     This tool uses a structured language model to create two subordinate teams: `Inside_Processes_Team`
     and `Outside_Processes_Team`, each with its own description and responsibilities.
@@ -88,7 +88,6 @@ def create_subordinates_tool(topic: str) -> dict:
             - "description" (str): A brief description of the subordinate team's purpose.
             - "subordinate" (list): A list of subordinates in the team.
     """
-
     print(f"Creating subordinate teams on topic: \n\t{topic}")
     structured_llm = llm.with_structured_output(Subordinates)
 
@@ -116,7 +115,7 @@ def create_subordinates_tool(topic: str) -> dict:
 @tool
 def report_writer_tool(topic: str, questionnaire, reviews: List[str]):
     """
-    Generates a comprehensive report based on reviews from subordinate teams.
+    Generate a comprehensive report based on reviews from subordinate teams.
 
     This tool compiles the input topic, questionnaire, and reviews into a structured executive report.
 
@@ -139,7 +138,7 @@ def report_writer_tool(topic: str, questionnaire, reviews: List[str]):
 
 def supervisor_define_edge(state: OverallState):
     """
-    Defines the next workflow step for the supervisor node.
+    Define the next workflow step for the supervisor node.
 
     If the final report is already in the state, the workflow ends. Otherwise, it initializes
     subordinate teams and transitions to their states.
@@ -155,7 +154,6 @@ def supervisor_define_edge(state: OverallState):
         str or list: Returns `END` if the final report is available, or a list of `Send` objects
                      to transition to subordinate states.
     """
-
     if "final_report" in state:
         return END
 
@@ -182,9 +180,9 @@ def supervisor_define_edge(state: OverallState):
 
 def superivisor_node(state: OverallState):
     """
-    Main node for orchestrating the hierarchical research workflow.
+    Orchestrate the hierarchical research workflow.
 
-    This function manages the workflow by generating subordinate teams, overseeing their processes,
+    Manage the workflow by generating subordinate teams, overseeing their processes,
     and compiling a final report based on subordinate reviews.
 
     Args:

@@ -1,16 +1,20 @@
 """
 Module defining Pydantic models for structured evaluator output.
 
-This module contains data models for representing evaluation results of reports. Each report is evaluated
-against specific criteria, with detailed scores and comments provided for each criterion. The models ensure
-structured and consistent data representation for further processing in a multi-agent evaluation system.
+This module provides data models for representing evaluation results of reports in a multi-agent system.
+Each report is evaluated against criteria, with scores and comments ensuring consistent representation.
 
 Classes:
-    - Score: Represents the evaluation of a single criterion for a report.
-    - EvaluatorOutput: Represents the overall evaluation of a single report, including scores and an overall comment.
-    - StructuredEvaluatorOutput: Represents the evaluations for all reports in a structured format.
+    Score: Represents the evaluation of a single criterion.
+    EvaluatorOutput: Represents the overall evaluation of a single report.
+    StructuredEvaluatorOutput: Represents evaluations for all reports in a structured format.
+"""
 
-Class: Score
+from typing import List
+from pydantic import BaseModel, Field
+
+class Score(BaseModel):
+    """
     Represents the evaluation of a single criterion for a report.
 
     Attributes:
@@ -20,89 +24,8 @@ Class: Score
             Example: 4.
         comment (str): A comment explaining the score for this criterion.
             Example: "The grammar is perfect."
+    """
 
-    Properties:
-        scores (str): A formatted string representation of the score, including the criterion name,
-                      the score, and the comment.
-
-Class: EvaluatorOutput
-    Represents the overall evaluation of a single report, including scores and an overall comment.
-
-    Attributes:
-        anonymized_name (str): An anonymized identifier for the report.
-            Example: "Report_1".
-        scores (List[Score]): A list of `Score` objects, one for each evaluation criterion.
-        overall_comment (str): A summary or explanation of the report's strengths and weaknesses.
-            Guidelines:
-            - Avoid using names from the `anonymized_name` field (e.g., "Report_1").
-            - Use phrases like "this report" to refer to the current report and "other reports"
-              for comparisons.
-            - Comments for other reports should be concise and avoid scores.
-
-    Properties:
-        evaluator_output (str): A formatted string representation of the overall evaluation,
-                                including the anonymized name, scores, and overall comment.
-
-Class: StructuredEvaluatorOutput
-    Represents the evaluations for all reports in a structured format.
-
-    Attributes:
-        reports (List[EvaluatorOutput]): A list of `EvaluatorOutput` objects, one for each report.
-
-Example Usage:
-    # Create individual scores
-    score_1 = Score(
-        criterion_name="Relevance",
-        score=5,
-        comment="The report effectively addresses all aspects of the task."
-    )
-    score_2 = Score(
-        criterion_name="Clarity",
-        score=4,
-        comment="The report is mostly clear, but some sections could be better structured."
-    )
-
-    # Create an evaluator output
-    evaluator_output = EvaluatorOutput(
-        anonymized_name="Report_1",
-        scores=[score_1, score_2],
-        overall_comment="This report excels in relevance but could improve in clarity."
-    )
-
-    # Create a structured evaluator output
-    structured_output = StructuredEvaluatorOutput(
-        reports=[evaluator_output]
-    )
-
-    print(structured_output.json(indent=4))
-
-Output:
-    {
-        "reports": [
-            {
-                "anonymized_name": "Report_1",
-                "scores": [
-                    {
-                        "criterion_name": "Relevance",
-                        "score": 5,
-                        "comment": "The report effectively addresses all aspects of the task."
-                    },
-                    {
-                        "criterion_name": "Clarity",
-                        "score": 4,
-                        "comment": "The report is mostly clear, but some sections could be better structured."
-                    }
-                ],
-                "overall_comment": "This report excels in relevance but could improve in clarity."
-            }
-        ]
-    }
-"""
-
-from typing import List
-from pydantic import BaseModel, Field
-
-class Score(BaseModel):
     criterion_name: str = Field(
         description="The name of the criterion. Example: 'Grammar'",
     )
@@ -115,10 +38,32 @@ class Score(BaseModel):
 
     @property
     def scores(self) -> str:
+        """
+        Returns a formatted string representation of the score, including the criterion name, the score, and the comment.
+
+        Returns:
+            str: A string summarizing the score.
+        """
         return f"Criterion name: {self.criterion_name}\nScore: {self.score}\nComment: {self.comment}\n"
 
 
 class EvaluatorOutput(BaseModel):
+    """
+    Represents the overall evaluation of a single report, including scores and an overall comment.
+
+    Attributes:
+        anonymized_name (str): An anonymized identifier for the report.
+            Example: "Report_1".
+        scores (List[Score]): A list of `Score` objects, one for each evaluation criterion.
+        overall_comment (str): A summary or explanation of the report's strengths and weaknesses.
+
+            Guidelines:
+                - Avoid using names from the `anonymized_name` field (e.g., "Report_1").
+                - Use phrases like "this report" to refer to the current report and "other reports"
+                  for comparisons.
+                - Comments for other reports should be concise and avoid scores.
+    """
+
     anonymized_name: str = Field(
         description="Anonymized name of the report writer. Example: 'Report_1'",
     )
@@ -136,10 +81,23 @@ class EvaluatorOutput(BaseModel):
 
     @property
     def evaluator_output(self) -> str:
+        """
+        Returns a formatted string representation of the overall evaluation, including the anonymized name, scores, and overall comment.
+
+        Returns:
+            str: A string summarizing the evaluation.
+        """
         return f"Anonymized name: {self.nanonymized_nameame}\nScores: {self.scores}\nDescription: {self.description}\n"
 
 
 class StructuredEvaluatorOutput(BaseModel):
+    """
+    Represents the evaluations for all reports in a structured format.
+
+    Attributes:
+        reports (List[EvaluatorOutput]): A list of `EvaluatorOutput` objects, one for each report.
+    """
+
     reports: List[EvaluatorOutput] = Field(
         description="A list of detailed evaluations for each report."
     )

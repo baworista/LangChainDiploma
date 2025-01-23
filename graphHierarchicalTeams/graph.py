@@ -23,6 +23,7 @@ Functions:
     - create_process_team_builder: Creates a graph for a process with multiple subteams.
     - create_main_graph: Builds the main hierarchical graph for all processes.
 """
+
 import json
 from langgraph.constants import START
 from langgraph.graph import StateGraph
@@ -38,7 +39,7 @@ from graphHierarchicalTeams.states import *
 
 def create_team_builder():
     """
-    Creates a graph for a team with an analyst and a reviewer.
+    Create a graph for a team with an analyst and a reviewer.
 
     The team builder defines a workflow where the analyst performs a needs analysis,
     and the reviewer provides feedback. The workflow alternates between these roles until
@@ -60,7 +61,7 @@ def create_team_builder():
 
 def create_process_team_builder(process_name, subteams):
     """
-    Creates a graph for a process with subteams.
+    Create a graph for a process with subteams.
 
     Each subteam has its own workflow (analyst and reviewer), and the process supervisor
     orchestrates the overall process.
@@ -98,7 +99,7 @@ def create_process_team_builder(process_name, subteams):
 
 def create_main_graph(processes):
     """
-    Creates a graph for the main hierarchical process with multiple processes and their subteams.
+    Create a graph for the main hierarchical process with multiple processes and their subteams.
 
     The main graph integrates all process-specific graphs and adds a main supervisor node
     for overall orchestration.

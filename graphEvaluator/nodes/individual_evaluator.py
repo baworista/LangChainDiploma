@@ -1,75 +1,32 @@
 """
 Module for evaluating individual reports in a multi-agent system.
 
-This module defines functions to evaluate individual reports based on predefined criteria.
-Each report is assessed in isolation to ensure objective evaluation without influence from
-other reports. The results include detailed scores and comments for each criterion, as well
-as an overall comment summarizing the evaluation.
+This module defines functions to evaluate reports in isolation based on predefined criteria.
+Each report is assessed independently to ensure objective and unbiased results.
+The evaluation includes detailed scores and comments for each criterion, along with
+an overall summary.
 
-Evaluation Criteria:
-1. **Relevance**: How well the report addresses the task.
-2. **Factuality**: Whether the report contains any factual errors.
-3. **Completeness**: Whether the report fully covers all aspects of the task (diagnosis and recommendations).
-4. **Clarity**: Whether the report is well-structured and easy to understand.
-5. **Actionability**: Whether the recommendations are practical and applicable.
+Functionality:
+    - Evaluates reports on the following criteria:
+        1. Relevance: How well the report addresses the task.
+        2. Factuality: Whether the report contains any factual errors.
+        3. Completeness: Coverage of all task aspects (diagnosis and recommendations).
+        4. Clarity: Whether the report is well-structured and easy to understand.
+        5. Actionability: Practicality and applicability of the recommendations.
+    - Processes all reports in the workflow state individually.
+    - Outputs structured results for each report.
 
 Dependencies:
-    - langchain_core.messages: For creating system messages for the language model.
-    - langchain_openai: For interacting with OpenAI's language model.
-    - graphEvaluator.states: Defines the `OverallState` class for managing workflow state.
-    - graphEvaluator.schema: Defines the `EvaluatorOutput` schema for structured evaluations.
+    - `langchain_core.messages`: For generating system prompts.
+    - `langchain_openai`: For querying the OpenAI language model.
+    - `graphEvaluator.states`: Defines the `OverallState` structure.
+    - `graphEvaluator.schema`: Provides the `EvaluatorOutput` structure.
 
 Functions:
-    - evaluate_single_report: Evaluates a single report using an LLM and returns structured output.
-    - individual_evaluator_node: Processes all reports in the state and returns evaluation results.
-
-Prompt Structure:
-    - Topic: The main topic of the report.
-    - Questionnaire: Questions used to guide the report's preparation.
-    - Report: The specific report being evaluated.
-    - Criteria: Detailed instructions for scoring and justifying the evaluation.
-
-Example Usage:
-    state = {
-        "topic": "Optimize team collaboration in multinational organizations.",
-        "questionnaire": "Survey data on team communication barriers.",
-        "reports": {
-            "Report_1": {
-                "anonymized_name": "Anonymized_1",
-                "report": "Detailed analysis of team dynamics."
-            },
-            "Report_2": {
-                "anonymized_name": "Anonymized_2",
-                "report": "Recommendations for improving team collaboration."
-            }
-        }
-    }
-
-    output = individual_evaluator_node(state)
-    print(output["evaluator_reports"])
-
-Output:
-    {
-        "evaluator_reports": [
-            {
-                "individual_evaluator": [
-                    {
-                        "anonymized_name": "Anonymized_1",
-                        "scores": {
-                            "Relevance": 4,
-                            "Factuality": 5,
-                            "Completeness": 3,
-                            "Clarity": 4,
-                            "Actionability": 3
-                        },
-                        "overall_comment": "Addresses team dynamics effectively but lacks actionable recommendations."
-                    },
-                    ...
-                ]
-            }
-        ]
-    }
+    - `evaluate_single_report`: Evaluates a single report and returns structured feedback.
+    - `individual_evaluator_node`: Processes all reports in the state and compiles evaluation results.
 """
+
 import os
 from dotenv import load_dotenv
 from langchain_core.messages import SystemMessage
@@ -103,7 +60,7 @@ evaluator_prompt = """
 
 def evaluate_single_report(report: str, topic: str, questionnaire: str) -> EvaluatorOutput:
     """
-    Evaluates a single report using an LLM and returns a structured output.
+    Evaluate a single report in isolation using an LLM.
 
     Args:
         report (str): The content of the report to evaluate.
@@ -111,7 +68,7 @@ def evaluate_single_report(report: str, topic: str, questionnaire: str) -> Evalu
         questionnaire (str): The questionnaire data used for the report.
 
     Returns:
-        EvaluatorOutput: A structured evaluation result, including scores and comments.
+        EvaluatorOutput: Structured evaluation results with scores and comments.
     """
     system_prompt = evaluator_prompt.format(
         topic=topic,
@@ -128,35 +85,16 @@ def evaluate_single_report(report: str, topic: str, questionnaire: str) -> Evalu
 
 def individual_evaluator_node(state: OverallState):
     """
-    Processes all reports in the state, evaluates them individually, and returns the results.
+    Process and evaluates all reports individually, returning structured results.
 
     Args:
-        state (OverallState): The current workflow state, including:
-            - "topic" (str): The main topic of the evaluation.
-            - "questionnaire" (str): The questionnaire used for the reports.
-            - "reports" (dict): A dictionary of reports with anonymized names and content.
+        state (OverallState): Current workflow state, including:
+            - topic (str): The evaluation topic.
+            - questionnaire (str): Questions guiding the reports.
+            - reports (dict): Dictionary of anonymized reports with their content.
 
     Returns:
-        dict: A dictionary containing the evaluation results for all reports under the key `evaluator_reports`.
-
-    Example:
-        state = {
-            "topic": "Optimize team collaboration in multinational organizations.",
-            "questionnaire": "Survey data on team communication barriers.",
-            "reports": {
-                "Report_1": {
-                    "anonymized_name": "Anonymized_1",
-                    "report": "Detailed analysis of team dynamics."
-                },
-                "Report_2": {
-                    "anonymized_name": "Anonymized_2",
-                    "report": "Recommendations for improving team collaboration."
-                }
-            }
-        }
-
-        output = individual_evaluator_node(state)
-        print(output["evaluator_reports"])
+        dict: Structured evaluation results under the `evaluator_reports` key.
     """
     print("Individual Evaluator activated.")
 

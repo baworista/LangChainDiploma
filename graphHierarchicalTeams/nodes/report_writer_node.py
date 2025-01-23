@@ -47,7 +47,7 @@ Write a report from provided.
 
 def report_writer_node(state: SubordinateState):
     """
-    Generates a comprehensive report based on the provided subordinate state.
+    Generate a comprehensive report based on the provided subordinate state.
 
     This function extracts information (topic, questionnaire, and reviews) from the subordinate state,
     formats it into a structured system message, and invokes a language model to generate a complete report.
@@ -61,7 +61,6 @@ def report_writer_node(state: SubordinateState):
     Returns:
         SubordinateState: The updated state object with added or modified keys as necessary.
     """
-
     print("... Write Report ...")
     # Get state
     topic = state["topic"]

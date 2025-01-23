@@ -27,6 +27,7 @@ Constants:
     - inside_processes_teams_info: Team definitions for inside processes.
     - outside_processes_teams_info: Team definitions for outside processes.
 """
+
 import os
 from dotenv import load_dotenv
 from langchain.tools import tool
@@ -69,21 +70,20 @@ outside_processes_teams_info = """
 
 def subordinate_define_edge(state: SubordinateState):
     """
-        Defines the next workflow state for subordinate nodes based on the current state.
+    Define the next workflow state for subordinate nodes based on the current state.
 
-        Args:
-            state (SubordinateState): The current state object containing the following keys:
-                - "final_subordinate_report" (str, optional): The final report, if available.
-                - "reviews" (list): A list of reviews from teams.
-                - "topic" (str): The research topic.
-                - "teams" (list): A list of team details.
-                - "questionnaire" (str): The questionnaire associated with the task.
+    Args:
+        state (SubordinateState): The current state object containing the following keys:
+            - "final_subordinate_report" (str, optional): The final report, if available.
+            - "reviews" (list): A list of reviews from teams.
+            - "topic" (str): The research topic.
+            - "teams" (list): A list of team details.
+            - "questionnaire" (str): The questionnaire associated with the task.
 
-        Returns:
-            str or list: Returns `END` if the final report is available, a string `"Report_Writer"` if sufficient reviews exist,
-                         or a list of `Send` objects to initialize team states.
-        """
-
+    Returns:
+        str or list: Returns `END` if the final report is available, a string `"Report_Writer"` if sufficient reviews exist,
+        or a list of `Send` objects to initialize team states.
+    """
     if "final_subordinate_report" in state:
         return END
 
@@ -117,7 +117,7 @@ def subordinate_define_edge(state: SubordinateState):
 @tool
 def create_research_teams_tool(topic: str, team_info: str) -> dict:
     """
-    Generates research teams for a given topic using structured language model outputs.
+    Generate research teams for a given topic using structured language model outputs.
 
     Args:
         topic (str): The research topic.
@@ -130,7 +130,6 @@ def create_research_teams_tool(topic: str, team_info: str) -> dict:
             - "analyst" (str): The name of the analyst in the team.
             - "reviewer" (str): The name of the reviewer in the team.
     """
-
     print(f"Creating research teams on topic: \n\t{topic}")
     structured_llm = llm.with_structured_output(Perspectives)
 
@@ -159,7 +158,7 @@ def create_research_teams_tool(topic: str, team_info: str) -> dict:
 
 def subordinate_node(state: SubordinateState):
     """
-    Orchestrates the workflow for subordinate nodes by generating teams and handling reports.
+    Orchestrate the workflow for subordinate nodes by generating teams and handling reports.
 
     Args:
         state (SubordinateState): The current state object containing the following keys:
