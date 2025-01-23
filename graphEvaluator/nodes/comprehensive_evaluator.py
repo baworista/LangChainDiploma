@@ -1,37 +1,33 @@
 """
 Module for evaluating team-generated reports using a comprehensive evaluator node.
 
-This module defines the `comprehensive_evaluator_node` function, which leverages a
-language model to evaluate reports submitted by different teams based on predefined
-criteria. The evaluation is anonymized to ensure objectivity and fairness.
+This module defines the `comprehensive_evaluator_node` function, which evaluates reports submitted by
+different teams based on predefined criteria using a language model. The evaluation process is anonymized
+to ensure fairness and objectivity, and each report is scored on five key criteria.
 
 Functionality:
-    - Accepts the workflow state, including the task topic, questionnaire, and reports.
-    - Anonymizes report data to prevent bias.
-    - Evaluates each report on five criteria: relevance, factuality, completeness, clarity, and actionability.
-    - Returns a structured evaluation report.
+    - Accepts the current workflow state, including the topic, questionnaire, and reports.
+    - Anonymizes report data to prevent bias in evaluations.
+    - Scores reports based on relevance, factuality, completeness, clarity, and actionability.
+    - Returns structured evaluation results in a standardized format for further processing.
 
 Evaluation Criteria:
-1. **Relevance**: How well the report addresses the task.
-2. **Factuality**: Whether the report contains any factual errors.
-3. **Completeness**: Whether the report fully covers all aspects of the task, including diagnosis and recommendations.
-4. **Clarity**: Whether the report is well-structured and easy to understand.
-5. **Actionability**: Whether the recommendations are practical and applicable.
-
-Guidelines for Evaluation:
-    - Provide a score (1-5) for each criterion, with detailed justifications.
-    - Avoid over-optimistic scoring; scores of 5 should only be given for exceptional quality.
-    - Ensure a balanced and unbiased evaluation, explicitly comparing reports where necessary.
+    1. **Relevance**: How well the report addresses the task.
+    2. **Factuality**: Whether the report contains any factual errors.
+    3. **Completeness**: Coverage of all aspects of the task, including diagnosis and recommendations.
+    4. **Clarity**: Whether the report is well-structured and easy to understand.
+    5. **Actionability**: Practicality and applicability of the recommendations.
 
 Dependencies:
-    - langchain_core.messages: For creating system messages for the language model.
-    - langchain_openai: For interacting with OpenAI's language model.
-    - graphEvaluator.states: Contains the `OverallState` definition for the workflow state.
-    - graphEvaluator.schema: Defines the `StructuredEvaluatorOutput` for structured evaluations.
+    - `langchain_core.messages`: For generating system prompts for the language model.
+    - `langchain_openai`: For querying OpenAI's language model.
+    - `graphEvaluator.states`: Defines the `OverallState` workflow structure.
+    - `graphEvaluator.schema`: Provides the `StructuredEvaluatorOutput` for standardized evaluations.
 
 Functions:
-    - comprehensive_evaluator_node: The core function for evaluating reports based on the workflow state.
+    - comprehensive_evaluator_node: Evaluates reports using a language model and returns structured results.
 """
+
 import os
 from dotenv import load_dotenv
 from langchain_core.messages import SystemMessage
@@ -66,16 +62,19 @@ evaluator_prompt = """
 
 def comprehensive_evaluator_node(state: OverallState):
     """
-    Evaluates reports submitted by teams using predefined criteria and generates a structured evaluation report.
+    Evaluate team-generated reports using a comprehensive language model.
+
+    This function processes reports provided in the workflow state, anonymizes their data, and evaluates
+    them based on predefined criteria. The results include structured feedback and scores for each report.
 
     Args:
         state (OverallState): The current workflow state, which includes:
-            - "topic" (str): The topic of the task being evaluated.
-            - "questionnaire" (str): The questionnaire data provided for the task.
-            - "reports" (dict): A dictionary containing anonymized reports submitted by teams.
+            - topic (str): The topic being evaluated.
+            - questionnaire (str): Questions and answers used for evaluation.
+            - reports (dict): A dictionary of anonymized reports submitted by teams.
 
     Returns:
-        dict: A dictionary containing structured evaluation reports under the key `evaluator_reports`.
+        dict: A structured evaluation report, containing scores and feedback for each report.
 
     Example:
         state = {

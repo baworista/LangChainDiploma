@@ -1,60 +1,38 @@
 """
-Module for the final evaluation node in a multi-agent system.
+Module for selecting the best report in a multi-agent system.
 
-This module defines the `final_evaluator_node` function, which uses a language model to select
-the best report from a set of submissions. The evaluation is based on a comprehensive analysis
-of the reports, questionnaire, and feedback from other evaluators.
+This module defines the `final_evaluator_node` function, which uses a language model to analyze
+reports, feedback, and context to identify the best submission and justify the choice.
 
 Functionality:
-    - Accepts the overall state, including the topic, questionnaire, reports, and evaluator feedback.
-    - Uses a predefined prompt to guide the language model in selecting the best report.
-    - Returns the selected report and justification for its selection.
-
-Evaluation Workflow:
-1. Analyze the provided materials:
-   - Main topic.
-   - Questionnaire used for assessment.
-   - Reports submitted by agents.
-   - Evaluator feedback on each report.
-2. Select the best report based on the evaluation criteria.
-3. Justify the selection with a detailed explanation.
+    - Analyzes topic, questionnaire, reports, and evaluator feedback.
+    - Selects the best report based on evaluation criteria (e.g., relevance, clarity).
+    - Outputs the selected report and justification for its choice.
 
 Dependencies:
-    - langchain_core.messages: For creating system messages for the language model.
-    - langchain_openai: For interacting with OpenAI's language model.
-    - graphEvaluator.states: Contains the `OverallState` definition for the workflow state.
+    - `langchain_core.messages`: For generating system prompts.
+    - `langchain_openai`: For querying OpenAI's language model.
+    - `graphEvaluator.states`: Provides the `OverallState` definition.
 
 Function:
-    - final_evaluator_node: The core function for selecting the best report and providing a justification.
+    - `final_evaluator_node`: Evaluates and selects the best report.
 
-Prompt Structure:
-    - Main Topic: The central theme of the evaluation.
-    - Questionnaire: Questions used to guide the reports' creation.
-    - Reports: Submissions prepared by agents addressing the main topic.
-    - Evaluator Reports: Feedback from other evaluators on the reports.
-    - Objective: Instructions for selecting the best report and justifying the choice.
-
-Example Usage:
+Example:
     state = {
-        "topic": "Optimize team collaboration in multinational organizations.",
-        "questionnaire": "Survey data about team dynamics and communication barriers.",
+        "topic": "Improve team collaboration.",
+        "questionnaire": "Survey on team dynamics.",
         "reports": {
-            "Report_1": "Detailed analysis of team performance.",
-            "Report_2": "Recommendations for improving collaboration."
+            "Report_1": "Analysis of team performance.",
+            "Report_2": "Collaboration improvement strategies."
         },
         "evaluator_reports": [
-            {"Report_1": {"relevance": 4, "clarity": 5, "actionability": 3}},
-            {"Report_2": {"relevance": 5, "clarity": 4, "actionability": 4}}
+            {"Report_1": {"clarity": 4, "actionability": 3}},
+            {"Report_2": {"clarity": 5, "actionability": 4}}
         ]
     }
 
     output = final_evaluator_node(state)
     print(output["the_best_report_info"])
-
-Output:
-    {
-        "the_best_report_info": "Report_2 excels in addressing the topic, providing actionable recommendations, and being clear and concise."
-    }
 """
 
 import os
@@ -85,24 +63,31 @@ Your Objective: Based on provided information, select the best report. Provide a
 
 def final_evaluator_node(state: OverallState):
     """
-    Selects the best report from the provided submissions and justifies the selection.
+    Select the best report from the provided submissions and justifies the choice.
 
     Args:
-        state (OverallState): The current overall state of the workflow, containing:
-            - "topic" (str): The main topic of the evaluation.
-            - "questionnaire" (str): The questionnaire used to assess the reports.
-            - "reports" (dict): A dictionary of reports submitted by agents.
-            - "evaluator_reports" (list): Feedback or assessments from other evaluators.
+        state (OverallState): The current state of the workflow, containing:
+            - topic (str): The main topic of the evaluation.
+            - questionnaire (str): Questionnaire used for report evaluation.
+            - reports (dict): Reports submitted by agents.
+            - evaluator_reports (list): Feedback from other evaluators.
 
     Returns:
-        dict: A dictionary containing the selected report and justification under the key `the_best_report_info`.
+        dict: A dictionary with the key `the_best_report_info`, containing the best report
+        and the justification for its selection.
 
     Example:
         state = {
-            "topic": "Optimize team collaboration in multinational organizations.",
-            "questionnaire": "Survey data about team dynamics and communication barriers.",
-            "reports": {"Report_1": "Detailed analysis of team performance.", "Report_2": "Recommendations for improving collaboration."},
-            "evaluator_reports": [{"Report_1": {"relevance": 4, "clarity": 5, "actionability": 3}}, {"Report_2": {"relevance": 5, "clarity": 4, "actionability": 4}}],
+            "topic": "Optimize collaboration.",
+            "questionnaire": "Survey data.",
+            "reports": {
+                "Report_1": "Detailed analysis.",
+                "Report_2": "Strategies for improvement."
+            },
+            "evaluator_reports": [
+                {"Report_1": {"clarity": 4, "actionability": 3}},
+                {"Report_2": {"clarity": 5, "actionability": 4}}
+            ]
         }
 
         output = final_evaluator_node(state)

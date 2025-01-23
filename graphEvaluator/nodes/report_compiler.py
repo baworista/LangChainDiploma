@@ -1,72 +1,21 @@
 """
 Module for compiling and loading reports in a multi-agent system.
 
-This module defines functions to load reports from specified architectures, compile them into a
-dictionary with anonymized names, and update the system state. The compiled reports are used for
-evaluation and further processing.
+This module provides functionality to load reports from specified architectures,
+assign anonymized names, and update the system state for further processing.
 
-Functions:
-    - load_reports: Loads reports from file paths corresponding to specified architecture names.
-    - report_compiler_node: Compiles reports, assigns anonymized names, and updates the system state.
+Functionality:
+    - Loads reports from file paths based on architecture names.
+    - Compiles the reports into a dictionary with anonymized names.
+    - Updates the system state to include the compiled reports.
 
 Dependencies:
-    - os: For file path handling and checking file existence.
-    - graphEvaluator.states.OverallState: Defines the state structure for the multi-agent workflow.
+    - `os`: For handling file paths and checking file existence.
+    - `graphEvaluator.states.OverallState`: Defines the state structure for managing the workflow.
 
 Functions:
-    def load_reports(architectures: List[str]) -> dict[str, str]:
-        Loads reports into a dictionary from specified architectures.
-
-        Args:
-            architectures (List[str]): List of architecture names representing different report sources.
-
-        Returns:
-            dict[str, str]: A dictionary where keys are architecture names and values are the report content.
-
-        Example:
-            architectures = ["Architecture1", "Architecture2"]
-            reports = load_reports(architectures)
-            print(reports)
-
-        Output:
-            {
-                "Architecture1": "Report content for Architecture1",
-                "Architecture2": "Report content for Architecture2"
-            }
-
-    def report_compiler_node(state: OverallState):
-        Compiles reports into a dictionary with anonymized names and updates the system state.
-
-        Args:
-            state (OverallState): The current system state containing:
-                - "reports" (list): List of architecture names to load reports from.
-
-        Returns:
-            OverallState: Updated system state with compiled reports, where each report includes:
-                - "real_name" (str): The original architecture name.
-                - "anonymized_name" (str): Anonymized name for the report.
-                - "report" (str): The report content.
-
-        Example:
-            state = {
-                "reports": ["Architecture1", "Architecture2"]
-            }
-            updated_state = report_compiler_node(state)
-            print(updated_state["reports"])
-
-        Output:
-            {
-                "Architecture1": {
-                    "real_name": "Architecture1",
-                    "anonymized_name": "Report_1",
-                    "report": "Report content for Architecture1"
-                },
-                "Architecture2": {
-                    "real_name": "Architecture2",
-                    "anonymized_name": "Report_2",
-                    "report": "Report content for Architecture2"
-                }
-            }
+    - `load_reports`: Loads reports from specified architectures into a dictionary.
+    - `report_compiler_node`: Compiles reports, assigns anonymized names, and updates the state.
 """
 
 import os
@@ -78,7 +27,7 @@ from graphEvaluator.states import OverallState
 # Function to load reports into a dictionary
 def load_reports(architectures: List[str]) -> dict[str, str]:
     """
-    Loads reports into a dictionary from the specified architectures.
+    Load reports from the specified architectures into a dictionary.
 
     Args:
         architectures (List[str]): List of architecture names representing different report sources.
@@ -105,17 +54,17 @@ def load_reports(architectures: List[str]) -> dict[str, str]:
 
 def report_compiler_node(state: OverallState):
     """
-    Compiles reports into a dictionary with anonymized names and updates the system state.
+    Compile reports into a dictionary with anonymized names and updates the system state.
 
     Args:
-        state (OverallState): The current system state containing:
-            - "reports" (list): List of architecture names to load reports from.
+        state (OverallState): Current system state containing:
+            - reports (list): List of architecture names to load reports from.
 
     Returns:
-        OverallState: Updated system state with compiled reports, where each report includes:
-            - "real_name" (str): The original architecture name.
-            - "anonymized_name" (str): Anonymized name for the report.
-            - "report" (str): The report content.
+        OverallState: Updated state with compiled reports, including:
+            - "real_name": Original architecture name.
+            - "anonymized_name": Anonymized name for the report.
+            - "report": Report content.
 
     Example:
         state = {

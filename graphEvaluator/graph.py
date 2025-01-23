@@ -28,28 +28,7 @@ Workflow:
 Outputs:
     - `evaluator_graph_diagram.png`: A visualization of the evaluation graph.
     - `the_best_report_info.md`: The best report's content, saved in markdown format.
-
-Functions:
-    - StateGraph.add_node: Adds a node to the evaluation graph.
-    - StateGraph.add_edge: Connects nodes in the evaluation graph.
-    - StateGraph.set_entry_point: Defines the starting node of the graph.
-    - StateGraph.compile: Compiles the graph for execution.
-    - graphEvaluator.invoke: Executes the graph with user input.
-
-Example Usage:
-    user_input = {
-        "topic": "Help a multinational manufacturing company in their journey to product management maturity.",
-        "questionnaire": { ... },  # Loaded JSON questionnaire data
-        "reports": ["Supervisor", "Network", "HierarchicalTeams"]
-    }
-    response = graphEvaluator.invoke(user_input, thread)
-
-    the_best_report = response.get("the_best_report_info")
-    if the_best_report:
-        with open("the_best_report_info.md", "w", encoding="utf-8") as output_file:
-            output_file.write(the_best_report.content)
 """
-
 
 import json
 

@@ -27,7 +27,7 @@ from graphHierarchicalTeams.schema import Person, ResearchTeam, SubordinateTeam
 # Individual state for each analyst and reviewer team
 class ResearchState(MessagesState):
     """
-    Represents the state of a research team, which includes an analyst and a reviewer.
+    Represent the state of a research team, which includes an analyst and a reviewer.
 
     Attributes:
         team_name (str): The name of the research team.
@@ -38,6 +38,7 @@ class ResearchState(MessagesState):
         analyst (Person): Information about the analyst in the team.
         reviewer (Person): Information about the reviewer in the team.
     """
+
     team_name: str
     team_topic: str
     description: str  # Description of team's responsibility and capabilities
@@ -49,7 +50,7 @@ class ResearchState(MessagesState):
 
 def deduplicate_merge(old_reviews: List[str], new_reviews: List[str]) -> List[str]:
     """
-    Merges two lists of strings, removing duplicates.
+    Merge two lists of strings, removing duplicates.
 
     Args:
         old_reviews (List[str]): The existing list of reviews.
@@ -63,7 +64,7 @@ def deduplicate_merge(old_reviews: List[str], new_reviews: List[str]) -> List[st
 
 def merge_str(old_str: str, new_str: str) -> str:
     """
-    Ensures that only the latest string is returned.
+    Ensure that only the latest string is returned.
 
     This is useful for merging single-value fields where only the most recent value matters. 
 
@@ -78,6 +79,20 @@ def merge_str(old_str: str, new_str: str) -> str:
 
 
 class SubordinateState(TypedDict):
+    """
+    Represent the state of a subordinate team responsible for managing multiple research teams.
+
+    Attributes:
+        subordinate_team_name (str): Name of the subordinate team.
+        topic (str): The topic assigned to the subordinate team.
+        questionnaire (str): Questionnaire results or user input for the subordinate team's tasks.
+        subordinate (Person): Information about the subordinate supervisor.
+        teams (List[ResearchTeam]): List of research teams managed by this subordinate team.
+        reviews (List[str]): Merged reviews from the research teams.
+        final_subordinate_report (str): Final report generated after tasks are completed.
+        subordinate_reviews (List[str]): Reviews provided by subordinate supervisors.
+    """
+
     subordinate_team_name: str
     topic: str
     questionnaire: str # Questionnaire results or user input
@@ -90,6 +105,17 @@ class SubordinateState(TypedDict):
 
 # Overall state for the supervisor
 class OverallState(TypedDict):
+    """
+    Represent the overall state of the hierarchical workflow managed by the supervisor.
+
+    Attributes:
+        topic (str): The overall topic of the workflow.
+        questionnaire (str): Questionnaire results or user input related to the workflow.
+        subordinate_reviews (List[str]): Merged reviews from subordinate supervisors.
+        final_report (str): Final report generated after tasks are completed.
+        subordinate_teams (List[SubordinateTeam]): List of subordinate teams in the workflow.
+    """
+
     topic: Annotated[str, merge_str]  # Overall topic of analysis
     questionnaire: Annotated[str, merge_str]  # Questionnaire results or user input
     subordinate_reviews: Annotated[List[str], deduplicate_merge]  # Two subordinate supervisors answers
