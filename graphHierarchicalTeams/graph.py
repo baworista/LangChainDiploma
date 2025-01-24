@@ -189,9 +189,9 @@ if final_report:
     report_content = final_report.content
 
     # Define the output file path
-    output_file_path = "output.md"
+    output_file_path = "outputHierarchicalTeams.md"
 
-    # Write the report content to the output.md file
+    # Write the report content to the outputHierarchicalTeams.md file
     with open(output_file_path, "w", encoding="utf-8") as output_file:
         output_file.write(report_content)
 
@@ -202,4 +202,4 @@ else:
 # Additional Details:
 # - The compiled graph is visualized as a Mermaid diagram and saved as a PNG.
 # - The hierarchical workflow processes user input to generate a final structured report.
-# - The final report is saved as `output.md` if generated successfully.
+# - The final report is saved as `outputHierarchicalTeams.md` if generated successfully.

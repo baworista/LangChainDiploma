@@ -29,7 +29,7 @@ Graph Workflow:
 
 Outputs:
 - Mermaid diagram saved as a PNG file (`supervisor_graph_diagram.png`).
-- Final report generated from the workflow and saved as `output.md`.
+- Final report generated from the workflow and saved as `outputSupervisor.md`.
 """
 
 import json
@@ -136,9 +136,9 @@ if final_report:
     report_content = final_report.content
 
     # Define the output file path
-    output_file_path = "output.md"
+    output_file_path = "outputSupervisor.md"
 
-    # Write the report content to the output.md file
+    # Write the report content to the outputSupervisor.md file
     with open(output_file_path, "w", encoding="utf-8") as output_file:
         output_file.write(report_content)
 
