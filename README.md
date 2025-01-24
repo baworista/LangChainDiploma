@@ -1,4 +1,3 @@
-# LangChainDiploma
 # Multi-Agent Architectures for Report Generation and Its Evaluation
 
 This project focuses on creating, evaluating, and comparing three distinct architectures of multi-agent systems for generating and analyzing reports. The architectures implemented are:
