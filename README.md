@@ -57,10 +57,6 @@ Final node provides a comparative analysis of according to all reports and choos
    ```bash
    pip install -r requirements.txt
    ```
-   or
-    ```bash
-   conda install --file environment.yml
-   ```
 
 3. Run the desired architecture:
 
