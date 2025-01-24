@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>graphEvaluator.nodes.final_evaluator &#8212; LangChainDiploma 1.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/basic.css?v=686e5160" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/alabaster.css?v=27fed22d" />
+    <script src="../../../_static/documentation_options.js?v=f2a433a1"></script>
+    <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for graphEvaluator.nodes.final_evaluator</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Module for selecting the best report in a multi-agent system.</span>
+
+<span class="sd">This module defines the `final_evaluator_node` function, which uses a language model to analyze</span>
+<span class="sd">reports, feedback, and context to identify the best submission and justify the choice.</span>
+
+<span class="sd">Functionality:</span>
+<span class="sd">    - Analyzes topic, questionnaire, reports, and evaluator feedback.</span>
+<span class="sd">    - Selects the best report based on evaluation criteria (e.g., relevance, clarity).</span>
+<span class="sd">    - Outputs the selected report and justification for its choice.</span>
+
+<span class="sd">Dependencies:</span>
+<span class="sd">    - `langchain_core.messages`: For generating system prompts.</span>
+<span class="sd">    - `langchain_openai`: For querying OpenAI&#39;s language model.</span>
+<span class="sd">    - `graphEvaluator.states`: Provides the `OverallState` definition.</span>
+
+<span class="sd">Function:</span>
+<span class="sd">    - `final_evaluator_node`: Evaluates and selects the best report.</span>
+
+<span class="sd">Example:</span>
+<span class="sd">    state = {</span>
+<span class="sd">        &quot;topic&quot;: &quot;Improve team collaboration.&quot;,</span>
+<span class="sd">        &quot;questionnaire&quot;: &quot;Survey on team dynamics.&quot;,</span>
+<span class="sd">        &quot;reports&quot;: {</span>
+<span class="sd">            &quot;Report_1&quot;: &quot;Analysis of team performance.&quot;,</span>
+<span class="sd">            &quot;Report_2&quot;: &quot;Collaboration improvement strategies.&quot;</span>
+<span class="sd">        },</span>
+<span class="sd">        &quot;evaluator_reports&quot;: [</span>
+<span class="sd">            {&quot;Report_1&quot;: {&quot;clarity&quot;: 4, &quot;actionability&quot;: 3}},</span>
+<span class="sd">            {&quot;Report_2&quot;: {&quot;clarity&quot;: 5, &quot;actionability&quot;: 4}}</span>
+<span class="sd">        ]</span>
+<span class="sd">    }</span>
+
+<span class="sd">    output = final_evaluator_node(state)</span>
+<span class="sd">    print(output[&quot;the_best_report_info&quot;])</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">langchain_core.messages</span><span class="w"> </span><span class="kn">import</span> <span class="n">SystemMessage</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langchain_openai</span><span class="w"> </span><span class="kn">import</span> <span class="n">ChatOpenAI</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">graphEvaluator.states</span><span class="w"> </span><span class="kn">import</span> <span class="n">OverallState</span>
+
+
+<span class="n">llm</span> <span class="o">=</span> <span class="n">ChatOpenAI</span><span class="p">(</span><span class="n">model_name</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;MODEL_SUPERVISOR&quot;</span><span class="p">))</span>
+
+<span class="n">eval_prompt</span><span class="o">=</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">You are the final evaluator in a multi-agent system tasked with selecting the best report. Your role is to carefully analyze and compare all the provided materials, including:</span>
+
+<span class="s2">Main Topic: The central theme or subject matter of the evaluation.</span>
+<span class="si">{topic}</span>
+<span class="s2">Questionnaire: A set of questions used to assess the reports.</span>
+<span class="si">{questionnaire}</span>
+<span class="s2">Reports: The submissions prepared by agents addressing the main topic and questionnaire.</span>
+<span class="si">{reports}</span>
+<span class="s2">Evaluator Reports: Feedback or assessments from other evaluators regarding the reports.</span>
+<span class="si">{evaluator_reports}</span>
+
+<span class="s2">Your Objective: Based on provided information, select the best report. Provide a justification for your decision, clearly explaining why the chosen report excels in meeting the evaluation criteria.</span>
+<span class="s2">&quot;&quot;&quot;</span>
+
+
+<div class="viewcode-block" id="final_evaluator_node">
+<a class="viewcode-back" href="../../../graphEvaluator.nodes.html#graphEvaluator.nodes.final_evaluator.final_evaluator_node">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">final_evaluator_node</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">OverallState</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Select the best report from the provided submissions and justifies the choice.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        state (OverallState): The current state of the workflow, containing:</span>
+<span class="sd">            - topic (str): The main topic of the evaluation.</span>
+<span class="sd">            - questionnaire (str): Questionnaire used for report evaluation.</span>
+<span class="sd">            - reports (dict): Reports submitted by agents.</span>
+<span class="sd">            - evaluator_reports (list): Feedback from other evaluators.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        dict: A dictionary with the key `the_best_report_info`, containing the best report</span>
+<span class="sd">        and the justification for its selection.</span>
+
+<span class="sd">    Example:</span>
+<span class="sd">        state = {</span>
+<span class="sd">            &quot;topic&quot;: &quot;Optimize collaboration.&quot;,</span>
+<span class="sd">            &quot;questionnaire&quot;: &quot;Survey data.&quot;,</span>
+<span class="sd">            &quot;reports&quot;: {</span>
+<span class="sd">                &quot;Report_1&quot;: &quot;Detailed analysis.&quot;,</span>
+<span class="sd">                &quot;Report_2&quot;: &quot;Strategies for improvement.&quot;</span>
+<span class="sd">            },</span>
+<span class="sd">            &quot;evaluator_reports&quot;: [</span>
+<span class="sd">                {&quot;Report_1&quot;: {&quot;clarity&quot;: 4, &quot;actionability&quot;: 3}},</span>
+<span class="sd">                {&quot;Report_2&quot;: {&quot;clarity&quot;: 5, &quot;actionability&quot;: 4}}</span>
+<span class="sd">            ]</span>
+<span class="sd">        }</span>
+
+<span class="sd">        output = final_evaluator_node(state)</span>
+<span class="sd">        print(output[&quot;the_best_report_info&quot;])</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Final Evaluator activated.&quot;</span><span class="p">)</span>
+
+    <span class="n">topic</span> <span class="o">=</span> <span class="n">state</span><span class="p">[</span><span class="s2">&quot;topic&quot;</span><span class="p">]</span>
+    <span class="n">questionnaire</span> <span class="o">=</span> <span class="n">state</span><span class="p">[</span><span class="s2">&quot;questionnaire&quot;</span><span class="p">]</span>
+    <span class="n">reports</span> <span class="o">=</span> <span class="n">state</span><span class="p">[</span><span class="s2">&quot;reports&quot;</span><span class="p">]</span>
+    <span class="n">evaluator_reports</span> <span class="o">=</span> <span class="n">state</span><span class="p">[</span><span class="s2">&quot;evaluator_reports&quot;</span><span class="p">]</span>
+
+    <span class="n">prompt</span> <span class="o">=</span> <span class="n">eval_prompt</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">topic</span><span class="o">=</span><span class="n">topic</span><span class="p">,</span>
+                                <span class="n">questionnaire</span><span class="o">=</span><span class="n">questionnaire</span><span class="p">,</span>
+                                <span class="n">reports</span><span class="o">=</span><span class="n">reports</span><span class="p">,</span>
+                                <span class="n">evaluator_reports</span><span class="o">=</span><span class="n">evaluator_reports</span><span class="p">)</span>
+
+    <span class="n">prompt</span> <span class="o">=</span> <span class="p">[</span><span class="n">SystemMessage</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="n">prompt</span><span class="p">)]</span>
+
+
+    <span class="n">output</span> <span class="o">=</span> <span class="n">llm</span><span class="o">.</span><span class="n">invoke</span><span class="p">(</span><span class="n">prompt</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;the_best_report_info&quot;</span><span class="p">:</span> <span class="n">output</span><span class="p">}</span></div>
+
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../../index.html">LangChainDiploma</a></h1>
+
+
+
+
+
+
+
+
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2025, Fedir Zhuk, Aleksander Ignacik.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.1.3</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>graphEvaluator.states &#8212; LangChainDiploma 1.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="../../_static/basic.css?v=686e5160" />
+    <link rel="stylesheet" type="text/css" href="../../_static/alabaster.css?v=27fed22d" />
+    <script src="../../_static/documentation_options.js?v=f2a433a1"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for graphEvaluator.states</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Module for defining the `OverallState` structure.</span>
+
+<span class="sd">The `OverallState` is a `TypedDict` that stores the global state during the evaluation process</span>
+<span class="sd">in a multi-agent system. It tracks the topic, questionnaire, reports, evaluation results, and the</span>
+<span class="sd">final selected report.</span>
+
+<span class="sd">Dependencies:</span>
+<span class="sd">    - operator: For merging lists in `evaluator_reports`.</span>
+<span class="sd">    - typing: For type annotations.</span>
+
+<span class="sd">Classes:</span>
+<span class="sd">    OverallState: Represents the workflow state for evaluation.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">operator</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TypedDict</span><span class="p">,</span> <span class="n">Annotated</span><span class="p">,</span> <span class="n">List</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">graphEvaluator.schema</span><span class="w"> </span><span class="kn">import</span> <span class="n">EvaluatorOutput</span>
+
+
+<div class="viewcode-block" id="OverallState">
+<a class="viewcode-back" href="../../graphEvaluator.html#graphEvaluator.states.OverallState">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">OverallState</span><span class="p">(</span><span class="n">TypedDict</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Global state for the evaluation workflow.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        topic (str): Evaluation topic (e.g., &quot;Improving product management maturity&quot;).</span>
+<span class="sd">        questionnaire (str): Questionnaire data used in the evaluation.</span>
+<span class="sd">        reports (List[dict[str, str, str]]): List of reports to evaluate. Each report includes:</span>
+<span class="sd">            - `real_name` (str): Original name of the report.</span>
+<span class="sd">            - `anonymized_name` (str): Anonymized identifier.</span>
+<span class="sd">            - `report` (str): Report content.</span>
+<span class="sd">        evaluator_reports (Annotated[List[dict], operator.add]): Results from different evaluators.</span>
+<span class="sd">        the_best_report_info (str): Final selected report content.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">topic</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">questionnaire</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">reports</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span> <span class="c1">#</span>
+    <span class="n">evaluator_reports</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">dict</span><span class="p">],</span> <span class="n">operator</span><span class="o">.</span><span class="n">add</span><span class="p">]</span>
+    <span class="n">the_best_report_info</span><span class="p">:</span> <span class="nb">str</span></div>
+
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../index.html">LangChainDiploma</a></h1>
+
+
+
+
+
+
+
+
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2025, Fedir Zhuk, Aleksander Ignacik.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.1.3</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

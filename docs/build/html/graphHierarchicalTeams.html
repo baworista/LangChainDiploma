@@ -1,0 +1,970 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>graphHierarchicalTeams package &#8212; LangChainDiploma 1.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="_static/basic.css?v=686e5160" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=27fed22d" />
+    <script src="_static/documentation_options.js?v=f2a433a1"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="graphhierarchicalteams-package">
+<h1>graphHierarchicalTeams package<a class="headerlink" href="#graphhierarchicalteams-package" title="Link to this heading">¶</a></h1>
+<section id="subpackages">
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Link to this heading">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="graphHierarchicalTeams.nodes.html">graphHierarchicalTeams.nodes package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="graphHierarchicalTeams.nodes.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graphHierarchicalTeams.nodes.html#module-graphHierarchicalTeams.nodes.report_writer_node">graphHierarchicalTeams.nodes.report_writer_node module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="graphHierarchicalTeams.nodes.html#graphHierarchicalTeams.nodes.report_writer_node.report_writer_node"><code class="docutils literal notranslate"><span class="pre">report_writer_node()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="graphHierarchicalTeams.nodes.html#module-graphHierarchicalTeams.nodes.subordinate_node">graphHierarchicalTeams.nodes.subordinate_node module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="graphHierarchicalTeams.nodes.html#graphHierarchicalTeams.nodes.subordinate_node.subordinate_define_edge"><code class="docutils literal notranslate"><span class="pre">subordinate_define_edge()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="graphHierarchicalTeams.nodes.html#graphHierarchicalTeams.nodes.subordinate_node.subordinate_node"><code class="docutils literal notranslate"><span class="pre">subordinate_node()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="graphHierarchicalTeams.nodes.html#module-graphHierarchicalTeams.nodes.supervisor">graphHierarchicalTeams.nodes.supervisor module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="graphHierarchicalTeams.nodes.html#graphHierarchicalTeams.nodes.supervisor.superivisor_node"><code class="docutils literal notranslate"><span class="pre">superivisor_node()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="graphHierarchicalTeams.nodes.html#graphHierarchicalTeams.nodes.supervisor.supervisor_define_edge"><code class="docutils literal notranslate"><span class="pre">supervisor_define_edge()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="graphHierarchicalTeams.nodes.html#module-graphHierarchicalTeams.nodes.team_node">graphHierarchicalTeams.nodes.team_node module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="graphHierarchicalTeams.nodes.html#graphHierarchicalTeams.nodes.team_node.analyst_node"><code class="docutils literal notranslate"><span class="pre">analyst_node()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="graphHierarchicalTeams.nodes.html#graphHierarchicalTeams.nodes.team_node.reviewer_node"><code class="docutils literal notranslate"><span class="pre">reviewer_node()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="graphHierarchicalTeams.nodes.html#graphHierarchicalTeams.nodes.team_node.should_continue"><code class="docutils literal notranslate"><span class="pre">should_continue()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="graphHierarchicalTeams.nodes.html#module-graphHierarchicalTeams.nodes">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading">¶</a></h2>
+</section>
+<section id="module-graphHierarchicalTeams.graph">
+<span id="graphhierarchicalteams-graph-module"></span><h2>graphHierarchicalTeams.graph module<a class="headerlink" href="#module-graphHierarchicalTeams.graph" title="Link to this heading">¶</a></h2>
+<p>Module for creating and managing a hierarchical state graph for process-based team workflows.</p>
+<p>This module uses <cite>langgraph</cite> to build and compile a hierarchical state graph for processes
+involving analysts, reviewers, and supervisors. It facilitates the creation of subteams,
+process teams, and the overall workflow for generating structured reports.</p>
+<p>Key Features:
+- Define team workflows for analysts and reviewers.
+- Create process-specific graphs for subteams.
+- Build and compile a main graph that integrates all processes.
+- Generate a Mermaid diagram to visualize the state graph.
+- Use a compiled graph to process user input and produce a final report.</p>
+<dl class="simple">
+<dt>Modules Used:</dt><dd><ul class="simple">
+<li><p>json: For loading and handling JSON data.</p></li>
+<li><p>subprocess: For executing external commands (e.g., Mermaid CLI).</p></li>
+<li><p>langgraph: For managing state graphs and nodes.</p></li>
+<li><p>graphHierarchicalTeams: Custom module for nodes and states.</p></li>
+</ul>
+</dd>
+<dt>Functions:</dt><dd><ul class="simple">
+<li><p>create_team_builder: Creates a state graph for an individual team (analyst and reviewer).</p></li>
+<li><p>create_process_team_builder: Creates a graph for a process with multiple subteams.</p></li>
+<li><p>create_main_graph: Builds the main hierarchical graph for all processes.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py function">
+<dt class="sig sig-object py" id="graphHierarchicalTeams.graph.create_main_graph">
+<span class="sig-prename descclassname"><span class="pre">graphHierarchicalTeams.graph.</span></span><span class="sig-name descname"><span class="pre">create_main_graph</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">processes</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/graphHierarchicalTeams/graph.html#create_main_graph"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#graphHierarchicalTeams.graph.create_main_graph" title="Link to this definition">¶</a></dt>
+<dd><p>Create a graph for the main hierarchical process with multiple processes and their subteams.</p>
+<p>The main graph integrates all process-specific graphs and adds a main supervisor node
+for overall orchestration.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>processes</strong> (<em>dict</em>) – <p>A dictionary where keys are process names and values are lists of subteam names.
+Example:
+{</p>
+<blockquote>
+<div><p>”Inside_Processes”: [“HR”, “BP”, “KM”, “IT”],
+“Outside_Processes”: [“Marketing”, “Finance”, “Legal”, “Customer_Support”, “R&amp;D”]</p>
+</div></blockquote>
+<p>}</p>
+</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A compiled state graph for the entire hierarchical process.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>StateGraph</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="graphHierarchicalTeams.graph.create_process_team_builder">
+<span class="sig-prename descclassname"><span class="pre">graphHierarchicalTeams.graph.</span></span><span class="sig-name descname"><span class="pre">create_process_team_builder</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">process_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">subteams</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/graphHierarchicalTeams/graph.html#create_process_team_builder"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#graphHierarchicalTeams.graph.create_process_team_builder" title="Link to this definition">¶</a></dt>
+<dd><p>Create a graph for a process with subteams.</p>
+<p>Each subteam has its own workflow (analyst and reviewer), and the process supervisor
+orchestrates the overall process.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>process_name</strong> (<em>str</em>) – The name of the process (e.g., “Inside_Processes”).</p></li>
+<li><p><strong>subteams</strong> (<em>list</em>) – A list of subteam names (e.g., [“HR”, “BP”, “KM”, “IT”]).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A compiled state graph for the process.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>StateGraph</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="graphHierarchicalTeams.graph.create_team_builder">
+<span class="sig-prename descclassname"><span class="pre">graphHierarchicalTeams.graph.</span></span><span class="sig-name descname"><span class="pre">create_team_builder</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/graphHierarchicalTeams/graph.html#create_team_builder"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#graphHierarchicalTeams.graph.create_team_builder" title="Link to this definition">¶</a></dt>
+<dd><p>Create a graph for a team with an analyst and a reviewer.</p>
+<p>The team builder defines a workflow where the analyst performs a needs analysis,
+and the reviewer provides feedback. The workflow alternates between these roles until
+a defined condition is met.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A compiled state graph for the team workflow.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>StateGraph</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-graphHierarchicalTeams.schema">
+<span id="graphhierarchicalteams-schema-module"></span><h2>graphHierarchicalTeams.schema module<a class="headerlink" href="#module-graphHierarchicalTeams.schema" title="Link to this heading">¶</a></h2>
+<p>Module defining data models for hierarchical teams using Pydantic.</p>
+<p>This module provides structured representations for persons, subordinate teams,
+research teams, and their hierarchical relationships. It uses Pydantic to enforce
+validation and provides helper methods to present detailed representations of the entities.</p>
+<dl class="simple">
+<dt>Classes:</dt><dd><ul class="simple">
+<li><p>Person: Represents an individual with a name, role, and description.</p></li>
+<li><p>SubordinateTeam: Represents a subordinate team with its name, description, and supervisor.</p></li>
+<li><p>ResearchTeam: Represents a research team with its name, description, and analyst-reviewer duo.</p></li>
+<li><p>Subordinates: A container for multiple subordinate teams.</p></li>
+<li><p>Perspectives: A container for multiple research teams.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py class">
+<dt class="sig sig-object py" id="graphHierarchicalTeams.schema.Person">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">graphHierarchicalTeams.schema.</span></span><span class="sig-name descname"><span class="pre">Person</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">role</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">description</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/graphHierarchicalTeams/schema.html#Person"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#graphHierarchicalTeams.schema.Person" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseModel</span></code></p>
+<p>Represent a person involved in a team with specific responsibilities.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="graphHierarchicalTeams.schema.Person.name">
+<span class="sig-name descname"><span class="pre">name</span></span><a class="headerlink" href="#graphHierarchicalTeams.schema.Person.name" title="Link to this definition">¶</a></dt>
+<dd><p>The name of the person.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="graphHierarchicalTeams.schema.Person.role">
+<span class="sig-name descname"><span class="pre">role</span></span><a class="headerlink" href="#graphHierarchicalTeams.schema.Person.role" title="Link to this definition">¶</a></dt>
+<dd><p>The role of the person within the team.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="graphHierarchicalTeams.schema.Person.description">
+<span class="sig-name descname"><span class="pre">description</span></span><a class="headerlink" href="#graphHierarchicalTeams.schema.Person.description" title="Link to this definition">¶</a></dt>
+<dd><p>A detailed description of the person’s focus, competencies, tasks, concerns, and motives.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="simple">
+<dt>Properties:</dt><dd><p>persona (str): A formatted string summarizing the person’s details.</p>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id0">
+<span class="sig-name descname"><span class="pre">description</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#id0" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="graphHierarchicalTeams.schema.Person.model_config">
+<span class="sig-name descname"><span class="pre">model_config</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">ConfigDict</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#graphHierarchicalTeams.schema.Person.model_config" title="Link to this definition">¶</a></dt>
+<dd><p>Configuration for the model, should be a dictionary conforming to [<cite>ConfigDict</cite>][pydantic.config.ConfigDict].</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id1">
+<span class="sig-name descname"><span class="pre">name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#id1" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="graphHierarchicalTeams.schema.Person.persona">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">persona</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#graphHierarchicalTeams.schema.Person.persona" title="Link to this definition">¶</a></dt>
+<dd><p>Provide a formatted representation of the person’s details.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A string containing the name, role, and description of the person.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id2">
+<span class="sig-name descname"><span class="pre">role</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#id2" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="graphHierarchicalTeams.schema.Perspectives">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">graphHierarchicalTeams.schema.</span></span><span class="sig-name descname"><span class="pre">Perspectives</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">teams</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#graphHierarchicalTeams.schema.ResearchTeam" title="graphHierarchicalTeams.schema.ResearchTeam"><span class="pre">ResearchTeam</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/graphHierarchicalTeams/schema.html#Perspectives"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#graphHierarchicalTeams.schema.Perspectives" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseModel</span></code></p>
+<p>Represent a container for multiple research teams.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="graphHierarchicalTeams.schema.Perspectives.teams">
+<span class="sig-name descname"><span class="pre">teams</span></span><a class="headerlink" href="#graphHierarchicalTeams.schema.Perspectives.teams" title="Link to this definition">¶</a></dt>
+<dd><p>A list of research teams.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List[<a class="reference internal" href="#graphHierarchicalTeams.schema.ResearchTeam" title="graphHierarchicalTeams.schema.ResearchTeam">ResearchTeam</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="graphHierarchicalTeams.schema.Perspectives.model_config">
+<span class="sig-name descname"><span class="pre">model_config</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">ConfigDict</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#graphHierarchicalTeams.schema.Perspectives.model_config" title="Link to this definition">¶</a></dt>
+<dd><p>Configuration for the model, should be a dictionary conforming to [<cite>ConfigDict</cite>][pydantic.config.ConfigDict].</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id3">
+<span class="sig-name descname"><span class="pre">teams</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#graphHierarchicalTeams.schema.ResearchTeam" title="graphHierarchicalTeams.schema.ResearchTeam"><span class="pre">ResearchTeam</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#id3" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="graphHierarchicalTeams.schema.ResearchTeam">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">graphHierarchicalTeams.schema.</span></span><span class="sig-name descname"><span class="pre">ResearchTeam</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">description</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">analyst</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#graphHierarchicalTeams.schema.Person" title="graphHierarchicalTeams.schema.Person"><span class="pre">Person</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">reviewer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#graphHierarchicalTeams.schema.Person" title="graphHierarchicalTeams.schema.Person"><span class="pre">Person</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/graphHierarchicalTeams/schema.html#ResearchTeam"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#graphHierarchicalTeams.schema.ResearchTeam" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseModel</span></code></p>
+<p>Represent a research team with an analyst and a reviewer.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="graphHierarchicalTeams.schema.ResearchTeam.name">
+<span class="sig-name descname"><span class="pre">name</span></span><a class="headerlink" href="#graphHierarchicalTeams.schema.ResearchTeam.name" title="Link to this definition">¶</a></dt>
+<dd><p>The name of the research team.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="graphHierarchicalTeams.schema.ResearchTeam.description">
+<span class="sig-name descname"><span class="pre">description</span></span><a class="headerlink" href="#graphHierarchicalTeams.schema.ResearchTeam.description" title="Link to this definition">¶</a></dt>
+<dd><p>A short description of the team’s responsibilities.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="graphHierarchicalTeams.schema.ResearchTeam.analyst">
+<span class="sig-name descname"><span class="pre">analyst</span></span><a class="headerlink" href="#graphHierarchicalTeams.schema.ResearchTeam.analyst" title="Link to this definition">¶</a></dt>
+<dd><p>The analyst in the team.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#graphHierarchicalTeams.schema.Person" title="graphHierarchicalTeams.schema.Person">Person</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="graphHierarchicalTeams.schema.ResearchTeam.reviewer">
+<span class="sig-name descname"><span class="pre">reviewer</span></span><a class="headerlink" href="#graphHierarchicalTeams.schema.ResearchTeam.reviewer" title="Link to this definition">¶</a></dt>
+<dd><p>The reviewer in the team.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#graphHierarchicalTeams.schema.Person" title="graphHierarchicalTeams.schema.Person">Person</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="simple">
+<dt>Properties:</dt><dd><p>team (str): A formatted string summarizing the team’s details, including the analyst and reviewer personas.</p>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id4">
+<span class="sig-name descname"><span class="pre">analyst</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#graphHierarchicalTeams.schema.Person" title="graphHierarchicalTeams.schema.Person"><span class="pre">Person</span></a></em><a class="headerlink" href="#id4" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id5">
+<span class="sig-name descname"><span class="pre">description</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#id5" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="graphHierarchicalTeams.schema.ResearchTeam.model_config">
+<span class="sig-name descname"><span class="pre">model_config</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">ConfigDict</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#graphHierarchicalTeams.schema.ResearchTeam.model_config" title="Link to this definition">¶</a></dt>
+<dd><p>Configuration for the model, should be a dictionary conforming to [<cite>ConfigDict</cite>][pydantic.config.ConfigDict].</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id6">
+<span class="sig-name descname"><span class="pre">name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#id6" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id7">
+<span class="sig-name descname"><span class="pre">reviewer</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#graphHierarchicalTeams.schema.Person" title="graphHierarchicalTeams.schema.Person"><span class="pre">Person</span></a></em><a class="headerlink" href="#id7" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="graphHierarchicalTeams.schema.ResearchTeam.team">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">team</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#graphHierarchicalTeams.schema.ResearchTeam.team" title="Link to this definition">¶</a></dt>
+<dd><p>Provide a detailed representation of the research team.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A string summarizing the research team’s details.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="graphHierarchicalTeams.schema.SubordinateTeam">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">graphHierarchicalTeams.schema.</span></span><span class="sig-name descname"><span class="pre">SubordinateTeam</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">description</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">subordinate</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#graphHierarchicalTeams.schema.Person" title="graphHierarchicalTeams.schema.Person"><span class="pre">Person</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/graphHierarchicalTeams/schema.html#SubordinateTeam"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#graphHierarchicalTeams.schema.SubordinateTeam" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseModel</span></code></p>
+<p>Represent a subordinate team in the hierarchical structure.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="graphHierarchicalTeams.schema.SubordinateTeam.name">
+<span class="sig-name descname"><span class="pre">name</span></span><a class="headerlink" href="#graphHierarchicalTeams.schema.SubordinateTeam.name" title="Link to this definition">¶</a></dt>
+<dd><p>The name of the subordinate team.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="graphHierarchicalTeams.schema.SubordinateTeam.description">
+<span class="sig-name descname"><span class="pre">description</span></span><a class="headerlink" href="#graphHierarchicalTeams.schema.SubordinateTeam.description" title="Link to this definition">¶</a></dt>
+<dd><p>A short description of the team’s responsibilities.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="graphHierarchicalTeams.schema.SubordinateTeam.subordinate">
+<span class="sig-name descname"><span class="pre">subordinate</span></span><a class="headerlink" href="#graphHierarchicalTeams.schema.SubordinateTeam.subordinate" title="Link to this definition">¶</a></dt>
+<dd><p>The supervisor of the subordinate team.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#graphHierarchicalTeams.schema.Person" title="graphHierarchicalTeams.schema.Person">Person</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="simple">
+<dt>Properties:</dt><dd><p>team (str): A formatted string summarizing the team’s details, including the supervisor’s persona.</p>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id8">
+<span class="sig-name descname"><span class="pre">description</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#id8" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="graphHierarchicalTeams.schema.SubordinateTeam.model_config">
+<span class="sig-name descname"><span class="pre">model_config</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">ConfigDict</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#graphHierarchicalTeams.schema.SubordinateTeam.model_config" title="Link to this definition">¶</a></dt>
+<dd><p>Configuration for the model, should be a dictionary conforming to [<cite>ConfigDict</cite>][pydantic.config.ConfigDict].</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id9">
+<span class="sig-name descname"><span class="pre">name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#id9" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id10">
+<span class="sig-name descname"><span class="pre">subordinate</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#graphHierarchicalTeams.schema.Person" title="graphHierarchicalTeams.schema.Person"><span class="pre">Person</span></a></em><a class="headerlink" href="#id10" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="graphHierarchicalTeams.schema.SubordinateTeam.team">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">team</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#graphHierarchicalTeams.schema.SubordinateTeam.team" title="Link to this definition">¶</a></dt>
+<dd><p>Provide a detailed representation of the subordinate team.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A string summarizing the subordinate team’s details.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="graphHierarchicalTeams.schema.Subordinates">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">graphHierarchicalTeams.schema.</span></span><span class="sig-name descname"><span class="pre">Subordinates</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">subordinates</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#graphHierarchicalTeams.schema.SubordinateTeam" title="graphHierarchicalTeams.schema.SubordinateTeam"><span class="pre">SubordinateTeam</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/graphHierarchicalTeams/schema.html#Subordinates"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#graphHierarchicalTeams.schema.Subordinates" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseModel</span></code></p>
+<p>Represent a container for multiple subordinate teams.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="graphHierarchicalTeams.schema.Subordinates.subordinates">
+<span class="sig-name descname"><span class="pre">subordinates</span></span><a class="headerlink" href="#graphHierarchicalTeams.schema.Subordinates.subordinates" title="Link to this definition">¶</a></dt>
+<dd><p>A list of subordinate teams.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List[<a class="reference internal" href="#graphHierarchicalTeams.schema.SubordinateTeam" title="graphHierarchicalTeams.schema.SubordinateTeam">SubordinateTeam</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="graphHierarchicalTeams.schema.Subordinates.model_config">
+<span class="sig-name descname"><span class="pre">model_config</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">ConfigDict</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#graphHierarchicalTeams.schema.Subordinates.model_config" title="Link to this definition">¶</a></dt>
+<dd><p>Configuration for the model, should be a dictionary conforming to [<cite>ConfigDict</cite>][pydantic.config.ConfigDict].</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id11">
+<span class="sig-name descname"><span class="pre">subordinates</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#graphHierarchicalTeams.schema.SubordinateTeam" title="graphHierarchicalTeams.schema.SubordinateTeam"><span class="pre">SubordinateTeam</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#id11" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-graphHierarchicalTeams.states">
+<span id="graphhierarchicalteams-states-module"></span><h2>graphHierarchicalTeams.states module<a class="headerlink" href="#module-graphHierarchicalTeams.states" title="Link to this heading">¶</a></h2>
+<p>Module defining state models and utility functions for managing hierarchical workflows.</p>
+<p>This module includes definitions for individual, subordinate, and overall states in a hierarchical team structure.
+It also provides utility functions for merging and deduplicating data.</p>
+<dl class="simple">
+<dt>Classes:</dt><dd><ul class="simple">
+<li><p>ResearchState: Represents the state of a research team (analyst and reviewer).</p></li>
+<li><p>SubordinateState: Represents the state of a subordinate team and its associated tasks.</p></li>
+<li><p>OverallState: Represents the overall state managed by the supervisor.</p></li>
+</ul>
+</dd>
+<dt>Functions:</dt><dd><ul class="simple">
+<li><p>deduplicate_merge: Merges two lists of strings, removing duplicates.</p></li>
+<li><p>merge_str: Ensures only the latest string is returned, useful for single-value merges.</p></li>
+</ul>
+</dd>
+<dt>Annotations:</dt><dd><ul class="simple">
+<li><p>Annotated: Used for specifying custom merge or combination behaviors for fields.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py class">
+<dt class="sig sig-object py" id="graphHierarchicalTeams.states.OverallState">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">graphHierarchicalTeams.states.</span></span><span class="sig-name descname"><span class="pre">OverallState</span></span><a class="reference internal" href="_modules/graphHierarchicalTeams/states.html#OverallState"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#graphHierarchicalTeams.states.OverallState" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">TypedDict</span></code></p>
+<p>Represent the overall state of the hierarchical workflow managed by the supervisor.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="graphHierarchicalTeams.states.OverallState.topic">
+<span class="sig-name descname"><span class="pre">topic</span></span><a class="headerlink" href="#graphHierarchicalTeams.states.OverallState.topic" title="Link to this definition">¶</a></dt>
+<dd><p>The overall topic of the workflow.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="graphHierarchicalTeams.states.OverallState.questionnaire">
+<span class="sig-name descname"><span class="pre">questionnaire</span></span><a class="headerlink" href="#graphHierarchicalTeams.states.OverallState.questionnaire" title="Link to this definition">¶</a></dt>
+<dd><p>Questionnaire results or user input related to the workflow.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="graphHierarchicalTeams.states.OverallState.subordinate_reviews">
+<span class="sig-name descname"><span class="pre">subordinate_reviews</span></span><a class="headerlink" href="#graphHierarchicalTeams.states.OverallState.subordinate_reviews" title="Link to this definition">¶</a></dt>
+<dd><p>Merged reviews from subordinate supervisors.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List[str]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="graphHierarchicalTeams.states.OverallState.final_report">
+<span class="sig-name descname"><span class="pre">final_report</span></span><a class="headerlink" href="#graphHierarchicalTeams.states.OverallState.final_report" title="Link to this definition">¶</a></dt>
+<dd><p>Final report generated after tasks are completed.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="graphHierarchicalTeams.states.OverallState.subordinate_teams">
+<span class="sig-name descname"><span class="pre">subordinate_teams</span></span><a class="headerlink" href="#graphHierarchicalTeams.states.OverallState.subordinate_teams" title="Link to this definition">¶</a></dt>
+<dd><p>List of subordinate teams in the workflow.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List[<a class="reference internal" href="#graphHierarchicalTeams.schema.SubordinateTeam" title="graphHierarchicalTeams.schema.SubordinateTeam">SubordinateTeam</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id12">
+<span class="sig-name descname"><span class="pre">final_report</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#id12" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id13">
+<span class="sig-name descname"><span class="pre">questionnaire</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Annotated[str,</span> <span class="pre">&lt;function</span> <span class="pre">merge_str</span> <span class="pre">at</span> <span class="pre">0x12c59da80&gt;]</span></em><a class="headerlink" href="#id13" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id14">
+<span class="sig-name descname"><span class="pre">subordinate_reviews</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List[str],</span> <span class="pre">&lt;function</span> <span class="pre">deduplicate_merge</span> <span class="pre">at</span> <span class="pre">0x12c59f880&gt;]</span></em><a class="headerlink" href="#id14" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id15">
+<span class="sig-name descname"><span class="pre">subordinate_teams</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#graphHierarchicalTeams.schema.SubordinateTeam" title="graphHierarchicalTeams.schema.SubordinateTeam"><span class="pre">SubordinateTeam</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#id15" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id16">
+<span class="sig-name descname"><span class="pre">topic</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Annotated[str,</span> <span class="pre">&lt;function</span> <span class="pre">merge_str</span> <span class="pre">at</span> <span class="pre">0x12c59da80&gt;]</span></em><a class="headerlink" href="#id16" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="graphHierarchicalTeams.states.ResearchState">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">graphHierarchicalTeams.states.</span></span><span class="sig-name descname"><span class="pre">ResearchState</span></span><a class="reference internal" href="_modules/graphHierarchicalTeams/states.html#ResearchState"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#graphHierarchicalTeams.states.ResearchState" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></p>
+<p>Represent the state of a research team, which includes an analyst and a reviewer.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="graphHierarchicalTeams.states.ResearchState.team_name">
+<span class="sig-name descname"><span class="pre">team_name</span></span><a class="headerlink" href="#graphHierarchicalTeams.states.ResearchState.team_name" title="Link to this definition">¶</a></dt>
+<dd><p>The name of the research team.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="graphHierarchicalTeams.states.ResearchState.team_topic">
+<span class="sig-name descname"><span class="pre">team_topic</span></span><a class="headerlink" href="#graphHierarchicalTeams.states.ResearchState.team_topic" title="Link to this definition">¶</a></dt>
+<dd><p>The topic assigned to the team.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="graphHierarchicalTeams.states.ResearchState.description">
+<span class="sig-name descname"><span class="pre">description</span></span><a class="headerlink" href="#graphHierarchicalTeams.states.ResearchState.description" title="Link to this definition">¶</a></dt>
+<dd><p>A description of the team’s responsibilities and capabilities.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="graphHierarchicalTeams.states.ResearchState.team_questionnaire">
+<span class="sig-name descname"><span class="pre">team_questionnaire</span></span><a class="headerlink" href="#graphHierarchicalTeams.states.ResearchState.team_questionnaire" title="Link to this definition">¶</a></dt>
+<dd><p>The questionnaire results or user input for the team.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="graphHierarchicalTeams.states.ResearchState.reviews">
+<span class="sig-name descname"><span class="pre">reviews</span></span><a class="headerlink" href="#graphHierarchicalTeams.states.ResearchState.reviews" title="Link to this definition">¶</a></dt>
+<dd><p>A list of reviews generated by four reviewers.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List[str]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="graphHierarchicalTeams.states.ResearchState.analyst">
+<span class="sig-name descname"><span class="pre">analyst</span></span><a class="headerlink" href="#graphHierarchicalTeams.states.ResearchState.analyst" title="Link to this definition">¶</a></dt>
+<dd><p>Information about the analyst in the team.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#graphHierarchicalTeams.schema.Person" title="graphHierarchicalTeams.schema.Person">Person</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="graphHierarchicalTeams.states.ResearchState.reviewer">
+<span class="sig-name descname"><span class="pre">reviewer</span></span><a class="headerlink" href="#graphHierarchicalTeams.states.ResearchState.reviewer" title="Link to this definition">¶</a></dt>
+<dd><p>Information about the reviewer in the team.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#graphHierarchicalTeams.schema.Person" title="graphHierarchicalTeams.schema.Person">Person</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id17">
+<span class="sig-name descname"><span class="pre">analyst</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#graphHierarchicalTeams.schema.Person" title="graphHierarchicalTeams.schema.Person"><span class="pre">Person</span></a></em><a class="headerlink" href="#id17" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id18">
+<span class="sig-name descname"><span class="pre">description</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#id18" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="graphHierarchicalTeams.states.ResearchState.messages">
+<span class="sig-name descname"><span class="pre">messages</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Tag(tag=ToolMessageChunk)],</span> <span class="pre">FieldInfo(annotation=NoneType,</span> <span class="pre">required=True,</span> <span class="pre">discriminator=Discriminator(discriminator=&lt;function</span> <span class="pre">_get_type</span> <span class="pre">at</span> <span class="pre">0x108d1fd80&gt;,</span> <span class="pre">custom_error_type=None,</span> <span class="pre">custom_error_message=None,</span> <span class="pre">custom_error_context=None))]],</span> <span class="pre">&lt;function</span> <span class="pre">add_messages</span> <span class="pre">at</span> <span class="pre">0x1099db2e0&gt;]</span></em><a class="headerlink" href="#graphHierarchicalTeams.states.ResearchState.messages" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id19">
+<span class="sig-name descname"><span class="pre">reviewer</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#graphHierarchicalTeams.schema.Person" title="graphHierarchicalTeams.schema.Person"><span class="pre">Person</span></a></em><a class="headerlink" href="#id19" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id20">
+<span class="sig-name descname"><span class="pre">reviews</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List[str],</span> <span class="pre">&lt;built-in</span> <span class="pre">function</span> <span class="pre">add&gt;]</span></em><a class="headerlink" href="#id20" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id21">
+<span class="sig-name descname"><span class="pre">team_name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#id21" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id22">
+<span class="sig-name descname"><span class="pre">team_questionnaire</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#id22" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id23">
+<span class="sig-name descname"><span class="pre">team_topic</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#id23" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="graphHierarchicalTeams.states.SubordinateState">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">graphHierarchicalTeams.states.</span></span><span class="sig-name descname"><span class="pre">SubordinateState</span></span><a class="reference internal" href="_modules/graphHierarchicalTeams/states.html#SubordinateState"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#graphHierarchicalTeams.states.SubordinateState" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">TypedDict</span></code></p>
+<p>Represent the state of a subordinate team responsible for managing multiple research teams.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="graphHierarchicalTeams.states.SubordinateState.subordinate_team_name">
+<span class="sig-name descname"><span class="pre">subordinate_team_name</span></span><a class="headerlink" href="#graphHierarchicalTeams.states.SubordinateState.subordinate_team_name" title="Link to this definition">¶</a></dt>
+<dd><p>Name of the subordinate team.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="graphHierarchicalTeams.states.SubordinateState.topic">
+<span class="sig-name descname"><span class="pre">topic</span></span><a class="headerlink" href="#graphHierarchicalTeams.states.SubordinateState.topic" title="Link to this definition">¶</a></dt>
+<dd><p>The topic assigned to the subordinate team.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="graphHierarchicalTeams.states.SubordinateState.questionnaire">
+<span class="sig-name descname"><span class="pre">questionnaire</span></span><a class="headerlink" href="#graphHierarchicalTeams.states.SubordinateState.questionnaire" title="Link to this definition">¶</a></dt>
+<dd><p>Questionnaire results or user input for the subordinate team’s tasks.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="graphHierarchicalTeams.states.SubordinateState.subordinate">
+<span class="sig-name descname"><span class="pre">subordinate</span></span><a class="headerlink" href="#graphHierarchicalTeams.states.SubordinateState.subordinate" title="Link to this definition">¶</a></dt>
+<dd><p>Information about the subordinate supervisor.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#graphHierarchicalTeams.schema.Person" title="graphHierarchicalTeams.schema.Person">Person</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="graphHierarchicalTeams.states.SubordinateState.teams">
+<span class="sig-name descname"><span class="pre">teams</span></span><a class="headerlink" href="#graphHierarchicalTeams.states.SubordinateState.teams" title="Link to this definition">¶</a></dt>
+<dd><p>List of research teams managed by this subordinate team.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List[<a class="reference internal" href="#graphHierarchicalTeams.schema.ResearchTeam" title="graphHierarchicalTeams.schema.ResearchTeam">ResearchTeam</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="graphHierarchicalTeams.states.SubordinateState.reviews">
+<span class="sig-name descname"><span class="pre">reviews</span></span><a class="headerlink" href="#graphHierarchicalTeams.states.SubordinateState.reviews" title="Link to this definition">¶</a></dt>
+<dd><p>Merged reviews from the research teams.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List[str]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="graphHierarchicalTeams.states.SubordinateState.final_subordinate_report">
+<span class="sig-name descname"><span class="pre">final_subordinate_report</span></span><a class="headerlink" href="#graphHierarchicalTeams.states.SubordinateState.final_subordinate_report" title="Link to this definition">¶</a></dt>
+<dd><p>Final report generated after tasks are completed.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="graphHierarchicalTeams.states.SubordinateState.subordinate_reviews">
+<span class="sig-name descname"><span class="pre">subordinate_reviews</span></span><a class="headerlink" href="#graphHierarchicalTeams.states.SubordinateState.subordinate_reviews" title="Link to this definition">¶</a></dt>
+<dd><p>Reviews provided by subordinate supervisors.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List[str]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id24">
+<span class="sig-name descname"><span class="pre">final_subordinate_report</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#id24" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id25">
+<span class="sig-name descname"><span class="pre">questionnaire</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#id25" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id26">
+<span class="sig-name descname"><span class="pre">reviews</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List[str],</span> <span class="pre">&lt;function</span> <span class="pre">deduplicate_merge</span> <span class="pre">at</span> <span class="pre">0x12c59f880&gt;]</span></em><a class="headerlink" href="#id26" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id27">
+<span class="sig-name descname"><span class="pre">subordinate</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#graphHierarchicalTeams.schema.Person" title="graphHierarchicalTeams.schema.Person"><span class="pre">Person</span></a></em><a class="headerlink" href="#id27" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id28">
+<span class="sig-name descname"><span class="pre">subordinate_reviews</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List[str],</span> <span class="pre">&lt;built-in</span> <span class="pre">function</span> <span class="pre">add&gt;]</span></em><a class="headerlink" href="#id28" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id29">
+<span class="sig-name descname"><span class="pre">subordinate_team_name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#id29" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id30">
+<span class="sig-name descname"><span class="pre">teams</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#graphHierarchicalTeams.schema.ResearchTeam" title="graphHierarchicalTeams.schema.ResearchTeam"><span class="pre">ResearchTeam</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#id30" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id31">
+<span class="sig-name descname"><span class="pre">topic</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#id31" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="graphHierarchicalTeams.states.deduplicate_merge">
+<span class="sig-prename descclassname"><span class="pre">graphHierarchicalTeams.states.</span></span><span class="sig-name descname"><span class="pre">deduplicate_merge</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">old_reviews</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_reviews</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/graphHierarchicalTeams/states.html#deduplicate_merge"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#graphHierarchicalTeams.states.deduplicate_merge" title="Link to this definition">¶</a></dt>
+<dd><p>Merge two lists of strings, removing duplicates.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>old_reviews</strong> (<em>List</em><em>[</em><em>str</em><em>]</em>) – The existing list of reviews.</p></li>
+<li><p><strong>new_reviews</strong> (<em>List</em><em>[</em><em>str</em><em>]</em>) – The new list of reviews to merge.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A merged list with duplicates removed.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List[str]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="graphHierarchicalTeams.states.merge_str">
+<span class="sig-prename descclassname"><span class="pre">graphHierarchicalTeams.states.</span></span><span class="sig-name descname"><span class="pre">merge_str</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">old_str</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_str</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="_modules/graphHierarchicalTeams/states.html#merge_str"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#graphHierarchicalTeams.states.merge_str" title="Link to this definition">¶</a></dt>
+<dd><p>Ensure that only the latest string is returned.</p>
+<p>This is useful for merging single-value fields where only the most recent value matters.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>old_str</strong> (<em>str</em>) – The existing string.</p></li>
+<li><p><strong>new_str</strong> (<em>str</em>) – The new string to use.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The new string.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-graphHierarchicalTeams">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-graphHierarchicalTeams" title="Link to this heading">¶</a></h2>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">LangChainDiploma</a></h1>
+
+
+
+
+
+
+
+
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2025, Fedir Zhuk, Aleksander Ignacik.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.1.3</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      
+      |
+      <a href="_sources/graphHierarchicalTeams.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

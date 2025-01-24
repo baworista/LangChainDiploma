@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>graphHierarchicalTeams.nodes package &#8212; LangChainDiploma 1.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="_static/basic.css?v=686e5160" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=27fed22d" />
+    <script src="_static/documentation_options.js?v=f2a433a1"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="graphhierarchicalteams-nodes-package">
+<h1>graphHierarchicalTeams.nodes package<a class="headerlink" href="#graphhierarchicalteams-nodes-package" title="Link to this heading">¶</a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading">¶</a></h2>
+</section>
+<section id="module-graphHierarchicalTeams.nodes.report_writer_node">
+<span id="graphhierarchicalteams-nodes-report-writer-node-module"></span><h2>graphHierarchicalTeams.nodes.report_writer_node module<a class="headerlink" href="#module-graphHierarchicalTeams.nodes.report_writer_node" title="Link to this heading">¶</a></h2>
+<p>Main module for generating a comprehensive report based on input data from subordinate states.</p>
+<p>This script loads environment variables, initializes a language model, defines writing instructions,
+and provides functionality to create a summarized report using the state of a subordinate.</p>
+<dl class="simple">
+<dt>Modules Used:</dt><dd><ul class="simple">
+<li><p>dotenv: For loading environment variables.</p></li>
+<li><p>langchain_openai: To interact with OpenAI’s chat models.</p></li>
+<li><p>langchain_core.messages: To structure messages for language model interaction.</p></li>
+<li><p>os: For accessing environment variables.</p></li>
+<li><p>graphHierarchicalTeams.states: Custom module for defining subordinate states.</p></li>
+</ul>
+</dd>
+<dt>Functions:</dt><dd><ul class="simple">
+<li><p>report_writer_node: Generates a detailed report based on the subordinate state.</p></li>
+</ul>
+</dd>
+<dt>Environment Variables:</dt><dd><ul class="simple">
+<li><p>MODEL: The name of the model to be used by the language model.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py function">
+<dt class="sig sig-object py" id="graphHierarchicalTeams.nodes.report_writer_node.report_writer_node">
+<span class="sig-prename descclassname"><span class="pre">graphHierarchicalTeams.nodes.report_writer_node.</span></span><span class="sig-name descname"><span class="pre">report_writer_node</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="graphHierarchicalTeams.html#graphHierarchicalTeams.states.SubordinateState" title="graphHierarchicalTeams.states.SubordinateState"><span class="pre">SubordinateState</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/graphHierarchicalTeams/nodes/report_writer_node.html#report_writer_node"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#graphHierarchicalTeams.nodes.report_writer_node.report_writer_node" title="Link to this definition">¶</a></dt>
+<dd><p>Generate a comprehensive report based on the provided subordinate state.</p>
+<p>This function extracts information (topic, questionnaire, and reviews) from the subordinate state,
+formats it into a structured system message, and invokes a language model to generate a complete report.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>state</strong> (<a class="reference internal" href="graphHierarchicalTeams.html#graphHierarchicalTeams.states.SubordinateState" title="graphHierarchicalTeams.states.SubordinateState"><em>SubordinateState</em></a>) – The current state object containing the following keys:
+- topic (str): The topic of the task.
+- questionnaire (str): The questionnaire details.
+- reviews (str): The reviews provided by the analyst-reviewer teams.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The updated state object with added or modified keys as necessary.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="graphHierarchicalTeams.html#graphHierarchicalTeams.states.SubordinateState" title="graphHierarchicalTeams.states.SubordinateState">SubordinateState</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-graphHierarchicalTeams.nodes.subordinate_node">
+<span id="graphhierarchicalteams-nodes-subordinate-node-module"></span><h2>graphHierarchicalTeams.nodes.subordinate_node module<a class="headerlink" href="#module-graphHierarchicalTeams.nodes.subordinate_node" title="Link to this heading">¶</a></h2>
+<p>Main module for managing AI research teams and orchestrating their workflows.</p>
+<p>This module provides tools and functions to define research teams, manage their states, and generate comprehensive reports.
+It utilizes a language model for team generation and report writing, based on structured prompts and state transitions.</p>
+<dl class="simple">
+<dt>Modules Used:</dt><dd><ul class="simple">
+<li><p>os: For accessing environment variables.</p></li>
+<li><p>dotenv: To load environment variables from a <cite>.env</cite> file.</p></li>
+<li><p>langchain.tools: To define tools within the LangChain framework.</p></li>
+<li><p>langchain_core.messages: For structuring messages for the language model.</p></li>
+<li><p>langchain_openai: For interacting with OpenAI’s chat models.</p></li>
+<li><p>langgraph.constants: For using <cite>Send</cite> and <cite>END</cite> constants in the workflow.</p></li>
+<li><p>graphHierarchicalTeams.states: For managing subordinate states.</p></li>
+<li><p>graphHierarchicalTeams.schema: For defining the <cite>Perspectives</cite> schema.</p></li>
+</ul>
+</dd>
+<dt>Environment Variables:</dt><dd><ul class="simple">
+<li><p>MODEL_SUPERVISOR: Specifies the language model used for the supervisor tool.</p></li>
+</ul>
+</dd>
+<dt>Functions:</dt><dd><ul class="simple">
+<li><p>subordinate_define_edge: Defines the workflow edge for subordinate state transitions.</p></li>
+<li><p>create_research_teams_tool: Generates a list of research teams based on the given topic and structured instructions.</p></li>
+<li><p>subordinate_node: Acts as a supervisor node, managing the research workflow and team orchestration.</p></li>
+</ul>
+</dd>
+<dt>Constants:</dt><dd><ul class="simple">
+<li><p>team_creation_instructions: Instructions for generating research teams.</p></li>
+<li><p>inside_processes_teams_info: Team definitions for inside processes.</p></li>
+<li><p>outside_processes_teams_info: Team definitions for outside processes.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py function">
+<dt class="sig sig-object py" id="graphHierarchicalTeams.nodes.subordinate_node.subordinate_define_edge">
+<span class="sig-prename descclassname"><span class="pre">graphHierarchicalTeams.nodes.subordinate_node.</span></span><span class="sig-name descname"><span class="pre">subordinate_define_edge</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="graphHierarchicalTeams.html#graphHierarchicalTeams.states.SubordinateState" title="graphHierarchicalTeams.states.SubordinateState"><span class="pre">SubordinateState</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/graphHierarchicalTeams/nodes/subordinate_node.html#subordinate_define_edge"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#graphHierarchicalTeams.nodes.subordinate_node.subordinate_define_edge" title="Link to this definition">¶</a></dt>
+<dd><p>Define the next workflow state for subordinate nodes based on the current state.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>state</strong> (<a class="reference internal" href="graphHierarchicalTeams.html#graphHierarchicalTeams.states.SubordinateState" title="graphHierarchicalTeams.states.SubordinateState"><em>SubordinateState</em></a>) – The current state object containing the following keys:
+- “final_subordinate_report” (str, optional): The final report, if available.
+- “reviews” (list): A list of reviews from teams.
+- “topic” (str): The research topic.
+- “teams” (list): A list of team details.
+- “questionnaire” (str): The questionnaire associated with the task.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Returns <cite>END</cite> if the final report is available, a string <cite>“Report_Writer”</cite> if sufficient reviews exist,
+or a list of <cite>Send</cite> objects to initialize team states.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str or list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="graphHierarchicalTeams.nodes.subordinate_node.subordinate_node">
+<span class="sig-prename descclassname"><span class="pre">graphHierarchicalTeams.nodes.subordinate_node.</span></span><span class="sig-name descname"><span class="pre">subordinate_node</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="graphHierarchicalTeams.html#graphHierarchicalTeams.states.SubordinateState" title="graphHierarchicalTeams.states.SubordinateState"><span class="pre">SubordinateState</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/graphHierarchicalTeams/nodes/subordinate_node.html#subordinate_node"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#graphHierarchicalTeams.nodes.subordinate_node.subordinate_node" title="Link to this definition">¶</a></dt>
+<dd><p>Orchestrate the workflow for subordinate nodes by generating teams and handling reports.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>state</strong> (<a class="reference internal" href="graphHierarchicalTeams.html#graphHierarchicalTeams.states.SubordinateState" title="graphHierarchicalTeams.states.SubordinateState"><em>SubordinateState</em></a>) – The current state object containing the following keys:
+- “teams” (list, optional): A list of team details.
+- “subordinate_team_name” (str): The name of the subordinate team.
+- “topic” (str): The research topic.
+- “final_subordinate_report” (str, optional): The final report, if available.
+- “subordinate_reviews” (list): A list of subordinate reviews.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The updated state object with added or modified keys as necessary.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="graphHierarchicalTeams.html#graphHierarchicalTeams.states.SubordinateState" title="graphHierarchicalTeams.states.SubordinateState">SubordinateState</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-graphHierarchicalTeams.nodes.supervisor">
+<span id="graphhierarchicalteams-nodes-supervisor-module"></span><h2>graphHierarchicalTeams.nodes.supervisor module<a class="headerlink" href="#module-graphHierarchicalTeams.nodes.supervisor" title="Link to this heading">¶</a></h2>
+<p>Main module for managing the hierarchical architecture network, including the creation of subordinate teams and the generation of comprehensive reports.</p>
+<p>This module enables the orchestration of workflows for a hierarchical system, where the main supervisor node
+oversees subordinate teams. It provides tools for creating teams, managing their states, and compiling final reports
+based on team reviews.</p>
+<dl class="simple">
+<dt>Modules Used:</dt><dd><ul class="simple">
+<li><p>os: For accessing environment variables.</p></li>
+<li><p>typing: For type annotations (e.g., List).</p></li>
+<li><p>dotenv: To load environment variables from a <cite>.env</cite> file.</p></li>
+<li><p>langchain.tools: To define tools within the LangChain framework.</p></li>
+<li><p>langchain_core.messages: For structuring messages for language model interactions.</p></li>
+<li><p>langchain_openai: For interacting with OpenAI’s chat models.</p></li>
+<li><p>langgraph.constants: For constants used in workflow orchestration (<cite>Send</cite>, <cite>END</cite>).</p></li>
+<li><p>graphHierarchicalTeams.schema: For defining subordinate schema (<cite>Subordinates</cite>).</p></li>
+<li><p>graphHierarchicalTeams.states: For managing overall hierarchical state (<cite>OverallState</cite>).</p></li>
+</ul>
+</dd>
+<dt>Environment Variables:</dt><dd><ul class="simple">
+<li><p>MODEL_SUPERVISOR: Specifies the language model used for the supervisor tool.</p></li>
+</ul>
+</dd>
+<dt>Functions:</dt><dd><ul class="simple">
+<li><p>create_subordinates_tool: Generates subordinate teams based on the given topic.</p></li>
+<li><p>report_writer_tool: Generates a structured report based on the provided reviews.</p></li>
+<li><p>supervisor_define_edge: Defines the next workflow state based on the overall state.</p></li>
+<li><p>superivisor_node: The main node managing the hierarchical workflow, creating teams and compiling the final report.</p></li>
+</ul>
+</dd>
+<dt>Constants:</dt><dd><ul class="simple">
+<li><p>subordinates_creation_instructions: Instructions for creating subordinate teams.</p></li>
+<li><p>writing_instructions: Guidelines for generating structured reports.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py function">
+<dt class="sig sig-object py" id="graphHierarchicalTeams.nodes.supervisor.superivisor_node">
+<span class="sig-prename descclassname"><span class="pre">graphHierarchicalTeams.nodes.supervisor.</span></span><span class="sig-name descname"><span class="pre">superivisor_node</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="graphHierarchicalTeams.html#graphHierarchicalTeams.states.OverallState" title="graphHierarchicalTeams.states.OverallState"><span class="pre">OverallState</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/graphHierarchicalTeams/nodes/supervisor.html#superivisor_node"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#graphHierarchicalTeams.nodes.supervisor.superivisor_node" title="Link to this definition">¶</a></dt>
+<dd><p>Orchestrate the hierarchical research workflow.</p>
+<p>Manage the workflow by generating subordinate teams, overseeing their processes,
+and compiling a final report based on subordinate reviews.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>state</strong> (<a class="reference internal" href="graphEvaluator.html#graphEvaluator.states.OverallState" title="graphEvaluator.states.OverallState"><em>OverallState</em></a>) – The current overall state containing the following keys:
+- “subordinate_teams” (list, optional): A list of subordinate team details.
+- “topic” (str): The research topic.
+- “questionnaire” (str): The questionnaire related to the task.
+- “subordinate_reviews” (list): A list of reviews from subordinate teams.
+- “final_report” (str, optional): The final report, if available.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The updated state object with added or modified keys as necessary.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="graphEvaluator.html#graphEvaluator.states.OverallState" title="graphEvaluator.states.OverallState">OverallState</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="graphHierarchicalTeams.nodes.supervisor.supervisor_define_edge">
+<span class="sig-prename descclassname"><span class="pre">graphHierarchicalTeams.nodes.supervisor.</span></span><span class="sig-name descname"><span class="pre">supervisor_define_edge</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="graphHierarchicalTeams.html#graphHierarchicalTeams.states.OverallState" title="graphHierarchicalTeams.states.OverallState"><span class="pre">OverallState</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/graphHierarchicalTeams/nodes/supervisor.html#supervisor_define_edge"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#graphHierarchicalTeams.nodes.supervisor.supervisor_define_edge" title="Link to this definition">¶</a></dt>
+<dd><p>Define the next workflow step for the supervisor node.</p>
+<p>If the final report is already in the state, the workflow ends. Otherwise, it initializes
+subordinate teams and transitions to their states.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>state</strong> (<a class="reference internal" href="graphEvaluator.html#graphEvaluator.states.OverallState" title="graphEvaluator.states.OverallState"><em>OverallState</em></a>) – The current overall state containing the following keys:
+- “final_report” (str, optional): The final report, if available.
+- “topic” (str): The research topic.
+- “questionnaire” (str): The questionnaire related to the task.
+- “subordinate_teams” (list): A list of subordinate team details.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><dl class="simple">
+<dt>Returns <cite>END</cite> if the final report is available, or a list of <cite>Send</cite> objects</dt><dd><p>to transition to subordinate states.</p>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str or list</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-graphHierarchicalTeams.nodes.team_node">
+<span id="graphhierarchicalteams-nodes-team-node-module"></span><h2>graphHierarchicalTeams.nodes.team_node module<a class="headerlink" href="#module-graphHierarchicalTeams.nodes.team_node" title="Link to this heading">¶</a></h2>
+<p>Module for managing the workflow of analysts and reviewers in a hierarchical team.</p>
+<p>This module provides functionality for:
+- Activating the <cite>Analyst</cite> node to perform a needs analysis.
+- Activating the <cite>Reviewer</cite> node to provide constructive feedback on the analysis.
+- Determining whether the workflow should continue or transition to the final state.</p>
+<p>It uses language models to generate analysis and reviews based on structured prompts and manages the state of the research process.</p>
+<dl class="simple">
+<dt>Modules Used:</dt><dd><ul class="simple">
+<li><p>os: For accessing environment variables.</p></li>
+<li><p>langchain_core.messages: For managing system messages.</p></li>
+<li><p>langchain_openai: For interacting with OpenAI’s language model.</p></li>
+<li><p>langgraph.constants: For workflow state management (e.g., <cite>END</cite>).</p></li>
+<li><p>graphHierarchicalTeams.states: For managing the research state.</p></li>
+</ul>
+</dd>
+<dt>Functions:</dt><dd><ul class="simple">
+<li><p>analyst_node: Activates the analyst node to generate a needs analysis based on the questionnaire results.</p></li>
+<li><p>reviewer_node: Activates the reviewer node to provide feedback on the analysis.</p></li>
+<li><p>should_continue: Determines whether the workflow should transition to the final state or proceed.</p></li>
+</ul>
+</dd>
+<dt>Constants:</dt><dd><ul class="simple">
+<li><p>analyst_prompt: Template for the analyst’s role, context, and guidelines.</p></li>
+<li><p>reviewer_prompt: Template for the reviewer’s role, context, and guidelines.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py function">
+<dt class="sig sig-object py" id="graphHierarchicalTeams.nodes.team_node.analyst_node">
+<span class="sig-prename descclassname"><span class="pre">graphHierarchicalTeams.nodes.team_node.</span></span><span class="sig-name descname"><span class="pre">analyst_node</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/graphHierarchicalTeams/nodes/team_node.html#analyst_node"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#graphHierarchicalTeams.nodes.team_node.analyst_node" title="Link to this definition">¶</a></dt>
+<dd><p>Activate the analyst node to perform a needs analysis.</p>
+<p>The analyst analyzes the current state of the customer based on the provided questionnaire results
+and, if available, integrates feedback from the reviewer.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>state</strong> (<em>dict</em>) – The current state of the process containing the following keys:
+- “team_topic” (str): The topic assigned to the team.
+- “team_name” (str): The name of the team.
+- “description” (str): A description of the team and its responsibilities.
+- “reviewer” (str): Information about the reviewer in the team.
+- “analyst” (str): Information about the analyst in the team.
+- “team_questionnaire” (str): The questionnaire results to be analyzed.
+- “messages” (list): A list of previous messages in the conversation.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A dictionary containing updated messages after invoking the language model.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="graphHierarchicalTeams.html#graphHierarchicalTeams.states.ResearchState" title="graphHierarchicalTeams.states.ResearchState">ResearchState</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="graphHierarchicalTeams.nodes.team_node.reviewer_node">
+<span class="sig-prename descclassname"><span class="pre">graphHierarchicalTeams.nodes.team_node.</span></span><span class="sig-name descname"><span class="pre">reviewer_node</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/graphHierarchicalTeams/nodes/team_node.html#reviewer_node"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#graphHierarchicalTeams.nodes.team_node.reviewer_node" title="Link to this definition">¶</a></dt>
+<dd><p>Activate the reviewer node to provide feedback on the analyst’s analysis.</p>
+<p>The reviewer creates constructive and actionable recommendations based on the analyst’s analysis
+and the provided questionnaire results.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>state</strong> (<em>dict</em>) – The current state of the process containing the following keys:
+- “team_topic” (str): The topic assigned to the team.
+- “team_name” (str): The name of the team.
+- “description” (str): A description of the team and its responsibilities.
+- “reviewer” (str): Information about the reviewer in the team.
+- “analyst” (str): Information about the analyst in the team.
+- “team_questionnaire” (str): The questionnaire results to be analyzed.
+- “messages” (list): A list of previous messages in the conversation.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A dictionary containing updated messages after invoking the language model.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="graphHierarchicalTeams.nodes.team_node.should_continue">
+<span class="sig-prename descclassname"><span class="pre">graphHierarchicalTeams.nodes.team_node.</span></span><span class="sig-name descname"><span class="pre">should_continue</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="graphHierarchicalTeams.html#graphHierarchicalTeams.states.ResearchState" title="graphHierarchicalTeams.states.ResearchState"><span class="pre">ResearchState</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/graphHierarchicalTeams/nodes/team_node.html#should_continue"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#graphHierarchicalTeams.nodes.team_node.should_continue" title="Link to this definition">¶</a></dt>
+<dd><p>Determine whether the workflow should continue or transition to the final state.</p>
+<p>If the number of messages reaches the defined limit, appends the last message
+to the reviews list and ends the workflow. Otherwise, transitions to the next node.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>state</strong> (<a class="reference internal" href="graphHierarchicalTeams.html#graphHierarchicalTeams.states.ResearchState" title="graphHierarchicalTeams.states.ResearchState"><em>ResearchState</em></a>) – The current research state containing the following keys:
+- “messages” (list): A list of messages exchanged in the workflow.
+- “reviews” (list): A list to store final reviews.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Returns <cite>END</cite> if the workflow should end; otherwise, transitions to “Reviewer”.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-graphHierarchicalTeams.nodes">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-graphHierarchicalTeams.nodes" title="Link to this heading">¶</a></h2>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">LangChainDiploma</a></h1>
+
+
+
+
+
+
+
+
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2025, Fedir Zhuk, Aleksander Ignacik.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.1.3</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      
+      |
+      <a href="_sources/graphHierarchicalTeams.nodes.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
