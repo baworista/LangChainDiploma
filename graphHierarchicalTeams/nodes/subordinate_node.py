@@ -58,6 +58,7 @@ inside_processes_teams_info = """
     b. BP_Team: Specializing in process optimization and automation.
     c. KM_Team: Concentrating on knowledge sharing and tools.
     d. IT_Team: Addressing IT strategies and tools.
+    There are 4 teams in total.
 """
 
 outside_processes_teams_info = """
@@ -66,6 +67,7 @@ outside_processes_teams_info = """
     c. Legal_Team: Concentrating on ensuring compliance with laws and regulations, drafting contracts, managing legal risks, and providing legal counsel.
     d. Customer_Support_Team: Addressing customer inquiries, feedback, and resolving issues to ensure a positive customer experience and maintain satisfaction.
     e. R&D_Team: Focused on innovation, developing new products or services, researching emerging technologies, and driving long-term business growth through product advancements.
+    There are 5 teams in total.
 """
 
 def subordinate_define_edge(state: SubordinateState):

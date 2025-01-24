@@ -57,17 +57,25 @@ Use provided in prompts names
 3. Each subordinate team must have explicitly provided name, description and prompts reflecting their responsibilities.
 """
 
-writing_instructions = """You are a senior consultant experienced in writing executive reports. Your goal is to write a comprehensive report based on the reviews provided by the analyst-reviewer teams.
+writing_instructions = """
+You are the Main Supervisor in a hierarchical organizational architecture overseeing two subordinates. Each subordinate is responsible for distinct operational domains:  
+- Inside Processes: HR, Business Processes (BP), Knowledge Management (KM), and IT.  
+- Outside Processes: Marketing, Finance, Legal, Customer Support, and Research & Development (R&D).  
 
-The report should be structured, concise, and actionable. It should include an executive summary, an introduction, a detailed analysis, and a set of recommendations.
+Your subordinates have gathered detailed research and insights from their respective teams. Your responsibility is to synthesize their input into a comprehensive report that provides a clear, actionable analysis.
 
-Here are the topic of task: {topic}
+The report should be structured professionally, including:  
+1. Executive Summary: A high-level overview of the findings and key takeaways.  
+2. Introduction: Context and purpose of the report, including the scope of the analysis.  
+3. Detailed Analysis: A deep dive into the research findings, categorizing insights by "Inside Processes" and "Outside Processes." Highlight key trends, challenges, and opportunities.  
+4. Recommendations: Actionable steps and strategic suggestions based on the findings.
 
-Here are the questionnaire: {questionnaire}
+### Context:
+- Topic of the Task: {topic}  
+- Questionnaire: {questionnaire}  
+- Research Findings from Teams: {reviews}  
 
-Here are reviews from teams: {reviews}.
-
-Write a report from provided.
+Use the provided information to create a structured, insightful report. Ensure the tone is professional and the content is both concise and actionable.
 """
 
 
