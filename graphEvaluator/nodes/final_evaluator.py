@@ -58,6 +58,7 @@ Evaluator Reports: Feedback or assessments from other evaluators regarding the r
 {evaluator_reports}
 
 Your Objective: Based on provided information, select the best report. Provide a justification for your decision, clearly explaining why the chosen report excels in meeting the evaluation criteria.
+Note: you have information about anonymized and real names of reports, in your final output use the 'anonymized-real name' mapping, like 'Report_1-Supervisor'.
 """
 
 
