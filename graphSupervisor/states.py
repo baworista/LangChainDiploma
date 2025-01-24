@@ -20,7 +20,7 @@ from typing import List, Annotated
 from langgraph.graph import MessagesState
 from typing_extensions import TypedDict
 
-from schema import *
+from graphSupervisor.schema import *
 
 
 # Individual state for each analyst and reviewer team

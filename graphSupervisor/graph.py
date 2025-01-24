@@ -118,7 +118,7 @@ print("Saved as PNG 'supervisor_graph_diagram.png'")
 thread = {"configurable": {"thread_id": "1"}}
 
 # Load from file
-with open("../data/answer_1.json", "r") as file:
+with open("./data/answer_1.json", "r") as file:
     data = json.load(file)
 
 user_input = {
