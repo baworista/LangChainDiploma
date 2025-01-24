@@ -19,17 +19,7 @@ from pydantic import BaseModel, Field
 
 
 class Person(BaseModel):
-    """
-    Represent an individual in a research team with attributes defining their role and focus.
-
-    Attributes:
-        name (str): The name of the person.
-        role (str): The role of the person within the team (e.g., Analyst or Reviewer).
-        description (str): A detailed description of the person's key competencies, tasks, concerns, and motives.
-
-    Properties:
-        persona (str): A formatted string summarizing the person's details.
-    """
+    """Represent a person involved in a team with specific responsibilities."""
 
     name: str = Field(
         description="Human-like person's name"
@@ -43,28 +33,12 @@ class Person(BaseModel):
 
     @property
     def persona(self) -> str:
-        """
-        Provide a formatted representation of the person's details.
-
-        Returns:
-            str: A string containing the name, role, and description of the person.
-        """
+        """Provide a formatted representation of the person's details."""
         return f"Name: {self.name}\nRole: {self.role}\nDescription: {self.description}\n"
 
 
 class ResearchTeam(BaseModel):
-    """
-    Represent a research team with a specific focus and roles for its members.
-
-    Attributes:
-        name (str): The name of the team (must use predefined names).
-        description (str): A brief description of the team's purpose and responsibilities.
-        analyst (Person): Information about the analyst in the team.
-        reviewer (Person): Information about the reviewer in the team.
-
-    Properties:
-        team (str): A formatted string summarizing the team's details, including the analyst and reviewer personas.
-    """
+    """Represent a research team with an analyst and a reviewer."""
 
     name: str = Field(
         description="Use only provided in system message names"
@@ -84,12 +58,7 @@ class ResearchTeam(BaseModel):
 
     @property
     def team(self) -> str:
-        """
-        Provide a detailed representation of the research team's structure and members.
-
-        Returns:
-            str: A string summarizing the team's name, description, and member details.
-        """
+        """Provide a detailed representation of the research team."""
         return (
             f"Team Name: {self.name}\n"
             f"Description: {self.description}\n\n"
@@ -99,12 +68,7 @@ class ResearchTeam(BaseModel):
 
 
 class Perspectives(BaseModel):
-    """
-    Represent a collection of research teams.
-
-    Attributes:
-        teams (List[ResearchTeam]): A list of research teams, each consisting of a name, description, and assigned analyst and reviewer.
-    """
+    """Represent a collection of research teams."""
 
     teams: List[ResearchTeam] = Field(
         description="List of research teams where each team contains name, description and analyst - reviewer duo prompts",

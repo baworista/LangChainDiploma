@@ -84,17 +84,14 @@ def create_subordinates_tool(topic: str) -> dict:
     """
     Generate subordinate teams based on the given topic.
 
-    This tool uses a structured language model to create two subordinate teams: `Inside_Processes_Team`
-    and `Outside_Processes_Team`, each with its own description and responsibilities.
-
     Args:
         topic (str): The research topic for which subordinate teams are to be created.
 
     Returns:
         dict: A dictionary containing the serialized subordinate teams with the following keys:
-            - "subordinate_team_name" (str): The name of the subordinate team.
-            - "description" (str): A brief description of the subordinate team's purpose.
-            - "subordinate" (list): A list of subordinates in the team.
+            - "subordinate_team_name" (str): Provided in system message subordinate team name.
+            - "description" (str): Short description of what this team is response for..
+            - "subordinate" (Person): Subordinate supervisor person
     """
     print(f"Creating subordinate teams on topic: \n\t{topic}")
     structured_llm = llm.with_structured_output(Subordinates)

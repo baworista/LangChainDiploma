@@ -42,6 +42,7 @@ load_dotenv()
 llm = ChatOpenAI(model=os.getenv("MODEL_SUPERVISOR"))
 model = llm.with_structured_output(Output)
 
+
 def agent_handler(state: OverallState, agent_prompt: str):
     """
     Handle the execution of a generic agent.
@@ -94,6 +95,7 @@ QUESTIONS: {ai_msg.questions}
 
     return {"analysis": [ai_msg.analysis]}
 
+
 def Consulting_Agent(state: OverallState):
     """
     Execute the Consulting Agent's workflow.
@@ -108,6 +110,7 @@ def Consulting_Agent(state: OverallState):
         result = Consulting_Agent(current_state)
     """
     return agent_handler(state, generate_agent_prompt("Consulting_Agent"))
+
 
 def HR_Agent(state: OverallState):
     """
@@ -124,6 +127,7 @@ def HR_Agent(state: OverallState):
     """
     return agent_handler(state, generate_agent_prompt("HR_Agent"))
 
+
 def BP_Agent(state: OverallState):
     """
     Execute the BP Agent's workflow.
@@ -139,6 +143,7 @@ def BP_Agent(state: OverallState):
     """
     return agent_handler(state, generate_agent_prompt("BP_Agent"))
 
+
 def KM_Agent(state: OverallState):
     """
     Execute the KM Agent's workflow.
@@ -153,6 +158,7 @@ def KM_Agent(state: OverallState):
         result = KM_Agent(current_state)
     """
     return agent_handler(state, generate_agent_prompt("KM_Agent"))
+
 
 def IT_Agent(state: OverallState):
     """

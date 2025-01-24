@@ -119,18 +119,17 @@ def subordinate_define_edge(state: SubordinateState):
 @tool
 def create_research_teams_tool(topic: str, team_info: str) -> dict:
     """
-    Generate research teams for a given topic using structured language model outputs.
+    Create a list of research teams for a given topic using structured language model outputs.
 
     Args:
-        topic (str): The research topic.
-        team_info (str): Details about the teams, including their names, descriptions, and roles.
+        topic (str): The research topic to base the teams on.
 
     Returns:
-        dict: A dictionary containing the generated teams with the following keys:
-            - "team_name" (str): The name of the team.
-            - "description" (str): A brief description of the team's purpose.
-            - "analyst" (str): The name of the analyst in the team.
-            - "reviewer" (str): The name of the reviewer in the team.
+        dict: A dictionary containing the generated research teams with the following keys:
+            - "name" (str): The name of the team.
+            - "description" (str): A description of the team's responsibilities.
+            - "analyst" (Person): The analyst assigned to the team.
+            - "reviewer" (Person): The reviewer assigned to the team.
     """
     print(f"Creating research teams on topic: \n\t{topic}")
     structured_llm = llm.with_structured_output(Perspectives)

@@ -84,6 +84,7 @@ def create_user_prompt(state):
 
     return USER_PROMPT_TEMPLATE.format(main_task=state["main_task"], task=task, questionnaire=state["questionnaire"], good_practices=state["good_practices"], analysis=analysis, questions=questions, processed_agents=", ".join(processed_agents))
 
+
 def create_summary_agent_prompt(state):
     """
     Generate a prompt for the summary agent to consolidate analyses and generate a final report.

@@ -37,20 +37,21 @@
 <span class="sd">This module defines the `final_evaluator_node` function, which uses a language model to analyze</span>
 <span class="sd">reports, feedback, and context to identify the best submission and justify the choice.</span>
 
-<span class="sd">Functionality:</span>
+<span class="sd">**Functionality**:</span>
 <span class="sd">    - Analyzes topic, questionnaire, reports, and evaluator feedback.</span>
 <span class="sd">    - Selects the best report based on evaluation criteria (e.g., relevance, clarity).</span>
 <span class="sd">    - Outputs the selected report and justification for its choice.</span>
 
-<span class="sd">Dependencies:</span>
+<span class="sd">**Dependencies**:</span>
 <span class="sd">    - `langchain_core.messages`: For generating system prompts.</span>
 <span class="sd">    - `langchain_openai`: For querying OpenAI&#39;s language model.</span>
 <span class="sd">    - `graphEvaluator.states`: Provides the `OverallState` definition.</span>
 
-<span class="sd">Function:</span>
+<span class="sd">**Function**:</span>
 <span class="sd">    - `final_evaluator_node`: Evaluates and selects the best report.</span>
 
-<span class="sd">Example:</span>
+<span class="sd">**Example**::</span>
+
 <span class="sd">    state = {</span>
 <span class="sd">        &quot;topic&quot;: &quot;Improve team collaboration.&quot;,</span>
 <span class="sd">        &quot;questionnaire&quot;: &quot;Survey on team dynamics.&quot;,</span>
@@ -91,6 +92,7 @@
 <span class="si">{evaluator_reports}</span>
 
 <span class="s2">Your Objective: Based on provided information, select the best report. Provide a justification for your decision, clearly explaining why the chosen report excels in meeting the evaluation criteria.</span>
+<span class="s2">Note: you have information about anonymized and real names of reports, in your final output use the &#39;anonymized-real name&#39; mapping, like &#39;Report_1-Supervisor&#39;.</span>
 <span class="s2">&quot;&quot;&quot;</span>
 
 

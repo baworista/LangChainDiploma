@@ -18,17 +18,7 @@ from pydantic import BaseModel, Field
 
 
 class Person(BaseModel):
-    """
-    Represent a person involved in a team with specific responsibilities.
-
-    Attributes:
-        name (str): The name of the person.
-        role (str): The role of the person within the team.
-        description (str): A detailed description of the person's focus, competencies, tasks, concerns, and motives.
-
-    Properties:
-        persona (str): A formatted string summarizing the person's details.
-    """
+    """Represent a person involved in a team with specific responsibilities."""
 
     name: str = Field(
         description="Human-like person's name"
@@ -42,27 +32,12 @@ class Person(BaseModel):
 
     @property
     def persona(self) -> str:
-        """
-        Provide a formatted representation of the person's details.
-
-        Returns:
-            str: A string containing the name, role, and description of the person.
-        """
+        """Provide a formatted representation of the person's details."""
         return f"Name: {self.name}\nRole: {self.role}\nDescription: {self.description}\n"
 
 
 class SubordinateTeam(BaseModel):
-    """
-    Represent a subordinate team in the hierarchical structure.
-
-    Attributes:
-        name (str): The name of the subordinate team.
-        description (str): A short description of the team's responsibilities.
-        subordinate (Person): The supervisor of the subordinate team.
-
-    Properties:
-        team (str): A formatted string summarizing the team's details, including the supervisor's persona.
-    """
+    """Represent a subordinate team in the hierarchical structure."""
 
     name: str = Field(
         description="Use only provided in system message names"
@@ -78,12 +53,7 @@ class SubordinateTeam(BaseModel):
 
     @property
     def team(self) -> str:
-        """
-        Provide a detailed representation of the subordinate team.
-
-        Returns:
-            str: A string summarizing the subordinate team's details.
-        """
+        """Provide a detailed representation of the subordinate team."""
         return (
             f"Subordinate Team Name: {self.name}\n"
             f"Description: {self.description}\n\n"
@@ -92,18 +62,7 @@ class SubordinateTeam(BaseModel):
 
 
 class ResearchTeam(BaseModel):
-    """
-    Represent a research team with an analyst and a reviewer.
-
-    Attributes:
-        name (str): The name of the research team.
-        description (str): A short description of the team's responsibilities.
-        analyst (Person): The analyst in the team.
-        reviewer (Person): The reviewer in the team.
-
-    Properties:
-        team (str): A formatted string summarizing the team's details, including the analyst and reviewer personas.
-    """
+    """Represent a research team with an analyst and a reviewer."""
 
     name: str = Field(
         description="Use only provided in system message names"
@@ -123,12 +82,7 @@ class ResearchTeam(BaseModel):
 
     @property
     def team(self) -> str:
-        """
-        Provide a detailed representation of the research team.
-
-        Returns:
-            str: A string summarizing the research team's details.
-        """
+        """Provide a detailed representation of the research team."""
         return (
             f"Team Name: {self.name}\n"
             f"Description: {self.description}\n\n"
@@ -138,12 +92,7 @@ class ResearchTeam(BaseModel):
 
 
 class Subordinates(BaseModel):
-    """
-    Represent a container for multiple subordinate teams.
-
-    Attributes:
-        subordinates (List[SubordinateTeam]): A list of subordinate teams.
-    """
+    """Represent a container for multiple subordinate teams."""
 
     subordinates: List[SubordinateTeam] = Field(
         description="List of subordinate teams with supervisor's name, role, and description.",
@@ -151,12 +100,7 @@ class Subordinates(BaseModel):
 
 
 class Perspectives(BaseModel):
-    """
-    Represent a container for multiple research teams.
-
-    Attributes:
-        teams (List[ResearchTeam]): A list of research teams.
-    """
+    """Represent a container for multiple research teams."""
 
     teams: List[ResearchTeam] = Field(
         description="List of research teams where each team contains name, description and analyst - reviewer duo prompts",

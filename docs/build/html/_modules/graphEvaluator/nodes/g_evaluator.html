@@ -68,14 +68,15 @@
 
 <span class="sd">    Args:</span>
 <span class="sd">        state (OverallState): Current workflow state containing:</span>
-<span class="sd">            - reports (dict): Dictionary of reports with:</span>
-<span class="sd">                - anonymized_name (str): The anonymized report name.</span>
-<span class="sd">                - report (str): Content of the report.</span>
+<span class="sd">            - **reports** (*dict*): Dictionary of reports with:</span>
+<span class="sd">                - **anonymized_name** (*str*): The anonymized report name.</span>
+<span class="sd">                - **report** (*str*): Content of the report.</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        dict: Results of G-Eval evaluation under the `evaluator_reports` key.</span>
 
-<span class="sd">    Example:</span>
+<span class="sd">    Example::</span>
+
 <span class="sd">        state = {</span>
 <span class="sd">            &quot;reports&quot;: {</span>
 <span class="sd">                &quot;Report_1&quot;: {&quot;anonymized_name&quot;: &quot;Anonymized_1&quot;, &quot;report&quot;: &quot;Content 1&quot;},</span>

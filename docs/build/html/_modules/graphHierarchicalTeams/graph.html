@@ -147,11 +147,12 @@
 
 <span class="sd">    Args:</span>
 <span class="sd">        processes (dict): A dictionary where keys are process names and values are lists of subteam names.</span>
-<span class="sd">                          Example:</span>
-<span class="sd">                          {</span>
-<span class="sd">                              &quot;Inside_Processes&quot;: [&quot;HR&quot;, &quot;BP&quot;, &quot;KM&quot;, &quot;IT&quot;],</span>
-<span class="sd">                              &quot;Outside_Processes&quot;: [&quot;Marketing&quot;, &quot;Finance&quot;, &quot;Legal&quot;, &quot;Customer_Support&quot;, &quot;R&amp;D&quot;]</span>
-<span class="sd">                          }</span>
+<span class="sd">            Example::</span>
+
+<span class="sd">                {</span>
+<span class="sd">                    &quot;Inside_Processes&quot;: [&quot;HR&quot;, &quot;BP&quot;, &quot;KM&quot;, &quot;IT&quot;],</span>
+<span class="sd">                    &quot;Outside_Processes&quot;: [&quot;Marketing&quot;, &quot;Finance&quot;, &quot;Legal&quot;, &quot;Customer_Support&quot;, &quot;R&amp;D&quot;]</span>
+<span class="sd">                }</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        StateGraph: A compiled state graph for the entire hierarchical process.</span>
@@ -231,9 +232,9 @@
     <span class="n">report_content</span> <span class="o">=</span> <span class="n">final_report</span><span class="o">.</span><span class="n">content</span>
 
     <span class="c1"># Define the output file path</span>
-    <span class="n">output_file_path</span> <span class="o">=</span> <span class="s2">&quot;output.md&quot;</span>
+    <span class="n">output_file_path</span> <span class="o">=</span> <span class="s2">&quot;outputHierarchicalTeams.md&quot;</span>
 
-    <span class="c1"># Write the report content to the output.md file</span>
+    <span class="c1"># Write the report content to the outputHierarchicalTeams.md file</span>
     <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">output_file_path</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">output_file</span><span class="p">:</span>
         <span class="n">output_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">report_content</span><span class="p">)</span>
 
@@ -244,7 +245,7 @@
 <span class="c1"># Additional Details:</span>
 <span class="c1"># - The compiled graph is visualized as a Mermaid diagram and saved as a PNG.</span>
 <span class="c1"># - The hierarchical workflow processes user input to generate a final structured report.</span>
-<span class="c1"># - The final report is saved as `output.md` if generated successfully.</span>
+<span class="c1"># - The final report is saved as `outputHierarchicalTeams.md` if generated successfully.</span>
 </pre></div>
 
           </div>

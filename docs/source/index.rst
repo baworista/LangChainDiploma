@@ -12,6 +12,7 @@ documentation for details.
 
 
 .. toctree::
+   :no-index:
    :maxdepth: 2
    :caption: Contents:
 

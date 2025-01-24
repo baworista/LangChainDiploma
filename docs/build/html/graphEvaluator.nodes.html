@@ -43,14 +43,14 @@
 different teams based on predefined criteria using a language model. The evaluation process is anonymized
 to ensure fairness and objectivity, and each report is scored on five key criteria.</p>
 <dl class="simple">
-<dt>Functionality:</dt><dd><ul class="simple">
+<dt><strong>Functionality</strong>:</dt><dd><ul class="simple">
 <li><p>Accepts the current workflow state, including the topic, questionnaire, and reports.</p></li>
 <li><p>Anonymizes report data to prevent bias in evaluations.</p></li>
 <li><p>Scores reports based on relevance, factuality, completeness, clarity, and actionability.</p></li>
 <li><p>Returns structured evaluation results in a standardized format for further processing.</p></li>
 </ul>
 </dd>
-<dt>Evaluation Criteria:</dt><dd><ol class="arabic simple">
+<dt><strong>Evaluation Criteria</strong>:</dt><dd><ol class="arabic simple">
 <li><p><strong>Relevance</strong>: How well the report addresses the task.</p></li>
 <li><p><strong>Factuality</strong>: Whether the report contains any factual errors.</p></li>
 <li><p><strong>Completeness</strong>: Coverage of all aspects of the task, including diagnosis and recommendations.</p></li>
@@ -58,15 +58,15 @@ to ensure fairness and objectivity, and each report is scored on five key criter
 <li><p><strong>Actionability</strong>: Practicality and applicability of the recommendations.</p></li>
 </ol>
 </dd>
-<dt>Dependencies:</dt><dd><ul class="simple">
+<dt><strong>Dependencies</strong>:</dt><dd><ul class="simple">
 <li><p><cite>langchain_core.messages</cite>: For generating system prompts for the language model.</p></li>
 <li><p><cite>langchain_openai</cite>: For querying OpenAI’s language model.</p></li>
 <li><p><cite>graphEvaluator.states</cite>: Defines the <cite>OverallState</cite> workflow structure.</p></li>
 <li><p><cite>graphEvaluator.schema</cite>: Provides the <cite>StructuredEvaluatorOutput</cite> for standardized evaluations.</p></li>
 </ul>
 </dd>
-<dt>Functions:</dt><dd><ul class="simple">
-<li><p>comprehensive_evaluator_node: Evaluates reports using a language model and returns structured results.</p></li>
+<dt><strong>Functions</strong>:</dt><dd><ul class="simple">
+<li><p><cite>comprehensive_evaluator_node</cite>: Evaluates reports using a language model and returns structured results.</p></li>
 </ul>
 </dd>
 </dl>
@@ -78,7 +78,7 @@ to ensure fairness and objectivity, and each report is scored on five key criter
 them based on predefined criteria. The results include structured feedback and scores for each report.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>state</strong> (<a class="reference internal" href="graphEvaluator.html#graphEvaluator.states.OverallState" title="graphEvaluator.states.OverallState"><em>OverallState</em></a>) – The current workflow state, which includes:
+<dd class="field-odd"><p><strong>state</strong> (<a class="reference internal" href="graphNetwork.html#graphNetwork.states.OverallState" title="graphNetwork.states.OverallState"><em>OverallState</em></a>) – The current workflow state, which includes:
 - topic (str): The topic being evaluated.
 - questionnaire (str): Questions and answers used for evaluation.
 - reports (dict): A dictionary of anonymized reports submitted by teams.</p>
@@ -114,51 +114,48 @@ print(output[“evaluator_reports”])</p>
 <p>This module defines the <cite>final_evaluator_node</cite> function, which uses a language model to analyze
 reports, feedback, and context to identify the best submission and justify the choice.</p>
 <dl class="simple">
-<dt>Functionality:</dt><dd><ul class="simple">
+<dt><strong>Functionality</strong>:</dt><dd><ul class="simple">
 <li><p>Analyzes topic, questionnaire, reports, and evaluator feedback.</p></li>
 <li><p>Selects the best report based on evaluation criteria (e.g., relevance, clarity).</p></li>
 <li><p>Outputs the selected report and justification for its choice.</p></li>
 </ul>
 </dd>
-<dt>Dependencies:</dt><dd><ul class="simple">
+<dt><strong>Dependencies</strong>:</dt><dd><ul class="simple">
 <li><p><cite>langchain_core.messages</cite>: For generating system prompts.</p></li>
 <li><p><cite>langchain_openai</cite>: For querying OpenAI’s language model.</p></li>
 <li><p><cite>graphEvaluator.states</cite>: Provides the <cite>OverallState</cite> definition.</p></li>
 </ul>
 </dd>
-<dt>Function:</dt><dd><ul class="simple">
+<dt><strong>Function</strong>:</dt><dd><ul class="simple">
 <li><p><cite>final_evaluator_node</cite>: Evaluates and selects the best report.</p></li>
 </ul>
 </dd>
 </dl>
-<p class="rubric">Example</p>
-<dl>
-<dt>state = {</dt><dd><p>“topic”: “Improve team collaboration.”,
-“questionnaire”: “Survey on team dynamics.”,
-“reports”: {</p>
-<blockquote>
-<div><p>“Report_1”: “Analysis of team performance.”,
-“Report_2”: “Collaboration improvement strategies.”</p>
-</div></blockquote>
-<p>},
-“evaluator_reports”: [</p>
-<blockquote>
-<div><p>{“Report_1”: {“clarity”: 4, “actionability”: 3}},
-{“Report_2”: {“clarity”: 5, “actionability”: 4}}</p>
-</div></blockquote>
-<p>]</p>
-</dd>
-</dl>
-<p>}</p>
-<p>output = final_evaluator_node(state)
-print(output[“the_best_report_info”])</p>
+<p><strong>Example</strong>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">state</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;topic&quot;</span><span class="p">:</span> <span class="s2">&quot;Improve team collaboration.&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;questionnaire&quot;</span><span class="p">:</span> <span class="s2">&quot;Survey on team dynamics.&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;reports&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">&quot;Report_1&quot;</span><span class="p">:</span> <span class="s2">&quot;Analysis of team performance.&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Report_2&quot;</span><span class="p">:</span> <span class="s2">&quot;Collaboration improvement strategies.&quot;</span>
+    <span class="p">},</span>
+    <span class="s2">&quot;evaluator_reports&quot;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">{</span><span class="s2">&quot;Report_1&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;clarity&quot;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span> <span class="s2">&quot;actionability&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">}},</span>
+        <span class="p">{</span><span class="s2">&quot;Report_2&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;clarity&quot;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span> <span class="s2">&quot;actionability&quot;</span><span class="p">:</span> <span class="mi">4</span><span class="p">}}</span>
+    <span class="p">]</span>
+<span class="p">}</span>
+
+<span class="n">output</span> <span class="o">=</span> <span class="n">final_evaluator_node</span><span class="p">(</span><span class="n">state</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">output</span><span class="p">[</span><span class="s2">&quot;the_best_report_info&quot;</span><span class="p">])</span>
+</pre></div>
+</div>
 <dl class="py function">
 <dt class="sig sig-object py" id="graphEvaluator.nodes.final_evaluator.final_evaluator_node">
 <span class="sig-prename descclassname"><span class="pre">graphEvaluator.nodes.final_evaluator.</span></span><span class="sig-name descname"><span class="pre">final_evaluator_node</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="graphEvaluator.html#graphEvaluator.states.OverallState" title="graphEvaluator.states.OverallState"><span class="pre">OverallState</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/graphEvaluator/nodes/final_evaluator.html#final_evaluator_node"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#graphEvaluator.nodes.final_evaluator.final_evaluator_node" title="Link to this definition">¶</a></dt>
 <dd><p>Select the best report from the provided submissions and justifies the choice.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>state</strong> (<a class="reference internal" href="graphEvaluator.html#graphEvaluator.states.OverallState" title="graphEvaluator.states.OverallState"><em>OverallState</em></a>) – The current state of the workflow, containing:
+<dd class="field-odd"><p><strong>state</strong> (<a class="reference internal" href="graphNetwork.html#graphNetwork.states.OverallState" title="graphNetwork.states.OverallState"><em>OverallState</em></a>) – The current state of the workflow, containing:
 - topic (str): The main topic of the evaluation.
 - questionnaire (str): Questionnaire used for report evaluation.
 - reports (dict): Reports submitted by agents.
@@ -225,12 +222,12 @@ print(output[“the_best_report_info”])</p>
 <dd><p>Evaluate reports using G-Eval metrics and generates detailed feedback.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>state</strong> (<a class="reference internal" href="graphEvaluator.html#graphEvaluator.states.OverallState" title="graphEvaluator.states.OverallState"><em>OverallState</em></a>) – <p>Current workflow state containing:
-- reports (dict): Dictionary of reports with:</p>
+<dd class="field-odd"><p><strong>state</strong> (<a class="reference internal" href="graphNetwork.html#graphNetwork.states.OverallState" title="graphNetwork.states.OverallState"><em>OverallState</em></a>) – <p>Current workflow state containing:
+- <strong>reports</strong> (<em>dict</em>): Dictionary of reports with:</p>
 <blockquote>
 <div><ul class="simple">
-<li><p>anonymized_name (str): The anonymized report name.</p></li>
-<li><p>report (str): Content of the report.</p></li>
+<li><p><strong>anonymized_name</strong> (<em>str</em>): The anonymized report name.</p></li>
+<li><p><strong>report</strong> (<em>str</em>): Content of the report.</p></li>
 </ul>
 </div></blockquote>
 </p>
@@ -242,19 +239,18 @@ print(output[“the_best_report_info”])</p>
 <dd class="field-odd"><p>dict</p>
 </dd>
 </dl>
-<p class="rubric">Example</p>
-<dl>
-<dt>state = {</dt><dd><dl class="simple">
-<dt>“reports”: {</dt><dd><p>“Report_1”: {“anonymized_name”: “Anonymized_1”, “report”: “Content 1”},
-“Report_2”: {“anonymized_name”: “Anonymized_2”, “report”: “Content 2”}</p>
-</dd>
-</dl>
-<p>}</p>
-</dd>
-</dl>
-<p>}</p>
-<p>output = g_eval_evaluator_node(state)
-print(output[“evaluator_reports”])</p>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">state</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;reports&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">&quot;Report_1&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;anonymized_name&quot;</span><span class="p">:</span> <span class="s2">&quot;Anonymized_1&quot;</span><span class="p">,</span> <span class="s2">&quot;report&quot;</span><span class="p">:</span> <span class="s2">&quot;Content 1&quot;</span><span class="p">},</span>
+        <span class="s2">&quot;Report_2&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;anonymized_name&quot;</span><span class="p">:</span> <span class="s2">&quot;Anonymized_2&quot;</span><span class="p">,</span> <span class="s2">&quot;report&quot;</span><span class="p">:</span> <span class="s2">&quot;Content 2&quot;</span><span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="n">output</span> <span class="o">=</span> <span class="n">g_eval_evaluator_node</span><span class="p">(</span><span class="n">state</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">output</span><span class="p">[</span><span class="s2">&quot;evaluator_reports&quot;</span><span class="p">])</span>
+</pre></div>
+</div>
 </dd></dl>
 
 </section>
@@ -322,7 +318,7 @@ an overall summary.</p>
 <dd><p>Process and evaluates all reports individually, returning structured results.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>state</strong> (<a class="reference internal" href="graphEvaluator.html#graphEvaluator.states.OverallState" title="graphEvaluator.states.OverallState"><em>OverallState</em></a>) – Current workflow state, including:
+<dd class="field-odd"><p><strong>state</strong> (<a class="reference internal" href="graphNetwork.html#graphNetwork.states.OverallState" title="graphNetwork.states.OverallState"><em>OverallState</em></a>) – Current workflow state, including:
 - topic (str): The evaluation topic.
 - questionnaire (str): Questions guiding the reports.
 - reports (dict): Dictionary of anonymized reports with their content.</p>
@@ -387,7 +383,7 @@ print(reports)</p>
 <dd><p>Compile reports into a dictionary with anonymized names and updates the system state.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>state</strong> (<a class="reference internal" href="graphEvaluator.html#graphEvaluator.states.OverallState" title="graphEvaluator.states.OverallState"><em>OverallState</em></a>) – Current system state containing:
+<dd class="field-odd"><p><strong>state</strong> (<a class="reference internal" href="graphNetwork.html#graphNetwork.states.OverallState" title="graphNetwork.states.OverallState"><em>OverallState</em></a>) – Current system state containing:
 - reports (list): List of architecture names to load reports from.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -402,7 +398,7 @@ print(reports)</p>
 </p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference internal" href="graphEvaluator.html#graphEvaluator.states.OverallState" title="graphEvaluator.states.OverallState">OverallState</a></p>
+<dd class="field-odd"><p><a class="reference internal" href="graphNetwork.html#graphNetwork.states.OverallState" title="graphNetwork.states.OverallState">OverallState</a></p>
 </dd>
 </dl>
 <p class="rubric">Example</p>

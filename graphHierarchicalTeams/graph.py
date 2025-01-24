@@ -106,11 +106,12 @@ def create_main_graph(processes):
 
     Args:
         processes (dict): A dictionary where keys are process names and values are lists of subteam names.
-                          Example:
-                          {
-                              "Inside_Processes": ["HR", "BP", "KM", "IT"],
-                              "Outside_Processes": ["Marketing", "Finance", "Legal", "Customer_Support", "R&D"]
-                          }
+            Example::
+
+                {
+                    "Inside_Processes": ["HR", "BP", "KM", "IT"],
+                    "Outside_Processes": ["Marketing", "Finance", "Legal", "Customer_Support", "R&D"]
+                }
 
     Returns:
         StateGraph: A compiled state graph for the entire hierarchical process.

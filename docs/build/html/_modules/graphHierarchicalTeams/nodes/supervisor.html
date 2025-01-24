@@ -90,17 +90,25 @@
 <span class="s2">3. Each subordinate team must have explicitly provided name, description and prompts reflecting their responsibilities.</span>
 <span class="s2">&quot;&quot;&quot;</span>
 
-<span class="n">writing_instructions</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;You are a senior consultant experienced in writing executive reports. Your goal is to write a comprehensive report based on the reviews provided by the analyst-reviewer teams.</span>
+<span class="n">writing_instructions</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">You are the Main Supervisor in a hierarchical organizational architecture overseeing two subordinates. Each subordinate is responsible for distinct operational domains:  </span>
+<span class="s2">- Inside Processes: HR, Business Processes (BP), Knowledge Management (KM), and IT.  </span>
+<span class="s2">- Outside Processes: Marketing, Finance, Legal, Customer Support, and Research &amp; Development (R&amp;D).  </span>
 
-<span class="s2">The report should be structured, concise, and actionable. It should include an executive summary, an introduction, a detailed analysis, and a set of recommendations.</span>
+<span class="s2">Your subordinates have gathered detailed research and insights from their respective teams. Your responsibility is to synthesize their input into a comprehensive report that provides a clear, actionable analysis.</span>
 
-<span class="s2">Here are the topic of task: </span><span class="si">{topic}</span>
+<span class="s2">The report should be structured professionally, including:  </span>
+<span class="s2">1. Executive Summary: A high-level overview of the findings and key takeaways.  </span>
+<span class="s2">2. Introduction: Context and purpose of the report, including the scope of the analysis.  </span>
+<span class="s2">3. Detailed Analysis: A deep dive into the research findings, categorizing insights by &quot;Inside Processes&quot; and &quot;Outside Processes.&quot; Highlight key trends, challenges, and opportunities.  </span>
+<span class="s2">4. Recommendations: Actionable steps and strategic suggestions based on the findings.</span>
 
-<span class="s2">Here are the questionnaire: </span><span class="si">{questionnaire}</span>
+<span class="s2">### Context:</span>
+<span class="s2">- Topic of the Task: </span><span class="si">{topic}</span><span class="s2">  </span>
+<span class="s2">- Questionnaire: </span><span class="si">{questionnaire}</span><span class="s2">  </span>
+<span class="s2">- Research Findings from Teams: </span><span class="si">{reviews}</span><span class="s2">  </span>
 
-<span class="s2">Here are reviews from teams: </span><span class="si">{reviews}</span><span class="s2">.</span>
-
-<span class="s2">Write a report from provided.</span>
+<span class="s2">Use the provided information to create a structured, insightful report. Ensure the tone is professional and the content is both concise and actionable.</span>
 <span class="s2">&quot;&quot;&quot;</span>
 
 
