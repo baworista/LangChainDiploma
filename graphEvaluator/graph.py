@@ -97,7 +97,7 @@ if the_best_report:
     # Define the output file path
     output_file_path = "the_best_report_info.md"
 
-    # Write the report content to the output.md file
+    # Write the report content to the the_best_report_info.md file
     with open(output_file_path, "w", encoding="utf-8") as output_file:
         output_file.write(report_content)
 

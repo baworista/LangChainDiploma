@@ -42,7 +42,7 @@ def load_reports(architectures: List[str]) -> dict[str, str]:
     """
     reports = {}
     for arch in architectures:
-        report_path = os.path.join(f"../graph{arch}", "output.md")
+        report_path = os.path.join(f"../graph{arch}", f"output{arch}.md")
         if os.path.exists(report_path):
             print("The", f"graph{arch}", "report downloaded!")
             with open(report_path, "r") as file:
