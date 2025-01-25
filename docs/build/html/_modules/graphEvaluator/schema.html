@@ -46,20 +46,11 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">List</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pydantic</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseModel</span><span class="p">,</span> <span class="n">Field</span>
 
+
 <div class="viewcode-block" id="Score">
 <a class="viewcode-back" href="../../graphEvaluator.html#graphEvaluator.schema.Score">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">Score</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Represents the evaluation of a single criterion for a report.</span>
-
-<span class="sd">    Attributes:</span>
-<span class="sd">        criterion_name (str): The name of the criterion being evaluated.</span>
-<span class="sd">            Example: &quot;Grammar&quot;.</span>
-<span class="sd">        score (int): The score assigned to this criterion.</span>
-<span class="sd">            Example: 4.</span>
-<span class="sd">        comment (str): A comment explaining the score for this criterion.</span>
-<span class="sd">            Example: &quot;The grammar is perfect.&quot;</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Represents the evaluation of a single criterion for a report.&quot;&quot;&quot;</span>
 
     <span class="n">criterion_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">description</span><span class="o">=</span><span class="s2">&quot;The name of the criterion. Example: &#39;Grammar&#39;&quot;</span><span class="p">,</span>
@@ -73,12 +64,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">scores</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Returns a formatted string representation of the score, including the criterion name, the score, and the comment.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            str: A string summarizing the score.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a formatted string representation of the score, including the criterion name, the score, and the comment.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;Criterion name: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">criterion_name</span><span class="si">}</span><span class="se">\n</span><span class="s2">Score: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">score</span><span class="si">}</span><span class="se">\n</span><span class="s2">Comment: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">comment</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span></div>
 
 
@@ -86,21 +72,7 @@
 <div class="viewcode-block" id="EvaluatorOutput">
 <a class="viewcode-back" href="../../graphEvaluator.html#graphEvaluator.schema.EvaluatorOutput">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">EvaluatorOutput</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Represents the overall evaluation of a single report, including scores and an overall comment.</span>
-
-<span class="sd">    Attributes:</span>
-<span class="sd">        anonymized_name (str): An anonymized identifier for the report.</span>
-<span class="sd">            Example: &quot;Report_1&quot;.</span>
-<span class="sd">        scores (List[Score]): A list of `Score` objects, one for each evaluation criterion.</span>
-<span class="sd">        overall_comment (str): A summary or explanation of the report&#39;s strengths and weaknesses.</span>
-
-<span class="sd">            Guidelines:</span>
-<span class="sd">                - Avoid using names from the `anonymized_name` field (e.g., &quot;Report_1&quot;).</span>
-<span class="sd">                - Use phrases like &quot;this report&quot; to refer to the current report and &quot;other reports&quot;</span>
-<span class="sd">                  for comparisons.</span>
-<span class="sd">                - Comments for other reports should be concise and avoid scores.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Represents the overall evaluation of a single report, including scores and an overall comment.&quot;&quot;&quot;</span>
 
     <span class="n">anonymized_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Anonymized name of the report writer. Example: &#39;Report_1&#39;&quot;</span><span class="p">,</span>
@@ -119,12 +91,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">evaluator_output</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Returns a formatted string representation of the overall evaluation, including the anonymized name, scores, and overall comment.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            str: A string summarizing the evaluation.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a formatted string representation of the overall evaluation, including the anonymized name, scores, and overall comment.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;Anonymized name: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">nanonymized_nameame</span><span class="si">}</span><span class="se">\n</span><span class="s2">Scores: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">scores</span><span class="si">}</span><span class="se">\n</span><span class="s2">Description: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">description</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span></div>
 
 
@@ -132,12 +99,7 @@
 <div class="viewcode-block" id="StructuredEvaluatorOutput">
 <a class="viewcode-back" href="../../graphEvaluator.html#graphEvaluator.schema.StructuredEvaluatorOutput">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">StructuredEvaluatorOutput</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Represents the evaluations for all reports in a structured format.</span>
-
-<span class="sd">    Attributes:</span>
-<span class="sd">        reports (List[EvaluatorOutput]): A list of `EvaluatorOutput` objects, one for each report.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Represents the evaluations for all reports in a structured format.&quot;&quot;&quot;</span>
 
     <span class="n">reports</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">EvaluatorOutput</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">description</span><span class="o">=</span><span class="s2">&quot;A list of detailed evaluations for each report.&quot;</span>

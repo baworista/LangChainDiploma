@@ -4,7 +4,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>graphHierarchicalTeams.nodes.team_node &#8212; LangChainDiploma 1.0 documentation</title>
+    <title>graphSupervisor.nodes.team_node &#8212; LangChainDiploma 1.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=5ecbeea2" />
     <link rel="stylesheet" type="text/css" href="../../../_static/basic.css?v=686e5160" />
     <link rel="stylesheet" type="text/css" href="../../../_static/alabaster.css?v=27fed22d" />
@@ -30,28 +30,18 @@
 
           <div class="body" role="main">
             
-  <h1>Source code for graphHierarchicalTeams.nodes.team_node</h1><div class="highlight"><pre>
+  <h1>Source code for graphSupervisor.nodes.team_node</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">Module for managing the workflow of analysts and reviewers in a hierarchical team.</span>
+<span class="sd">Module for managing the interaction between analysts and reviewers in a supervisor workflow.</span>
 
-<span class="sd">This module provides functionality for:</span>
-<span class="sd">- Activating the `Analyst` node to perform a needs analysis.</span>
-<span class="sd">- Activating the `Reviewer` node to provide constructive feedback on the analysis.</span>
-<span class="sd">- Determining whether the workflow should continue or transition to the final state.</span>
-
-<span class="sd">It uses language models to generate analysis and reviews based on structured prompts and manages the state of the research process.</span>
-
-<span class="sd">Modules Used:</span>
-<span class="sd">    - os: For accessing environment variables.</span>
-<span class="sd">    - langchain_core.messages: For managing system messages.</span>
-<span class="sd">    - langchain_openai: For interacting with OpenAI&#39;s language model.</span>
-<span class="sd">    - langgraph.constants: For workflow state management (e.g., `END`).</span>
-<span class="sd">    - graphHierarchicalTeams.states: For managing the research state.</span>
+<span class="sd">This module defines nodes for the `Analyst` and `Reviewer` roles in a research team, facilitating</span>
+<span class="sd">a structured exchange of analyses and feedback. It also provides a mechanism to determine the</span>
+<span class="sd">next workflow step based on the state of the conversation.</span>
 
 <span class="sd">Functions:</span>
-<span class="sd">    - analyst_node: Activates the analyst node to generate a needs analysis based on the questionnaire results.</span>
-<span class="sd">    - reviewer_node: Activates the reviewer node to provide feedback on the analysis.</span>
-<span class="sd">    - should_continue: Determines whether the workflow should transition to the final state or proceed.</span>
+<span class="sd">    - analyst_node: Handles the needs analysis performed by the analyst.</span>
+<span class="sd">    - reviewer_node: Handles the feedback and review provided by the reviewer.</span>
+<span class="sd">    - should_continue: Determines whether to proceed to the next step or end the workflow.</span>
 
 <span class="sd">Constants:</span>
 <span class="sd">    - analyst_prompt: Template for the analyst&#39;s role, context, and guidelines.</span>
@@ -62,8 +52,7 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">langchain_core.messages</span><span class="w"> </span><span class="kn">import</span> <span class="n">SystemMessage</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">langchain_openai</span><span class="w"> </span><span class="kn">import</span> <span class="n">ChatOpenAI</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">END</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">graphHierarchicalTeams.states</span><span class="w"> </span><span class="kn">import</span> <span class="n">ResearchState</span>
-
+<span class="kn">from</span><span class="w"> </span><span class="nn">graphSupervisor.states</span><span class="w"> </span><span class="kn">import</span> <span class="n">ResearchState</span>
 
 <span class="n">llm</span> <span class="o">=</span> <span class="n">ChatOpenAI</span><span class="p">(</span><span class="n">model_name</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;MODEL&quot;</span><span class="p">))</span>
 
@@ -124,30 +113,30 @@
 
 
 <div class="viewcode-block" id="analyst_node">
-<a class="viewcode-back" href="../../../graphHierarchicalTeams.nodes.html#graphHierarchicalTeams.nodes.team_node.analyst_node">[docs]</a>
+<a class="viewcode-back" href="../../../graphSupervisor.nodes.html#graphSupervisor.nodes.team_node.analyst_node">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">analyst_node</span><span class="p">(</span><span class="n">state</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Activate the analyst node to perform a needs analysis.</span>
+<span class="sd">    Handle the needs analysis performed by the analyst.</span>
 
-<span class="sd">    The analyst analyzes the current state of the customer based on the provided questionnaire results</span>
-<span class="sd">    and, if available, integrates feedback from the reviewer.</span>
+<span class="sd">    This function generates a structured analysis based on the provided questionnaire results and</span>
+<span class="sd">    optionally integrates feedback from the reviewer if available.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        state (dict): The current state of the process containing the following keys:</span>
+<span class="sd">        state (ResearchState): The current state of the research team containing:</span>
 <span class="sd">            - &quot;team_topic&quot; (str): The topic assigned to the team.</span>
-<span class="sd">            - &quot;team_name&quot; (str): The name of the team.</span>
-<span class="sd">            - &quot;description&quot; (str): A description of the team and its responsibilities.</span>
-<span class="sd">            - &quot;reviewer&quot; (str): Information about the reviewer in the team.</span>
-<span class="sd">            - &quot;analyst&quot; (str): Information about the analyst in the team.</span>
-<span class="sd">            - &quot;team_questionnaire&quot; (str): The questionnaire results to be analyzed.</span>
-<span class="sd">            - &quot;messages&quot; (list): A list of previous messages in the conversation.</span>
+<span class="sd">            - &quot;name&quot; (str): The name of the team.</span>
+<span class="sd">            - &quot;description&quot; (str): A description of the team&#39;s responsibilities.</span>
+<span class="sd">            - &quot;reviewer&quot; (Person): Information about the reviewer.</span>
+<span class="sd">            - &quot;analyst&quot; (Person): Information about the analyst.</span>
+<span class="sd">            - &quot;team_questionnaire&quot; (str): The questionnaire results.</span>
+<span class="sd">            - &quot;messages&quot; (list): Previous messages exchanged in the workflow.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        ResearchState: A dictionary containing updated messages after invoking the language model.</span>
+<span class="sd">        dict: Updated state with the analyst&#39;s analysis added to the &quot;messages&quot;.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">topic</span> <span class="o">=</span> <span class="n">state</span><span class="p">[</span><span class="s2">&quot;team_topic&quot;</span><span class="p">]</span>
 
-    <span class="n">team_name</span> <span class="o">=</span> <span class="n">state</span><span class="p">[</span><span class="s2">&quot;team_name&quot;</span><span class="p">]</span>
+    <span class="n">team_name</span> <span class="o">=</span> <span class="n">state</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]</span>
     <span class="n">team_description</span> <span class="o">=</span> <span class="n">state</span><span class="p">[</span><span class="s2">&quot;description&quot;</span><span class="p">]</span>
 
     <span class="n">reviewer_info</span> <span class="o">=</span> <span class="n">state</span><span class="p">[</span><span class="s2">&quot;reviewer&quot;</span><span class="p">]</span>
@@ -177,33 +166,34 @@
 
     <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;messages&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">llm</span><span class="o">.</span><span class="n">invoke</span><span class="p">(</span><span class="n">llm_messages</span><span class="p">)</span><span class="o">.</span><span class="n">content</span><span class="p">]}</span></div>
 
+    <span class="c1"># return {&quot;messages&quot;: [AIMessage(&quot;Analyst answer &quot; + state[&quot;analyst_prompt&quot;][0:25])]  + state.get(&quot;messages&quot;, [])} # For test</span>
 
 
 <div class="viewcode-block" id="reviewer_node">
-<a class="viewcode-back" href="../../../graphHierarchicalTeams.nodes.html#graphHierarchicalTeams.nodes.team_node.reviewer_node">[docs]</a>
+<a class="viewcode-back" href="../../../graphSupervisor.nodes.html#graphSupervisor.nodes.team_node.reviewer_node">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">reviewer_node</span><span class="p">(</span><span class="n">state</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Activate the reviewer node to provide feedback on the analyst&#39;s analysis.</span>
+<span class="sd">    Handle the feedback and review provided by the reviewer.</span>
 
-<span class="sd">    The reviewer creates constructive and actionable recommendations based on the analyst&#39;s analysis</span>
-<span class="sd">    and the provided questionnaire results.</span>
+<span class="sd">    This function generates constructive feedback based on the analyst&#39;s analysis and the provided</span>
+<span class="sd">    questionnaire results.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        state (dict): The current state of the process containing the following keys:</span>
+<span class="sd">        state (ResearchState): The current state of the research team containing:</span>
 <span class="sd">            - &quot;team_topic&quot; (str): The topic assigned to the team.</span>
-<span class="sd">            - &quot;team_name&quot; (str): The name of the team.</span>
-<span class="sd">            - &quot;description&quot; (str): A description of the team and its responsibilities.</span>
-<span class="sd">            - &quot;reviewer&quot; (str): Information about the reviewer in the team.</span>
-<span class="sd">            - &quot;analyst&quot; (str): Information about the analyst in the team.</span>
-<span class="sd">            - &quot;team_questionnaire&quot; (str): The questionnaire results to be analyzed.</span>
-<span class="sd">            - &quot;messages&quot; (list): A list of previous messages in the conversation.</span>
+<span class="sd">            - &quot;name&quot; (str): The name of the team.</span>
+<span class="sd">            - &quot;description&quot; (str): A description of the team&#39;s responsibilities.</span>
+<span class="sd">            - &quot;reviewer&quot; (Person): Information about the reviewer.</span>
+<span class="sd">            - &quot;analyst&quot; (Person): Information about the analyst.</span>
+<span class="sd">            - &quot;team_questionnaire&quot; (str): The questionnaire results.</span>
+<span class="sd">            - &quot;messages&quot; (list): Previous messages exchanged in the workflow.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        dict: A dictionary containing updated messages after invoking the language model.</span>
+<span class="sd">        dict: Updated state with the reviewer&#39;s feedback added to the &quot;messages&quot;.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">topic</span> <span class="o">=</span> <span class="n">state</span><span class="p">[</span><span class="s2">&quot;team_topic&quot;</span><span class="p">]</span>
 
-    <span class="n">team_name</span> <span class="o">=</span> <span class="n">state</span><span class="p">[</span><span class="s2">&quot;team_name&quot;</span><span class="p">]</span>
+    <span class="n">team_name</span> <span class="o">=</span> <span class="n">state</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]</span>
     <span class="n">team_description</span> <span class="o">=</span> <span class="n">state</span><span class="p">[</span><span class="s2">&quot;description&quot;</span><span class="p">]</span>
 
     <span class="n">reviewer_info</span> <span class="o">=</span> <span class="n">state</span><span class="p">[</span><span class="s2">&quot;reviewer&quot;</span><span class="p">]</span>
@@ -231,28 +221,29 @@
 
     <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;messages&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">llm</span><span class="o">.</span><span class="n">invoke</span><span class="p">(</span><span class="n">messages</span><span class="p">)</span><span class="o">.</span><span class="n">content</span><span class="p">]}</span></div>
 
+    <span class="c1"># return {&quot;messages&quot;: [AIMessage(&quot;Reviewers answer &quot; + state[&quot;reviewer_prompt&quot;][0:25])] + state.get(&quot;messages&quot;, [])} # For test</span>
 
 
 <div class="viewcode-block" id="should_continue">
-<a class="viewcode-back" href="../../../graphHierarchicalTeams.nodes.html#graphHierarchicalTeams.nodes.team_node.should_continue">[docs]</a>
+<a class="viewcode-back" href="../../../graphSupervisor.nodes.html#graphSupervisor.nodes.team_node.should_continue">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">should_continue</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">ResearchState</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Determine whether the workflow should continue or transition to the final state.</span>
+<span class="sd">    Determine whether to proceed to the next step or end the workflow.</span>
 
-<span class="sd">    If the number of messages reaches the defined limit, appends the last message</span>
-<span class="sd">    to the reviews list and ends the workflow. Otherwise, transitions to the next node.</span>
+<span class="sd">    If the number of messages reaches the defined threshold, the final review is appended to the</span>
+<span class="sd">    &quot;reviews&quot; list in the state, and the workflow ends. Otherwise, it transitions to the reviewer node.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        state (ResearchState): The current research state containing the following keys:</span>
-<span class="sd">            - &quot;messages&quot; (list): A list of messages exchanged in the workflow.</span>
-<span class="sd">            - &quot;reviews&quot; (list): A list to store final reviews.</span>
+<span class="sd">        state (ResearchState): The current state of the research team containing:</span>
+<span class="sd">            - &quot;messages&quot; (list): Previous messages exchanged in the workflow.</span>
+<span class="sd">            - &quot;reviews&quot; (list): List of final reviews collected.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        str: Returns `END` if the workflow should end; otherwise, transitions to &quot;Reviewer&quot;.</span>
+<span class="sd">        str: Returns `END` if the workflow should end, or &quot;Reviewer&quot; for the next step.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">messages</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;messages&quot;</span><span class="p">,</span> <span class="p">[])</span>
     <span class="c1"># Check if the number of messages is 6 or more</span>
-    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">messages</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">5</span><span class="p">:</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">messages</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">7</span><span class="p">:</span>
 
         <span class="c1"># Return the END constant and the overall state update</span>
         <span class="n">state</span><span class="p">[</span><span class="s2">&quot;reviews&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">messages</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">content</span><span class="p">)</span>

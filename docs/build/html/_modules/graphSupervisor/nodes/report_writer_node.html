@@ -4,7 +4,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>graphHierarchicalTeams.nodes.report_writer_node &#8212; LangChainDiploma 1.0 documentation</title>
+    <title>graphSupervisor.nodes.report_writer_node &#8212; LangChainDiploma 1.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=5ecbeea2" />
     <link rel="stylesheet" type="text/css" href="../../../_static/basic.css?v=686e5160" />
     <link rel="stylesheet" type="text/css" href="../../../_static/alabaster.css?v=27fed22d" />
@@ -30,33 +30,33 @@
 
           <div class="body" role="main">
             
-  <h1>Source code for graphHierarchicalTeams.nodes.report_writer_node</h1><div class="highlight"><pre>
+  <h1>Source code for graphSupervisor.nodes.report_writer_node</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">Main module for generating a comprehensive report based on input data from subordinate states.</span>
+<span class="sd">Module for generating comprehensive executive reports based on team reviews.</span>
 
-<span class="sd">This script loads environment variables, initializes a language model, defines writing instructions,</span>
-<span class="sd">and provides functionality to create a summarized report using the state of a subordinate.</span>
+<span class="sd">This module uses a language model to create structured, actionable reports by summarizing</span>
+<span class="sd">diagnoses and recommendations. The report includes an executive summary, introduction,</span>
+<span class="sd">detailed analysis, and recommendations.</span>
 
 <span class="sd">Modules Used:</span>
 <span class="sd">    - dotenv: For loading environment variables.</span>
-<span class="sd">    - langchain_openai: To interact with OpenAI&#39;s chat models.</span>
-<span class="sd">    - langchain_core.messages: To structure messages for language model interaction.</span>
+<span class="sd">    - langchain_openai: For interacting with OpenAI&#39;s language model.</span>
+<span class="sd">    - langchain_core.messages: For managing system messages.</span>
 <span class="sd">    - os: For accessing environment variables.</span>
-<span class="sd">    - graphHierarchicalTeams.states: Custom module for defining subordinate states.</span>
+<span class="sd">    - graphSupervisor.states: For defining the `OverallState`.</span>
 
 <span class="sd">Functions:</span>
-<span class="sd">    - report_writer_node: Generates a detailed report based on the subordinate state.</span>
+<span class="sd">    - report_writer_node: Generates a comprehensive report based on the state information.</span>
 
-<span class="sd">Environment Variables:</span>
-<span class="sd">    - MODEL: The name of the model to be used by the language model.</span>
+<span class="sd">Constants:</span>
+<span class="sd">    - writing_instructions: Template for generating the report using the language model.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">dotenv</span><span class="w"> </span><span class="kn">import</span> <span class="n">load_dotenv</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">langchain_openai</span><span class="w"> </span><span class="kn">import</span> <span class="n">ChatOpenAI</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">langchain_core.messages</span><span class="w"> </span><span class="kn">import</span> <span class="n">SystemMessage</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">graphHierarchicalTeams.states</span><span class="w"> </span><span class="kn">import</span> <span class="n">SubordinateState</span>
-
+<span class="kn">from</span><span class="w"> </span><span class="nn">graphSupervisor.states</span><span class="w"> </span><span class="kn">import</span> <span class="n">OverallState</span>
 
 
 <span class="n">load_dotenv</span><span class="p">()</span>
@@ -78,22 +78,23 @@
 
 
 <div class="viewcode-block" id="report_writer_node">
-<a class="viewcode-back" href="../../../graphHierarchicalTeams.nodes.html#graphHierarchicalTeams.nodes.report_writer_node.report_writer_node">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">report_writer_node</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">SubordinateState</span><span class="p">):</span>
+<a class="viewcode-back" href="../../../graphSupervisor.nodes.html#graphSupervisor.nodes.report_writer_node.report_writer_node">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">report_writer_node</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">OverallState</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Generate a comprehensive report based on the provided subordinate state.</span>
+<span class="sd">    Generate a comprehensive report based on the provided state.</span>
 
-<span class="sd">    This function extracts information (topic, questionnaire, and reviews) from the subordinate state,</span>
-<span class="sd">    formats it into a structured system message, and invokes a language model to generate a complete report.</span>
+<span class="sd">    This function collects the topic, questionnaire, and reviews from the `OverallState`</span>
+<span class="sd">    and uses a language model to create a structured executive report. The generated report</span>
+<span class="sd">    is added to the state as `final_report`.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        state (SubordinateState): The current state object containing the following keys:</span>
-<span class="sd">            - topic (str): The topic of the task.</span>
-<span class="sd">            - questionnaire (str): The questionnaire details.</span>
-<span class="sd">            - reviews (str): The reviews provided by the analyst-reviewer teams.</span>
+<span class="sd">        state (OverallState): The current state object containing:</span>
+<span class="sd">            - &quot;topic&quot; (str): The topic of the task.</span>
+<span class="sd">            - &quot;questionnaire&quot; (str): The questionnaire data provided by the user.</span>
+<span class="sd">            - &quot;reviews&quot; (list): A list of reviews generated by the analyst-reviewer teams.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        SubordinateState: The updated state object with added or modified keys as necessary.</span>
+<span class="sd">        OverallState: Updates the state with the generated report under the key &quot;final_report&quot;.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;... Write Report ...&quot;</span><span class="p">)</span>
     <span class="c1"># Get state</span>
@@ -106,7 +107,7 @@
     <span class="n">report</span> <span class="o">=</span> <span class="n">llm</span><span class="o">.</span><span class="n">invoke</span><span class="p">([</span><span class="n">SystemMessage</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="n">system_message</span><span class="p">)])</span>
 
     <span class="c1"># Write messages to state</span>
-    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;final_subordinate_report&quot;</span><span class="p">:</span> <span class="n">report</span><span class="o">.</span><span class="n">content</span><span class="p">}</span></div>
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;final_report&quot;</span><span class="p">:</span> <span class="n">report</span><span class="p">}</span></div>
 
 </pre></div>
 

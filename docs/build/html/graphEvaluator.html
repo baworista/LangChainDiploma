@@ -125,64 +125,13 @@ StructuredEvaluatorOutput: Represents evaluations for all reports in a structure
 <p>Represents the overall evaluation of a single report, including scores and an overall comment.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="graphEvaluator.schema.EvaluatorOutput.anonymized_name">
-<span class="sig-name descname"><span class="pre">anonymized_name</span></span><a class="headerlink" href="#graphEvaluator.schema.EvaluatorOutput.anonymized_name" title="Link to this definition">¶</a></dt>
-<dd><p>An anonymized identifier for the report.
-Example: “Report_1”.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>str</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="graphEvaluator.schema.EvaluatorOutput.scores">
-<span class="sig-name descname"><span class="pre">scores</span></span><a class="headerlink" href="#graphEvaluator.schema.EvaluatorOutput.scores" title="Link to this definition">¶</a></dt>
-<dd><p>A list of <cite>Score</cite> objects, one for each evaluation criterion.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>List[<a class="reference internal" href="#graphEvaluator.schema.Score" title="graphEvaluator.schema.Score">Score</a>]</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="graphEvaluator.schema.EvaluatorOutput.overall_comment">
-<span class="sig-name descname"><span class="pre">overall_comment</span></span><a class="headerlink" href="#graphEvaluator.schema.EvaluatorOutput.overall_comment" title="Link to this definition">¶</a></dt>
-<dd><p>A summary or explanation of the report’s strengths and weaknesses.</p>
-<dl class="simple">
-<dt>Guidelines:</dt><dd><ul class="simple">
-<li><p>Avoid using names from the <cite>anonymized_name</cite> field (e.g., “Report_1”).</p></li>
-<li><p>Use phrases like “this report” to refer to the current report and “other reports”
-for comparisons.</p></li>
-<li><p>Comments for other reports should be concise and avoid scores.</p></li>
-</ul>
-</dd>
-</dl>
-<dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>str</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="id0">
-<span class="sig-name descname"><span class="pre">anonymized_name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#id0" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">anonymized_name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#graphEvaluator.schema.EvaluatorOutput.anonymized_name" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="graphEvaluator.schema.EvaluatorOutput.evaluator_output">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">evaluator_output</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#graphEvaluator.schema.EvaluatorOutput.evaluator_output" title="Link to this definition">¶</a></dt>
 <dd><p>Returns a formatted string representation of the overall evaluation, including the anonymized name, scores, and overall comment.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>A string summarizing the evaluation.</p>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>str</p>
-</dd>
-</dl>
 </dd></dl>
 
 <dl class="py attribute">
@@ -192,13 +141,13 @@ for comparisons.</p></li>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="id1">
-<span class="sig-name descname"><span class="pre">overall_comment</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#id1" title="Link to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="graphEvaluator.schema.EvaluatorOutput.overall_comment">
+<span class="sig-name descname"><span class="pre">overall_comment</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#graphEvaluator.schema.EvaluatorOutput.overall_comment" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="id2">
-<span class="sig-name descname"><span class="pre">scores</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#graphEvaluator.schema.Score" title="graphEvaluator.schema.Score"><span class="pre">Score</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#id2" title="Link to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="graphEvaluator.schema.EvaluatorOutput.scores">
+<span class="sig-name descname"><span class="pre">scores</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#graphEvaluator.schema.Score" title="graphEvaluator.schema.Score"><span class="pre">Score</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#graphEvaluator.schema.EvaluatorOutput.scores" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -209,49 +158,13 @@ for comparisons.</p></li>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseModel</span></code></p>
 <p>Represents the evaluation of a single criterion for a report.</p>
 <dl class="py attribute">
-<dt class="sig sig-object py" id="graphEvaluator.schema.Score.criterion_name">
-<span class="sig-name descname"><span class="pre">criterion_name</span></span><a class="headerlink" href="#graphEvaluator.schema.Score.criterion_name" title="Link to this definition">¶</a></dt>
-<dd><p>The name of the criterion being evaluated.
-Example: “Grammar”.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>str</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="graphEvaluator.schema.Score.score">
-<span class="sig-name descname"><span class="pre">score</span></span><a class="headerlink" href="#graphEvaluator.schema.Score.score" title="Link to this definition">¶</a></dt>
-<dd><p>The score assigned to this criterion.
-Example: 4.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>int</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py attribute">
 <dt class="sig sig-object py" id="graphEvaluator.schema.Score.comment">
-<span class="sig-name descname"><span class="pre">comment</span></span><a class="headerlink" href="#graphEvaluator.schema.Score.comment" title="Link to this definition">¶</a></dt>
-<dd><p>A comment explaining the score for this criterion.
-Example: “The grammar is perfect.”</p>
-<dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>str</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="id3">
-<span class="sig-name descname"><span class="pre">comment</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#id3" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">comment</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#graphEvaluator.schema.Score.comment" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="id4">
-<span class="sig-name descname"><span class="pre">criterion_name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#id4" title="Link to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="graphEvaluator.schema.Score.criterion_name">
+<span class="sig-name descname"><span class="pre">criterion_name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#graphEvaluator.schema.Score.criterion_name" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -261,22 +174,14 @@ Example: “The grammar is perfect.”</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="id5">
-<span class="sig-name descname"><span class="pre">score</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#id5" title="Link to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="graphEvaluator.schema.Score.score">
+<span class="sig-name descname"><span class="pre">score</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#graphEvaluator.schema.Score.score" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="graphEvaluator.schema.Score.scores">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">scores</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#graphEvaluator.schema.Score.scores" title="Link to this definition">¶</a></dt>
 <dd><p>Returns a formatted string representation of the score, including the criterion name, the score, and the comment.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>A string summarizing the score.</p>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>str</p>
-</dd>
-</dl>
 </dd></dl>
 
 </dd></dl>
@@ -287,25 +192,14 @@ Example: “The grammar is perfect.”</p>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseModel</span></code></p>
 <p>Represents the evaluations for all reports in a structured format.</p>
 <dl class="py attribute">
-<dt class="sig sig-object py" id="graphEvaluator.schema.StructuredEvaluatorOutput.reports">
-<span class="sig-name descname"><span class="pre">reports</span></span><a class="headerlink" href="#graphEvaluator.schema.StructuredEvaluatorOutput.reports" title="Link to this definition">¶</a></dt>
-<dd><p>A list of <cite>EvaluatorOutput</cite> objects, one for each report.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>List[<a class="reference internal" href="#graphEvaluator.schema.EvaluatorOutput" title="graphEvaluator.schema.EvaluatorOutput">EvaluatorOutput</a>]</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py attribute">
 <dt class="sig sig-object py" id="graphEvaluator.schema.StructuredEvaluatorOutput.model_config">
 <span class="sig-name descname"><span class="pre">model_config</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">ConfigDict</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#graphEvaluator.schema.StructuredEvaluatorOutput.model_config" title="Link to this definition">¶</a></dt>
 <dd><p>Configuration for the model, should be a dictionary conforming to [<cite>ConfigDict</cite>][pydantic.config.ConfigDict].</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="id6">
-<span class="sig-name descname"><span class="pre">reports</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#graphEvaluator.schema.EvaluatorOutput" title="graphEvaluator.schema.EvaluatorOutput"><span class="pre">EvaluatorOutput</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#id6" title="Link to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="graphEvaluator.schema.StructuredEvaluatorOutput.reports">
+<span class="sig-name descname"><span class="pre">reports</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#graphEvaluator.schema.EvaluatorOutput" title="graphEvaluator.schema.EvaluatorOutput"><span class="pre">EvaluatorOutput</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#graphEvaluator.schema.StructuredEvaluatorOutput.reports" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -390,28 +284,28 @@ final selected report.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="id7">
-<span class="sig-name descname"><span class="pre">evaluator_reports</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List[dict],</span> <span class="pre">&lt;built-in</span> <span class="pre">function</span> <span class="pre">add&gt;]</span></em><a class="headerlink" href="#id7" title="Link to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="id0">
+<span class="sig-name descname"><span class="pre">evaluator_reports</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List[dict],</span> <span class="pre">&lt;built-in</span> <span class="pre">function</span> <span class="pre">add&gt;]</span></em><a class="headerlink" href="#id0" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="id8">
-<span class="sig-name descname"><span class="pre">questionnaire</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#id8" title="Link to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="id1">
+<span class="sig-name descname"><span class="pre">questionnaire</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#id1" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="id9">
-<span class="sig-name descname"><span class="pre">reports</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#id9" title="Link to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="id2">
+<span class="sig-name descname"><span class="pre">reports</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#id2" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="id10">
-<span class="sig-name descname"><span class="pre">the_best_report_info</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#id10" title="Link to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="id3">
+<span class="sig-name descname"><span class="pre">the_best_report_info</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#id3" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="id11">
-<span class="sig-name descname"><span class="pre">topic</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#id11" title="Link to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="id4">
+<span class="sig-name descname"><span class="pre">topic</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#id4" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -419,6 +313,10 @@ final selected report.</p>
 </section>
 <section id="module-graphEvaluator">
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-graphEvaluator" title="Link to this heading">¶</a></h2>
+<p>Evaluator module is used to create and invoke the graph.</p>
+<p>This module contains the graph file, which is used to create and invoke the graph,
+states file, which is used to define the states used inside the graph,
+and the schema file, which is used to define the schemas used in the graph.</p>
 </section>
 </section>
 
