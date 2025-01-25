@@ -19,7 +19,6 @@ import os
 from langchain_core.messages import SystemMessage
 from langchain_openai import ChatOpenAI
 from langgraph.constants import END
-
 from graphSupervisor.states import ResearchState
 
 llm = ChatOpenAI(model_name=os.getenv("MODEL"))

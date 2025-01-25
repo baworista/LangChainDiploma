@@ -13,6 +13,7 @@ Classes:
 from typing import List
 from pydantic import BaseModel, Field
 
+
 class Score(BaseModel):
     """Represents the evaluation of a single criterion for a report."""
 

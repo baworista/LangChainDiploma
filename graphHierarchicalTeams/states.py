@@ -20,7 +20,6 @@ Annotations:
 import operator
 from typing import Annotated, List, TypedDict
 from langgraph.graph import MessagesState
-
 from graphHierarchicalTeams.schema import Person, ResearchTeam, SubordinateTeam
 
 

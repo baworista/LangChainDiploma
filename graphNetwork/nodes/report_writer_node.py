@@ -17,7 +17,6 @@ Function:
 """
 
 import os
-
 from langchain_core.messages import SystemMessage
 from langchain_openai import ChatOpenAI
 from graphNetwork.prompts.generators import create_summary_agent_prompt

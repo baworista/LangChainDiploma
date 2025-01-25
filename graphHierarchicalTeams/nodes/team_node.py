@@ -29,7 +29,6 @@ import os
 from langchain_core.messages import SystemMessage
 from langchain_openai import ChatOpenAI
 from langgraph.constants import END
-
 from graphHierarchicalTeams.states import ResearchState
 
 
