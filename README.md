@@ -80,7 +80,11 @@ Final node provides a comparative analysis of according to all reports and choos
    python graphEvaluator/graph.py
    ```
 
-**Note**: All necessary api keys are stored in the `sample_env` file. Please make sure to provide your own keys.
+**Note**: All necessary api keys are stored in the `sample_env` file. Please make sure to provide your own keys.   
+**Note**: In the HierarchicalTeams architecture, the `graph.py` file reqires mermaid cli(which requires Node.js), which can be installed using npm:
+```bash
+npm install -g @mermaid-js/mermaid-cli
+```
 
 ## Results
 
