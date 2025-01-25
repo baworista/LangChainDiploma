@@ -3,16 +3,25 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-LangChainDiploma documentation
+Multi-Agent Architectures for Report Generation and Its Evaluation documentation
 ==============================
 
-Add your content using ``reStructuredText`` syntax. See the
-`reStructuredText <https://www.sphinx-doc.org/en/master/usage/restructuredtext/index.html>`_
-documentation for details.
+This project focuses on creating, evaluating, and comparing three distinct architectures of multi-agent systems for generating and analyzing reports. The architectures implemented are:
+
+Supervisor
+HierarchicalTeams
+Network
+
+Once reports from these architectures are generated, an Evaluator graph is initiated to assess the outputs comprehensively.
+
+
 
 
 .. toctree::
-   :no-index:
    :maxdepth: 2
    :caption: Contents:
 
+   graphEvaluator
+   graphHierarchicalTeams
+   graphNetwork
+   graphSupervisor
