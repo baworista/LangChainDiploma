@@ -41,15 +41,6 @@
 <span class="sd">Class:</span>
 <span class="sd">    - Output: Represents the output structure for agent communication.</span>
 
-<span class="sd">Attributes:</span>
-<span class="sd">    name (str): The name of the agent generating the output (e.g., &quot;HR_Agent&quot;, &quot;IT_Agent&quot;).</span>
-<span class="sd">    analysis (str): The analysis or insights provided by the agent.</span>
-<span class="sd">    task (str): The specific task assigned to the next agent, ensuring alignment with their domain.</span>
-<span class="sd">    next_agent (Literal): The agent responsible for handling the next step in the workflow.</span>
-<span class="sd">        - Possible values:</span>
-<span class="sd">            &quot;Consulting_Agent&quot;, &quot;HR_Agent&quot;, &quot;IT_Agent&quot;, &quot;BP_Agent&quot;, &quot;KM_Agent&quot;, &quot;Summary_Agent&quot;.</span>
-<span class="sd">    questions (Optional[str]): Questions for the next agent to address. Defaults to &quot;NO QUESTIONS&quot; if no questions are provided.</span>
-
 <span class="sd">Validation:</span>
 <span class="sd">    - Ensures the `next_agent` is one of the predefined agents.</span>
 <span class="sd">    - Provides a default value for `questions` to simplify agent responses.</span>
