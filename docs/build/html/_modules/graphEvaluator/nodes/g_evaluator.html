@@ -52,11 +52,9 @@
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">dotenv</span><span class="w"> </span><span class="kn">import</span> <span class="n">load_dotenv</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">graphEvaluator.states</span><span class="w"> </span><span class="kn">import</span> <span class="n">OverallState</span>
-
-<span class="c1"># Install DeepEval library</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">deepeval.test_case</span><span class="w"> </span><span class="kn">import</span> <span class="n">LLMTestCase</span><span class="p">,</span> <span class="n">LLMTestCaseParams</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">deepeval.metrics</span><span class="w"> </span><span class="kn">import</span> <span class="n">GEval</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">graphEvaluator.states</span><span class="w"> </span><span class="kn">import</span> <span class="n">OverallState</span>
 
 <span class="n">load_dotenv</span><span class="p">()</span>
 
@@ -68,15 +66,14 @@
 
 <span class="sd">    Args:</span>
 <span class="sd">        state (OverallState): Current workflow state containing:</span>
-<span class="sd">            - **reports** (*dict*): Dictionary of reports with:</span>
-<span class="sd">                - **anonymized_name** (*str*): The anonymized report name.</span>
-<span class="sd">                - **report** (*str*): Content of the report.</span>
+<span class="sd">            - reports (dict): Dictionary of reports with:</span>
+<span class="sd">                - anonymized_name (str): The anonymized report name.</span>
+<span class="sd">                - report (str): Content of the report.</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        dict: Results of G-Eval evaluation under the `evaluator_reports` key.</span>
 
-<span class="sd">    Example::</span>
-
+<span class="sd">    Example:</span>
 <span class="sd">        state = {</span>
 <span class="sd">            &quot;reports&quot;: {</span>
 <span class="sd">                &quot;Report_1&quot;: {&quot;anonymized_name&quot;: &quot;Anonymized_1&quot;, &quot;report&quot;: &quot;Content 1&quot;},</span>
