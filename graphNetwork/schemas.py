@@ -8,15 +8,6 @@ structured response of an agent, including analysis, tasks, and questions.
 Class:
     - Output: Represents the output structure for agent communication.
 
-Attributes:
-    name (str): The name of the agent generating the output (e.g., "HR_Agent", "IT_Agent").
-    analysis (str): The analysis or insights provided by the agent.
-    task (str): The specific task assigned to the next agent, ensuring alignment with their domain.
-    next_agent (Literal): The agent responsible for handling the next step in the workflow.
-        - Possible values:
-            "Consulting_Agent", "HR_Agent", "IT_Agent", "BP_Agent", "KM_Agent", "Summary_Agent".
-    questions (Optional[str]): Questions for the next agent to address. Defaults to "NO QUESTIONS" if no questions are provided.
-
 Validation:
     - Ensures the `next_agent` is one of the predefined agents.
     - Provides a default value for `questions` to simplify agent responses.
