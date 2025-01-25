@@ -20,7 +20,8 @@ The Supervisor architecture has a centralized controller ("Supervisor") responsi
 
 #### 2. Network
 
-The Network architecture allows agents to operate in a decentralized manner, sharing information peer-to-peer and collaboratively generating a report.
+The Network architecture allows agents to operate in a decentralized manner, sharing information peer-to-peer and collaboratively generating a report.  
+**Note**: Dependencies are not presented in the graph, but they are implemented in the code.
 
 ![Network Graph](graphNetwork/network_graph_diagram.png)
 
@@ -78,6 +79,8 @@ Final node provides a comparative analysis of according to all reports and choos
    ```bash
    python graphEvaluator/graph.py
    ```
+
+**Note**: All necessary api keys are stored in the `sample_env` file. Please make sure to provide your own keys.
 
 ## Results
 
