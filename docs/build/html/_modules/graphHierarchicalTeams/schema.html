@@ -53,17 +53,7 @@
 <div class="viewcode-block" id="Person">
 <a class="viewcode-back" href="../../graphHierarchicalTeams.html#graphHierarchicalTeams.schema.Person">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">Person</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Represent a person involved in a team with specific responsibilities.</span>
-
-<span class="sd">    Attributes:</span>
-<span class="sd">        name (str): The name of the person.</span>
-<span class="sd">        role (str): The role of the person within the team.</span>
-<span class="sd">        description (str): A detailed description of the person&#39;s focus, competencies, tasks, concerns, and motives.</span>
-
-<span class="sd">    Properties:</span>
-<span class="sd">        persona (str): A formatted string summarizing the person&#39;s details.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Represent a person involved in a team with specific responsibilities.&quot;&quot;&quot;</span>
 
     <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Human-like person&#39;s name&quot;</span>
@@ -77,12 +67,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">persona</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Provide a formatted representation of the person&#39;s details.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            str: A string containing the name, role, and description of the person.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Provide a formatted representation of the person&#39;s details.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;Name: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="se">\n</span><span class="s2">Role: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">role</span><span class="si">}</span><span class="se">\n</span><span class="s2">Description: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">description</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span></div>
 
 
@@ -90,17 +75,7 @@
 <div class="viewcode-block" id="SubordinateTeam">
 <a class="viewcode-back" href="../../graphHierarchicalTeams.html#graphHierarchicalTeams.schema.SubordinateTeam">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">SubordinateTeam</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Represent a subordinate team in the hierarchical structure.</span>
-
-<span class="sd">    Attributes:</span>
-<span class="sd">        name (str): The name of the subordinate team.</span>
-<span class="sd">        description (str): A short description of the team&#39;s responsibilities.</span>
-<span class="sd">        subordinate (Person): The supervisor of the subordinate team.</span>
-
-<span class="sd">    Properties:</span>
-<span class="sd">        team (str): A formatted string summarizing the team&#39;s details, including the supervisor&#39;s persona.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Represent a subordinate team in the hierarchical structure.&quot;&quot;&quot;</span>
 
     <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Use only provided in system message names&quot;</span>
@@ -116,12 +91,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">team</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Provide a detailed representation of the subordinate team.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            str: A string summarizing the subordinate team&#39;s details.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Provide a detailed representation of the subordinate team.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">(</span>
             <span class="sa">f</span><span class="s2">&quot;Subordinate Team Name: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
             <span class="sa">f</span><span class="s2">&quot;Description: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">description</span><span class="si">}</span><span class="se">\n\n</span><span class="s2">&quot;</span>
@@ -133,18 +103,7 @@
 <div class="viewcode-block" id="ResearchTeam">
 <a class="viewcode-back" href="../../graphHierarchicalTeams.html#graphHierarchicalTeams.schema.ResearchTeam">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">ResearchTeam</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Represent a research team with an analyst and a reviewer.</span>
-
-<span class="sd">    Attributes:</span>
-<span class="sd">        name (str): The name of the research team.</span>
-<span class="sd">        description (str): A short description of the team&#39;s responsibilities.</span>
-<span class="sd">        analyst (Person): The analyst in the team.</span>
-<span class="sd">        reviewer (Person): The reviewer in the team.</span>
-
-<span class="sd">    Properties:</span>
-<span class="sd">        team (str): A formatted string summarizing the team&#39;s details, including the analyst and reviewer personas.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Represent a research team with an analyst and a reviewer.&quot;&quot;&quot;</span>
 
     <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Use only provided in system message names&quot;</span>
@@ -164,12 +123,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">team</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Provide a detailed representation of the research team.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            str: A string summarizing the research team&#39;s details.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Provide a detailed representation of the research team.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">(</span>
             <span class="sa">f</span><span class="s2">&quot;Team Name: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
             <span class="sa">f</span><span class="s2">&quot;Description: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">description</span><span class="si">}</span><span class="se">\n\n</span><span class="s2">&quot;</span>
@@ -182,12 +136,7 @@
 <div class="viewcode-block" id="Subordinates">
 <a class="viewcode-back" href="../../graphHierarchicalTeams.html#graphHierarchicalTeams.schema.Subordinates">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">Subordinates</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Represent a container for multiple subordinate teams.</span>
-
-<span class="sd">    Attributes:</span>
-<span class="sd">        subordinates (List[SubordinateTeam]): A list of subordinate teams.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Represent a container for multiple subordinate teams.&quot;&quot;&quot;</span>
 
     <span class="n">subordinates</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">SubordinateTeam</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">description</span><span class="o">=</span><span class="s2">&quot;List of subordinate teams with supervisor&#39;s name, role, and description.&quot;</span><span class="p">,</span>
@@ -198,12 +147,7 @@
 <div class="viewcode-block" id="Perspectives">
 <a class="viewcode-back" href="../../graphHierarchicalTeams.html#graphHierarchicalTeams.schema.Perspectives">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">Perspectives</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Represent a container for multiple research teams.</span>
-
-<span class="sd">    Attributes:</span>
-<span class="sd">        teams (List[ResearchTeam]): A list of research teams.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Represent a container for multiple research teams.&quot;&quot;&quot;</span>
 
     <span class="n">teams</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">ResearchTeam</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">description</span><span class="o">=</span><span class="s2">&quot;List of research teams where each team contains name, description and analyst - reviewer duo prompts&quot;</span><span class="p">,</span>

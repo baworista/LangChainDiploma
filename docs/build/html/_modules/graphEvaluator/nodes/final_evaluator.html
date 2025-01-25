@@ -37,21 +37,20 @@
 <span class="sd">This module defines the `final_evaluator_node` function, which uses a language model to analyze</span>
 <span class="sd">reports, feedback, and context to identify the best submission and justify the choice.</span>
 
-<span class="sd">**Functionality**:</span>
+<span class="sd">Functionality:</span>
 <span class="sd">    - Analyzes topic, questionnaire, reports, and evaluator feedback.</span>
 <span class="sd">    - Selects the best report based on evaluation criteria (e.g., relevance, clarity).</span>
 <span class="sd">    - Outputs the selected report and justification for its choice.</span>
 
-<span class="sd">**Dependencies**:</span>
+<span class="sd">Dependencies:</span>
 <span class="sd">    - `langchain_core.messages`: For generating system prompts.</span>
 <span class="sd">    - `langchain_openai`: For querying OpenAI&#39;s language model.</span>
 <span class="sd">    - `graphEvaluator.states`: Provides the `OverallState` definition.</span>
 
-<span class="sd">**Function**:</span>
+<span class="sd">Function:</span>
 <span class="sd">    - `final_evaluator_node`: Evaluates and selects the best report.</span>
 
-<span class="sd">**Example**::</span>
-
+<span class="sd">Example:</span>
 <span class="sd">    state = {</span>
 <span class="sd">        &quot;topic&quot;: &quot;Improve team collaboration.&quot;,</span>
 <span class="sd">        &quot;questionnaire&quot;: &quot;Survey on team dynamics.&quot;,</span>

@@ -4,7 +4,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>graphHierarchicalTeams.nodes.subordinate_node &#8212; LangChainDiploma 1.0 documentation</title>
+    <title>graphSupervisor.nodes.supervisor_node &#8212; LangChainDiploma 1.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=5ecbeea2" />
     <link rel="stylesheet" type="text/css" href="../../../_static/basic.css?v=686e5160" />
     <link rel="stylesheet" type="text/css" href="../../../_static/alabaster.css?v=27fed22d" />
@@ -30,35 +30,34 @@
 
           <div class="body" role="main">
             
-  <h1>Source code for graphHierarchicalTeams.nodes.subordinate_node</h1><div class="highlight"><pre>
+  <h1>Source code for graphSupervisor.nodes.supervisor_node</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">Main module for managing AI research teams and orchestrating their workflows.</span>
+<span class="sd">Module for managing the research workflow by creating research teams and orchestrating their processes.</span>
 
-<span class="sd">This module provides tools and functions to define research teams, manage their states, and generate comprehensive reports.</span>
-<span class="sd">It utilizes a language model for team generation and report writing, based on structured prompts and state transitions.</span>
+<span class="sd">This module is designed for a supervisor to generate research teams based on a given topic,</span>
+<span class="sd">initialize their states, and manage transitions between states as part of a supervisor workflow.</span>
+
+<span class="sd">Key Features:</span>
+<span class="sd">- Create research teams using a language model with structured outputs.</span>
+<span class="sd">- Initialize research team states with predefined instructions.</span>
+<span class="sd">- Orchestrate the research workflow by transitioning between nodes based on conditions.</span>
 
 <span class="sd">Modules Used:</span>
 <span class="sd">    - os: For accessing environment variables.</span>
-<span class="sd">    - dotenv: To load environment variables from a `.env` file.</span>
-<span class="sd">    - langchain.tools: To define tools within the LangChain framework.</span>
-<span class="sd">    - langchain_core.messages: For structuring messages for the language model.</span>
-<span class="sd">    - langchain_openai: For interacting with OpenAI&#39;s chat models.</span>
-<span class="sd">    - langgraph.constants: For using `Send` and `END` constants in the workflow.</span>
-<span class="sd">    - graphHierarchicalTeams.states: For managing subordinate states.</span>
-<span class="sd">    - graphHierarchicalTeams.schema: For defining the `Perspectives` schema.</span>
-
-<span class="sd">Environment Variables:</span>
-<span class="sd">    - MODEL_SUPERVISOR: Specifies the language model used for the supervisor tool.</span>
+<span class="sd">    - dotenv: For loading environment variables from a `.env` file.</span>
+<span class="sd">    - langchain.tools: For defining tools within LangChain.</span>
+<span class="sd">    - langchain_core.messages: For managing system and human messages.</span>
+<span class="sd">    - langchain_openai: For interacting with OpenAI&#39;s language model.</span>
+<span class="sd">    - langgraph.constants: For workflow state constants (`Send`, `END`).</span>
+<span class="sd">    - graphSupervisor.states: For managing the `OverallState` and `Perspectives` schema.</span>
 
 <span class="sd">Functions:</span>
-<span class="sd">    - subordinate_define_edge: Defines the workflow edge for subordinate state transitions.</span>
-<span class="sd">    - create_research_teams_tool: Generates a list of research teams based on the given topic and structured instructions.</span>
-<span class="sd">    - subordinate_node: Acts as a supervisor node, managing the research workflow and team orchestration.</span>
+<span class="sd">    - define_edge: Defines transitions between research team states.</span>
+<span class="sd">    - create_research_teams_tool: Creates research teams based on the given topic using a language model.</span>
+<span class="sd">    - supervisor_node: Orchestrates the workflow by generating teams and updating the overall state.</span>
 
 <span class="sd">Constants:</span>
-<span class="sd">    - team_creation_instructions: Instructions for generating research teams.</span>
-<span class="sd">    - inside_processes_teams_info: Team definitions for inside processes.</span>
-<span class="sd">    - outside_processes_teams_info: Team definitions for outside processes.</span>
+<span class="sd">    - team_creation_instructions: Instructions for generating research teams using the language model.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
@@ -69,9 +68,7 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">Send</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">END</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">graphHierarchicalTeams.states</span><span class="w"> </span><span class="kn">import</span> <span class="n">SubordinateState</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">graphHierarchicalTeams.schema</span><span class="w"> </span><span class="kn">import</span> <span class="n">Perspectives</span>
-
+<span class="kn">from</span><span class="w"> </span><span class="nn">graphSupervisor.states</span><span class="w"> </span><span class="kn">import</span> <span class="n">OverallState</span><span class="p">,</span> <span class="n">Perspectives</span>
 
 
 <span class="n">load_dotenv</span><span class="p">()</span>
@@ -81,47 +78,39 @@
 <span class="s2">You are tasked with creating AI research teams, each consisting of an analyst and a reviewer. Follow these instructions:</span>
 <span class="s2">Use provided in prompts names</span>
 <span class="s2">1. Review the provided research topic.</span>
-<span class="s2">2. Generate research teams strictly using provided names:</span>
-<span class="s2">    </span><span class="si">{teams_info}</span>
+<span class="s2">2. Generate four research teams strictly using provided names:</span>
+<span class="s2">    a. **HR_Team**: Focused on HR issues like team dynamics, performance, and training.</span>
+<span class="s2">    b. **BP_Team**: Specializing in process optimization and automation.</span>
+<span class="s2">    c. **KM_Team**: Concentrating on knowledge sharing and tools.</span>
+<span class="s2">    d. **IT_Team**: Addressing IT strategies and tools.</span>
 <span class="s2">3. Each team must have explicitly provided name, description and prompts reflecting their responsibilities.</span>
 <span class="s2">&quot;&quot;&quot;</span>
 
-<span class="n">inside_processes_teams_info</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
-<span class="s2">    a. HR_Team: Focused on HR issues like team dynamics, performance, and training.</span>
-<span class="s2">    b. BP_Team: Specializing in process optimization and automation.</span>
-<span class="s2">    c. KM_Team: Concentrating on knowledge sharing and tools.</span>
-<span class="s2">    d. IT_Team: Addressing IT strategies and tools.</span>
-<span class="s2">    There are 4 teams in total.</span>
-<span class="s2">&quot;&quot;&quot;</span>
 
-<span class="n">outside_processes_teams_info</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
-<span class="s2">    a. Marketing_Team: Focused on market research, brand awareness, customer acquisition, and promotional strategies.</span>
-<span class="s2">    b. Finance_Team: Specializing in financial planning, budgeting, analysis of profitability, investment strategies, and risk management.  </span>
-<span class="s2">    c. Legal_Team: Concentrating on ensuring compliance with laws and regulations, drafting contracts, managing legal risks, and providing legal counsel.</span>
-<span class="s2">    d. Customer_Support_Team: Addressing customer inquiries, feedback, and resolving issues to ensure a positive customer experience and maintain satisfaction.</span>
-<span class="s2">    e. R&amp;D_Team: Focused on innovation, developing new products or services, researching emerging technologies, and driving long-term business growth through product advancements.</span>
-<span class="s2">    There are 5 teams in total.</span>
-<span class="s2">&quot;&quot;&quot;</span>
-
-<div class="viewcode-block" id="subordinate_define_edge">
-<a class="viewcode-back" href="../../../graphHierarchicalTeams.nodes.html#graphHierarchicalTeams.nodes.subordinate_node.subordinate_define_edge">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">subordinate_define_edge</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">SubordinateState</span><span class="p">):</span>
+<div class="viewcode-block" id="define_edge">
+<a class="viewcode-back" href="../../../graphSupervisor.nodes.html#graphSupervisor.nodes.supervisor_node.define_edge">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">define_edge</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">OverallState</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Define the next workflow state for subordinate nodes based on the current state.</span>
+<span class="sd">    Define transitions between research team states based on the current state.</span>
+
+<span class="sd">    If the final report is already generated, the workflow ends. Otherwise, transitions</span>
+<span class="sd">    are defined based on the number of reviews and the presence of teams in the state.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        state (SubordinateState): The current state object containing the following keys:</span>
-<span class="sd">            - &quot;final_subordinate_report&quot; (str, optional): The final report, if available.</span>
-<span class="sd">            - &quot;reviews&quot; (list): A list of reviews from teams.</span>
+<span class="sd">        state (OverallState): The current overall state, which includes:</span>
+<span class="sd">            - &quot;final_report&quot; (str, optional): The final report, if available.</span>
+<span class="sd">            - &quot;reviews&quot; (list): A list of reviews from the research teams.</span>
 <span class="sd">            - &quot;topic&quot; (str): The research topic.</span>
-<span class="sd">            - &quot;teams&quot; (list): A list of team details.</span>
-<span class="sd">            - &quot;questionnaire&quot; (str): The questionnaire associated with the task.</span>
+<span class="sd">            - &quot;teams&quot; (list): A list of research team details.</span>
+<span class="sd">            - &quot;questionnaire&quot; (str): The questionnaire data associated with the topic.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        str or list: Returns `END` if the final report is available, a string `&quot;Report_Writer&quot;` if sufficient reviews exist,</span>
-<span class="sd">        or a list of `Send` objects to initialize team states.</span>
+<span class="sd">        str or list: Returns `END` if the final report is generated, or transitions to the</span>
+<span class="sd">                     appropriate node based on conditions.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="s2">&quot;final_subordinate_report&quot;</span> <span class="ow">in</span> <span class="n">state</span><span class="p">:</span>
+    <span class="c1"># print(&quot;This is log info FROM DEFINE_EDGE about reviews list length: &quot; + str(len(state[&quot;reviews&quot;])))</span>
+
+    <span class="k">if</span> <span class="s2">&quot;final_report&quot;</span> <span class="ow">in</span> <span class="n">state</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">END</span>
 
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">state</span><span class="p">[</span><span class="s2">&quot;reviews&quot;</span><span class="p">])</span> <span class="o">&gt;=</span> <span class="mi">4</span><span class="p">:</span>
@@ -135,15 +124,14 @@
 
     <span class="k">return</span> <span class="p">[</span>
         <span class="n">Send</span><span class="p">(</span>
-            <span class="n">team</span><span class="p">[</span><span class="s2">&quot;team_name&quot;</span><span class="p">],</span>
+            <span class="n">team</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">],</span>
             <span class="p">{</span>
-                <span class="s2">&quot;team_name&quot;</span><span class="p">:</span> <span class="n">team</span><span class="p">[</span><span class="s2">&quot;team_name&quot;</span><span class="p">],</span>
+                <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">team</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">],</span>
                 <span class="s2">&quot;team_topic&quot;</span><span class="p">:</span> <span class="n">topic</span><span class="p">,</span>  <span class="c1"># Topic assigned to the analyst</span>
                 <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="n">team</span><span class="p">[</span><span class="s2">&quot;description&quot;</span><span class="p">],</span>
                 <span class="s2">&quot;team_questionnaire&quot;</span><span class="p">:</span> <span class="n">questionnaire</span><span class="p">,</span>
                 <span class="s2">&quot;messages&quot;</span><span class="p">:</span> <span class="p">[],</span>
                 <span class="s2">&quot;reviews&quot;</span><span class="p">:</span> <span class="p">[],</span>
-                <span class="s2">&quot;subordinate_reviews&quot;</span><span class="p">:</span> <span class="p">[],</span>
                 <span class="s2">&quot;analyst&quot;</span><span class="p">:</span> <span class="n">team</span><span class="p">[</span><span class="s2">&quot;analyst&quot;</span><span class="p">],</span>
                 <span class="s2">&quot;reviewer&quot;</span><span class="p">:</span> <span class="n">team</span><span class="p">[</span><span class="s2">&quot;reviewer&quot;</span><span class="p">],</span>
             <span class="p">}</span>
@@ -153,7 +141,7 @@
 
 
 <span class="nd">@tool</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">create_research_teams_tool</span><span class="p">(</span><span class="n">topic</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">team_info</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">create_research_teams_tool</span><span class="p">(</span><span class="n">topic</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create a list of research teams for a given topic using structured language model outputs.</span>
 
@@ -170,10 +158,8 @@
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Creating research teams on topic: </span><span class="se">\n\t</span><span class="si">{</span><span class="n">topic</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
     <span class="n">structured_llm</span> <span class="o">=</span> <span class="n">llm</span><span class="o">.</span><span class="n">with_structured_output</span><span class="p">(</span><span class="n">Perspectives</span><span class="p">)</span>
 
-
     <span class="c1"># LLM Query</span>
-    <span class="n">system_prompt</span> <span class="o">=</span> <span class="n">team_creation_instructions</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">teams_info</span><span class="o">=</span><span class="n">team_info</span><span class="p">)</span>
-    <span class="n">system_message</span> <span class="o">=</span> <span class="n">SystemMessage</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="n">system_prompt</span><span class="p">)</span>
+    <span class="n">system_message</span> <span class="o">=</span> <span class="n">SystemMessage</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="n">team_creation_instructions</span><span class="p">)</span>
     <span class="n">human_message</span> <span class="o">=</span> <span class="n">HumanMessage</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;Generate the teams for the topic: </span><span class="si">{</span><span class="n">topic</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
 
     <span class="c1"># Teams generation</span>
@@ -182,7 +168,7 @@
     <span class="c1"># Serialize</span>
     <span class="n">serialized_teams</span> <span class="o">=</span> <span class="p">[</span>
         <span class="p">{</span>
-            <span class="s2">&quot;team_name&quot;</span><span class="p">:</span> <span class="n">team</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">team</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
             <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="n">team</span><span class="o">.</span><span class="n">description</span><span class="p">,</span>
             <span class="s2">&quot;analyst&quot;</span><span class="p">:</span> <span class="n">team</span><span class="o">.</span><span class="n">analyst</span><span class="p">,</span>
             <span class="s2">&quot;reviewer&quot;</span><span class="p">:</span> <span class="n">team</span><span class="o">.</span><span class="n">reviewer</span><span class="p">,</span>
@@ -193,37 +179,33 @@
     <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;teams&quot;</span><span class="p">:</span> <span class="n">serialized_teams</span><span class="p">}</span>
 
 
-<div class="viewcode-block" id="subordinate_node">
-<a class="viewcode-back" href="../../../graphHierarchicalTeams.nodes.html#graphHierarchicalTeams.nodes.subordinate_node.subordinate_node">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">subordinate_node</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">SubordinateState</span><span class="p">):</span>
+<div class="viewcode-block" id="supervisor_node">
+<a class="viewcode-back" href="../../../graphSupervisor.nodes.html#graphSupervisor.nodes.supervisor_node.supervisor_node">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">supervisor_node</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">OverallState</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Orchestrate the workflow for subordinate nodes by generating teams and handling reports.</span>
+<span class="sd">    Orchestrate the workflow for the research process.</span>
+
+<span class="sd">    This function initializes the overall state, generates research teams if not already present,</span>
+<span class="sd">    and manages transitions based on the state.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        state (SubordinateState): The current state object containing the following keys:</span>
-<span class="sd">            - &quot;teams&quot; (list, optional): A list of team details.</span>
-<span class="sd">            - &quot;subordinate_team_name&quot; (str): The name of the subordinate team.</span>
+<span class="sd">        state (OverallState): The current overall state, which includes:</span>
 <span class="sd">            - &quot;topic&quot; (str): The research topic.</span>
-<span class="sd">            - &quot;final_subordinate_report&quot; (str, optional): The final report, if available.</span>
-<span class="sd">            - &quot;subordinate_reviews&quot; (list): A list of subordinate reviews.</span>
+<span class="sd">            - &quot;reviews&quot; (list, optional): A list of reviews from research teams.</span>
+<span class="sd">            - &quot;teams&quot; (list, optional): A list of research teams.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        SubordinateState: The updated state object with added or modified keys as necessary.</span>
+<span class="sd">        OverallState: The updated overall state with initialized teams and reviews.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Subordinate Node has been activated!&quot;</span><span class="p">)</span>
+    <span class="c1"># print(&quot;This is log info FROM SUPERVISOR about reviews list length: &quot; + str(len(state[&quot;reviews&quot;])))</span>
+
+    <span class="k">if</span> <span class="s2">&quot;reviews&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">state</span><span class="p">:</span>
+        <span class="n">state</span><span class="p">[</span><span class="s2">&quot;reviews&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
 
     <span class="k">if</span> <span class="s2">&quot;teams&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">state</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">state</span><span class="p">[</span><span class="s2">&quot;teams&quot;</span><span class="p">]:</span>
         <span class="c1"># Generate teams and initialize states</span>
-        <span class="n">curr_team</span> <span class="o">=</span> <span class="n">state</span><span class="p">[</span><span class="s2">&quot;subordinate_team_name&quot;</span><span class="p">]</span>
-        <span class="k">if</span> <span class="n">curr_team</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;Inside_Processes&quot;</span><span class="p">):</span>
-            <span class="n">generated_teams</span> <span class="o">=</span> <span class="n">create_research_teams_tool</span><span class="o">.</span><span class="n">invoke</span><span class="p">({</span><span class="s2">&quot;topic&quot;</span><span class="p">:</span> <span class="n">state</span><span class="p">[</span><span class="s2">&quot;topic&quot;</span><span class="p">],</span> <span class="s2">&quot;team_info&quot;</span><span class="p">:</span> <span class="n">inside_processes_teams_info</span><span class="p">})</span>
-        <span class="k">if</span> <span class="n">curr_team</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;Outside_Processes&quot;</span><span class="p">):</span>
-            <span class="n">generated_teams</span> <span class="o">=</span> <span class="n">create_research_teams_tool</span><span class="o">.</span><span class="n">invoke</span><span class="p">({</span><span class="s2">&quot;topic&quot;</span><span class="p">:</span> <span class="n">state</span><span class="p">[</span><span class="s2">&quot;topic&quot;</span><span class="p">],</span> <span class="s2">&quot;team_info&quot;</span><span class="p">:</span> <span class="n">outside_processes_teams_info</span><span class="p">})</span>
+        <span class="n">generated_teams</span> <span class="o">=</span> <span class="n">create_research_teams_tool</span><span class="o">.</span><span class="n">invoke</span><span class="p">({</span><span class="s2">&quot;topic&quot;</span><span class="p">:</span> <span class="n">state</span><span class="p">[</span><span class="s2">&quot;topic&quot;</span><span class="p">]})</span>
         <span class="n">state</span><span class="p">[</span><span class="s2">&quot;teams&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">generated_teams</span><span class="p">[</span><span class="s2">&quot;teams&quot;</span><span class="p">]</span>
-
-    <span class="k">if</span> <span class="s2">&quot;final_subordinate_report&quot;</span> <span class="ow">in</span> <span class="n">state</span><span class="p">:</span>
-        <span class="n">report</span> <span class="o">=</span> <span class="n">state</span><span class="p">[</span><span class="s2">&quot;final_subordinate_report&quot;</span><span class="p">]</span>
-        <span class="n">state</span><span class="p">[</span><span class="s2">&quot;subordinate_reviews&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">report</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">state</span></div>
 
