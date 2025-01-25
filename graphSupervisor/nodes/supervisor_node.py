@@ -34,7 +34,6 @@ from langchain_core.messages import HumanMessage, SystemMessage
 from langchain_openai import ChatOpenAI
 from langgraph.constants import Send
 from langgraph.constants import END
-
 from graphSupervisor.states import OverallState, Perspectives
 
 

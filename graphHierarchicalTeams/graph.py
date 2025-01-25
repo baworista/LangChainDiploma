@@ -29,7 +29,6 @@ from langgraph.constants import START
 from langgraph.graph import StateGraph
 import subprocess
 from langgraph.prebuilt import ToolNode
-
 from graphHierarchicalTeams.nodes.supervisor import *
 from graphHierarchicalTeams.nodes.report_writer_node import *
 from graphHierarchicalTeams.nodes.subordinate_node import *

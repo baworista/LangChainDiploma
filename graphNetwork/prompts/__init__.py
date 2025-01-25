@@ -1,0 +1,1 @@
+"""Prompts for the Network graph."""

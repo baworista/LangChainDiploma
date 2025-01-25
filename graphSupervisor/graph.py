@@ -35,7 +35,6 @@ Outputs:
 import json
 from langgraph.constants import START
 from langgraph.graph import StateGraph
-
 from graphSupervisor.nodes.report_writer_node import *
 from graphSupervisor.nodes.supervisor_node import *
 from graphSupervisor.nodes.team_node import *

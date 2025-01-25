@@ -19,11 +19,9 @@ Function:
 """
 
 from dotenv import load_dotenv
-from graphEvaluator.states import OverallState
-
-# Install DeepEval library
 from deepeval.test_case import LLMTestCase, LLMTestCaseParams
 from deepeval.metrics import GEval
+from graphEvaluator.states import OverallState
 
 load_dotenv()
 
