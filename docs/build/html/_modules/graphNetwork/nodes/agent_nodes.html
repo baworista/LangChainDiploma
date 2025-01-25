@@ -75,6 +75,7 @@
 <span class="n">llm</span> <span class="o">=</span> <span class="n">ChatOpenAI</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;MODEL_SUPERVISOR&quot;</span><span class="p">))</span>
 <span class="n">model</span> <span class="o">=</span> <span class="n">llm</span><span class="o">.</span><span class="n">with_structured_output</span><span class="p">(</span><span class="n">Output</span><span class="p">)</span>
 
+
 <div class="viewcode-block" id="agent_handler">
 <a class="viewcode-back" href="../../../graphNetwork.nodes.html#graphNetwork.nodes.agent_nodes.agent_handler">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">agent_handler</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">OverallState</span><span class="p">,</span> <span class="n">agent_prompt</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
@@ -130,6 +131,7 @@
     <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;analysis&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">ai_msg</span><span class="o">.</span><span class="n">analysis</span><span class="p">]}</span></div>
 
 
+
 <div class="viewcode-block" id="Consulting_Agent">
 <a class="viewcode-back" href="../../../graphNetwork.nodes.html#graphNetwork.nodes.agent_nodes.Consulting_Agent">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">Consulting_Agent</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">OverallState</span><span class="p">):</span>
@@ -146,6 +148,7 @@
 <span class="sd">        result = Consulting_Agent(current_state)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">agent_handler</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">generate_agent_prompt</span><span class="p">(</span><span class="s2">&quot;Consulting_Agent&quot;</span><span class="p">))</span></div>
+
 
 
 <div class="viewcode-block" id="HR_Agent">
@@ -166,6 +169,7 @@
     <span class="k">return</span> <span class="n">agent_handler</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">generate_agent_prompt</span><span class="p">(</span><span class="s2">&quot;HR_Agent&quot;</span><span class="p">))</span></div>
 
 
+
 <div class="viewcode-block" id="BP_Agent">
 <a class="viewcode-back" href="../../../graphNetwork.nodes.html#graphNetwork.nodes.agent_nodes.BP_Agent">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">BP_Agent</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">OverallState</span><span class="p">):</span>
@@ -184,6 +188,7 @@
     <span class="k">return</span> <span class="n">agent_handler</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">generate_agent_prompt</span><span class="p">(</span><span class="s2">&quot;BP_Agent&quot;</span><span class="p">))</span></div>
 
 
+
 <div class="viewcode-block" id="KM_Agent">
 <a class="viewcode-back" href="../../../graphNetwork.nodes.html#graphNetwork.nodes.agent_nodes.KM_Agent">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">KM_Agent</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">OverallState</span><span class="p">):</span>
@@ -200,6 +205,7 @@
 <span class="sd">        result = KM_Agent(current_state)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">agent_handler</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">generate_agent_prompt</span><span class="p">(</span><span class="s2">&quot;KM_Agent&quot;</span><span class="p">))</span></div>
+
 
 
 <div class="viewcode-block" id="IT_Agent">
