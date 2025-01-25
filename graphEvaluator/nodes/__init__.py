@@ -1,0 +1,1 @@
+"""Nodes package is used for creation and operations with nodes for the graph."""

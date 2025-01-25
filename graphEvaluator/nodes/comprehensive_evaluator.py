@@ -32,7 +32,6 @@ import os
 from dotenv import load_dotenv
 from langchain_core.messages import SystemMessage
 from langchain_openai import ChatOpenAI
-
 from graphEvaluator.states import OverallState
 from graphEvaluator.schema import StructuredEvaluatorOutput
 

@@ -39,8 +39,8 @@ Usage Example:
     #     "questions": "What tools are available to automate employee feedback?"
     # }
 """
-from typing import Optional, Literal
 
+from typing import Optional, Literal
 from pydantic import BaseModel, Field
 
 

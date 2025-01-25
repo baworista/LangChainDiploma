@@ -28,7 +28,6 @@ Functions:
 """
 
 import os
-
 from dotenv import load_dotenv
 from langchain_openai import ChatOpenAI
 from langgraph.types import Command
