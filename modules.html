@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>LangChainDiploma &#8212; LangChainDiploma 1.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="_static/basic.css?v=686e5160" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=27fed22d" />
+    <script src="_static/documentation_options.js?v=f2a433a1"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="langchaindiploma">
+<h1>LangChainDiploma<a class="headerlink" href="#langchaindiploma" title="Link to this heading">¶</a></h1>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="graphEvaluator.html">graphEvaluator package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="graphEvaluator.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="graphEvaluator.nodes.html">graphEvaluator.nodes package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="graphEvaluator.nodes.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphEvaluator.nodes.html#module-graphEvaluator.nodes.comprehensive_evaluator">graphEvaluator.nodes.comprehensive_evaluator module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphEvaluator.nodes.html#module-graphEvaluator.nodes.final_evaluator">graphEvaluator.nodes.final_evaluator module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphEvaluator.nodes.html#module-graphEvaluator.nodes.g_evaluator">graphEvaluator.nodes.g_evaluator module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphEvaluator.nodes.html#module-graphEvaluator.nodes.individual_evaluator">graphEvaluator.nodes.individual_evaluator module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphEvaluator.nodes.html#module-graphEvaluator.nodes.report_compiler">graphEvaluator.nodes.report_compiler module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphEvaluator.nodes.html#module-graphEvaluator.nodes">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="graphEvaluator.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graphEvaluator.html#module-graphEvaluator.graph">graphEvaluator.graph module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graphEvaluator.html#module-graphEvaluator.schema">graphEvaluator.schema module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="graphEvaluator.html#graphEvaluator.schema.EvaluatorOutput"><code class="docutils literal notranslate"><span class="pre">EvaluatorOutput</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="graphEvaluator.html#graphEvaluator.schema.EvaluatorOutput.anonymized_name"><code class="docutils literal notranslate"><span class="pre">EvaluatorOutput.anonymized_name</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphEvaluator.html#graphEvaluator.schema.EvaluatorOutput.evaluator_output"><code class="docutils literal notranslate"><span class="pre">EvaluatorOutput.evaluator_output</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphEvaluator.html#graphEvaluator.schema.EvaluatorOutput.model_config"><code class="docutils literal notranslate"><span class="pre">EvaluatorOutput.model_config</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphEvaluator.html#graphEvaluator.schema.EvaluatorOutput.overall_comment"><code class="docutils literal notranslate"><span class="pre">EvaluatorOutput.overall_comment</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphEvaluator.html#graphEvaluator.schema.EvaluatorOutput.scores"><code class="docutils literal notranslate"><span class="pre">EvaluatorOutput.scores</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="graphEvaluator.html#graphEvaluator.schema.Score"><code class="docutils literal notranslate"><span class="pre">Score</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="graphEvaluator.html#graphEvaluator.schema.Score.comment"><code class="docutils literal notranslate"><span class="pre">Score.comment</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphEvaluator.html#graphEvaluator.schema.Score.criterion_name"><code class="docutils literal notranslate"><span class="pre">Score.criterion_name</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphEvaluator.html#graphEvaluator.schema.Score.model_config"><code class="docutils literal notranslate"><span class="pre">Score.model_config</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphEvaluator.html#graphEvaluator.schema.Score.score"><code class="docutils literal notranslate"><span class="pre">Score.score</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphEvaluator.html#graphEvaluator.schema.Score.scores"><code class="docutils literal notranslate"><span class="pre">Score.scores</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="graphEvaluator.html#graphEvaluator.schema.StructuredEvaluatorOutput"><code class="docutils literal notranslate"><span class="pre">StructuredEvaluatorOutput</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="graphEvaluator.html#graphEvaluator.schema.StructuredEvaluatorOutput.model_config"><code class="docutils literal notranslate"><span class="pre">StructuredEvaluatorOutput.model_config</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphEvaluator.html#graphEvaluator.schema.StructuredEvaluatorOutput.reports"><code class="docutils literal notranslate"><span class="pre">StructuredEvaluatorOutput.reports</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="graphEvaluator.html#module-graphEvaluator.states">graphEvaluator.states module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="graphEvaluator.html#graphEvaluator.states.OverallState"><code class="docutils literal notranslate"><span class="pre">OverallState</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="graphEvaluator.html#graphEvaluator.states.OverallState.topic"><code class="docutils literal notranslate"><span class="pre">OverallState.topic</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphEvaluator.html#graphEvaluator.states.OverallState.questionnaire"><code class="docutils literal notranslate"><span class="pre">OverallState.questionnaire</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphEvaluator.html#graphEvaluator.states.OverallState.reports"><code class="docutils literal notranslate"><span class="pre">OverallState.reports</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphEvaluator.html#graphEvaluator.states.OverallState.evaluator_reports"><code class="docutils literal notranslate"><span class="pre">OverallState.evaluator_reports</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphEvaluator.html#graphEvaluator.states.OverallState.the_best_report_info"><code class="docutils literal notranslate"><span class="pre">OverallState.the_best_report_info</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphEvaluator.html#id0"><code class="docutils literal notranslate"><span class="pre">OverallState.evaluator_reports</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphEvaluator.html#id1"><code class="docutils literal notranslate"><span class="pre">OverallState.questionnaire</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphEvaluator.html#id2"><code class="docutils literal notranslate"><span class="pre">OverallState.reports</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphEvaluator.html#id3"><code class="docutils literal notranslate"><span class="pre">OverallState.the_best_report_info</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphEvaluator.html#id4"><code class="docutils literal notranslate"><span class="pre">OverallState.topic</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="graphEvaluator.html#module-graphEvaluator">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="graphHierarchicalTeams.html">graphHierarchicalTeams package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="graphHierarchicalTeams.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="graphHierarchicalTeams.nodes.html">graphHierarchicalTeams.nodes package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="graphHierarchicalTeams.nodes.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphHierarchicalTeams.nodes.html#module-graphHierarchicalTeams.nodes.report_writer_node">graphHierarchicalTeams.nodes.report_writer_node module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphHierarchicalTeams.nodes.html#module-graphHierarchicalTeams.nodes.subordinate_node">graphHierarchicalTeams.nodes.subordinate_node module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphHierarchicalTeams.nodes.html#module-graphHierarchicalTeams.nodes.supervisor">graphHierarchicalTeams.nodes.supervisor module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphHierarchicalTeams.nodes.html#module-graphHierarchicalTeams.nodes.team_node">graphHierarchicalTeams.nodes.team_node module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphHierarchicalTeams.nodes.html#module-graphHierarchicalTeams.nodes">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="graphHierarchicalTeams.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graphHierarchicalTeams.html#module-graphHierarchicalTeams.graph">graphHierarchicalTeams.graph module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="graphHierarchicalTeams.html#graphHierarchicalTeams.graph.create_main_graph"><code class="docutils literal notranslate"><span class="pre">create_main_graph()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="graphHierarchicalTeams.html#graphHierarchicalTeams.graph.create_process_team_builder"><code class="docutils literal notranslate"><span class="pre">create_process_team_builder()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="graphHierarchicalTeams.html#graphHierarchicalTeams.graph.create_team_builder"><code class="docutils literal notranslate"><span class="pre">create_team_builder()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="graphHierarchicalTeams.html#module-graphHierarchicalTeams.schema">graphHierarchicalTeams.schema module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="graphHierarchicalTeams.html#graphHierarchicalTeams.schema.Person"><code class="docutils literal notranslate"><span class="pre">Person</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="graphHierarchicalTeams.html#graphHierarchicalTeams.schema.Person.description"><code class="docutils literal notranslate"><span class="pre">Person.description</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphHierarchicalTeams.html#graphHierarchicalTeams.schema.Person.model_config"><code class="docutils literal notranslate"><span class="pre">Person.model_config</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphHierarchicalTeams.html#graphHierarchicalTeams.schema.Person.name"><code class="docutils literal notranslate"><span class="pre">Person.name</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphHierarchicalTeams.html#graphHierarchicalTeams.schema.Person.persona"><code class="docutils literal notranslate"><span class="pre">Person.persona</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphHierarchicalTeams.html#graphHierarchicalTeams.schema.Person.role"><code class="docutils literal notranslate"><span class="pre">Person.role</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="graphHierarchicalTeams.html#graphHierarchicalTeams.schema.Perspectives"><code class="docutils literal notranslate"><span class="pre">Perspectives</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="graphHierarchicalTeams.html#graphHierarchicalTeams.schema.Perspectives.model_config"><code class="docutils literal notranslate"><span class="pre">Perspectives.model_config</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphHierarchicalTeams.html#graphHierarchicalTeams.schema.Perspectives.teams"><code class="docutils literal notranslate"><span class="pre">Perspectives.teams</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="graphHierarchicalTeams.html#graphHierarchicalTeams.schema.ResearchTeam"><code class="docutils literal notranslate"><span class="pre">ResearchTeam</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="graphHierarchicalTeams.html#graphHierarchicalTeams.schema.ResearchTeam.analyst"><code class="docutils literal notranslate"><span class="pre">ResearchTeam.analyst</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphHierarchicalTeams.html#graphHierarchicalTeams.schema.ResearchTeam.description"><code class="docutils literal notranslate"><span class="pre">ResearchTeam.description</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphHierarchicalTeams.html#graphHierarchicalTeams.schema.ResearchTeam.model_config"><code class="docutils literal notranslate"><span class="pre">ResearchTeam.model_config</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphHierarchicalTeams.html#graphHierarchicalTeams.schema.ResearchTeam.name"><code class="docutils literal notranslate"><span class="pre">ResearchTeam.name</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphHierarchicalTeams.html#graphHierarchicalTeams.schema.ResearchTeam.reviewer"><code class="docutils literal notranslate"><span class="pre">ResearchTeam.reviewer</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphHierarchicalTeams.html#graphHierarchicalTeams.schema.ResearchTeam.team"><code class="docutils literal notranslate"><span class="pre">ResearchTeam.team</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="graphHierarchicalTeams.html#graphHierarchicalTeams.schema.SubordinateTeam"><code class="docutils literal notranslate"><span class="pre">SubordinateTeam</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="graphHierarchicalTeams.html#graphHierarchicalTeams.schema.SubordinateTeam.description"><code class="docutils literal notranslate"><span class="pre">SubordinateTeam.description</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphHierarchicalTeams.html#graphHierarchicalTeams.schema.SubordinateTeam.model_config"><code class="docutils literal notranslate"><span class="pre">SubordinateTeam.model_config</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphHierarchicalTeams.html#graphHierarchicalTeams.schema.SubordinateTeam.name"><code class="docutils literal notranslate"><span class="pre">SubordinateTeam.name</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphHierarchicalTeams.html#graphHierarchicalTeams.schema.SubordinateTeam.subordinate"><code class="docutils literal notranslate"><span class="pre">SubordinateTeam.subordinate</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphHierarchicalTeams.html#graphHierarchicalTeams.schema.SubordinateTeam.team"><code class="docutils literal notranslate"><span class="pre">SubordinateTeam.team</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="graphHierarchicalTeams.html#graphHierarchicalTeams.schema.Subordinates"><code class="docutils literal notranslate"><span class="pre">Subordinates</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="graphHierarchicalTeams.html#graphHierarchicalTeams.schema.Subordinates.model_config"><code class="docutils literal notranslate"><span class="pre">Subordinates.model_config</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphHierarchicalTeams.html#graphHierarchicalTeams.schema.Subordinates.subordinates"><code class="docutils literal notranslate"><span class="pre">Subordinates.subordinates</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="graphHierarchicalTeams.html#module-graphHierarchicalTeams.states">graphHierarchicalTeams.states module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="graphHierarchicalTeams.html#graphHierarchicalTeams.states.OverallState"><code class="docutils literal notranslate"><span class="pre">OverallState</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="graphHierarchicalTeams.html#graphHierarchicalTeams.states.OverallState.topic"><code class="docutils literal notranslate"><span class="pre">OverallState.topic</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphHierarchicalTeams.html#graphHierarchicalTeams.states.OverallState.questionnaire"><code class="docutils literal notranslate"><span class="pre">OverallState.questionnaire</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphHierarchicalTeams.html#graphHierarchicalTeams.states.OverallState.subordinate_reviews"><code class="docutils literal notranslate"><span class="pre">OverallState.subordinate_reviews</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphHierarchicalTeams.html#graphHierarchicalTeams.states.OverallState.final_report"><code class="docutils literal notranslate"><span class="pre">OverallState.final_report</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphHierarchicalTeams.html#graphHierarchicalTeams.states.OverallState.subordinate_teams"><code class="docutils literal notranslate"><span class="pre">OverallState.subordinate_teams</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphHierarchicalTeams.html#id0"><code class="docutils literal notranslate"><span class="pre">OverallState.final_report</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphHierarchicalTeams.html#id1"><code class="docutils literal notranslate"><span class="pre">OverallState.questionnaire</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphHierarchicalTeams.html#id2"><code class="docutils literal notranslate"><span class="pre">OverallState.subordinate_reviews</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphHierarchicalTeams.html#id3"><code class="docutils literal notranslate"><span class="pre">OverallState.subordinate_teams</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphHierarchicalTeams.html#id4"><code class="docutils literal notranslate"><span class="pre">OverallState.topic</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="graphHierarchicalTeams.html#graphHierarchicalTeams.states.ResearchState"><code class="docutils literal notranslate"><span class="pre">ResearchState</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="graphHierarchicalTeams.html#graphHierarchicalTeams.states.ResearchState.team_name"><code class="docutils literal notranslate"><span class="pre">ResearchState.team_name</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphHierarchicalTeams.html#graphHierarchicalTeams.states.ResearchState.team_topic"><code class="docutils literal notranslate"><span class="pre">ResearchState.team_topic</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphHierarchicalTeams.html#graphHierarchicalTeams.states.ResearchState.description"><code class="docutils literal notranslate"><span class="pre">ResearchState.description</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphHierarchicalTeams.html#graphHierarchicalTeams.states.ResearchState.team_questionnaire"><code class="docutils literal notranslate"><span class="pre">ResearchState.team_questionnaire</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphHierarchicalTeams.html#graphHierarchicalTeams.states.ResearchState.reviews"><code class="docutils literal notranslate"><span class="pre">ResearchState.reviews</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphHierarchicalTeams.html#graphHierarchicalTeams.states.ResearchState.analyst"><code class="docutils literal notranslate"><span class="pre">ResearchState.analyst</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphHierarchicalTeams.html#graphHierarchicalTeams.states.ResearchState.reviewer"><code class="docutils literal notranslate"><span class="pre">ResearchState.reviewer</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphHierarchicalTeams.html#id5"><code class="docutils literal notranslate"><span class="pre">ResearchState.analyst</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphHierarchicalTeams.html#id6"><code class="docutils literal notranslate"><span class="pre">ResearchState.description</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphHierarchicalTeams.html#graphHierarchicalTeams.states.ResearchState.messages"><code class="docutils literal notranslate"><span class="pre">ResearchState.messages</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphHierarchicalTeams.html#id7"><code class="docutils literal notranslate"><span class="pre">ResearchState.reviewer</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphHierarchicalTeams.html#id8"><code class="docutils literal notranslate"><span class="pre">ResearchState.reviews</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphHierarchicalTeams.html#id9"><code class="docutils literal notranslate"><span class="pre">ResearchState.team_name</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphHierarchicalTeams.html#id10"><code class="docutils literal notranslate"><span class="pre">ResearchState.team_questionnaire</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphHierarchicalTeams.html#id11"><code class="docutils literal notranslate"><span class="pre">ResearchState.team_topic</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="graphHierarchicalTeams.html#graphHierarchicalTeams.states.SubordinateState"><code class="docutils literal notranslate"><span class="pre">SubordinateState</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="graphHierarchicalTeams.html#graphHierarchicalTeams.states.SubordinateState.subordinate_team_name"><code class="docutils literal notranslate"><span class="pre">SubordinateState.subordinate_team_name</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphHierarchicalTeams.html#graphHierarchicalTeams.states.SubordinateState.topic"><code class="docutils literal notranslate"><span class="pre">SubordinateState.topic</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphHierarchicalTeams.html#graphHierarchicalTeams.states.SubordinateState.questionnaire"><code class="docutils literal notranslate"><span class="pre">SubordinateState.questionnaire</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphHierarchicalTeams.html#graphHierarchicalTeams.states.SubordinateState.subordinate"><code class="docutils literal notranslate"><span class="pre">SubordinateState.subordinate</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphHierarchicalTeams.html#graphHierarchicalTeams.states.SubordinateState.teams"><code class="docutils literal notranslate"><span class="pre">SubordinateState.teams</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphHierarchicalTeams.html#graphHierarchicalTeams.states.SubordinateState.reviews"><code class="docutils literal notranslate"><span class="pre">SubordinateState.reviews</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphHierarchicalTeams.html#graphHierarchicalTeams.states.SubordinateState.final_subordinate_report"><code class="docutils literal notranslate"><span class="pre">SubordinateState.final_subordinate_report</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphHierarchicalTeams.html#graphHierarchicalTeams.states.SubordinateState.subordinate_reviews"><code class="docutils literal notranslate"><span class="pre">SubordinateState.subordinate_reviews</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphHierarchicalTeams.html#id12"><code class="docutils literal notranslate"><span class="pre">SubordinateState.final_subordinate_report</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphHierarchicalTeams.html#id13"><code class="docutils literal notranslate"><span class="pre">SubordinateState.questionnaire</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphHierarchicalTeams.html#id14"><code class="docutils literal notranslate"><span class="pre">SubordinateState.reviews</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphHierarchicalTeams.html#id15"><code class="docutils literal notranslate"><span class="pre">SubordinateState.subordinate</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphHierarchicalTeams.html#id16"><code class="docutils literal notranslate"><span class="pre">SubordinateState.subordinate_reviews</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphHierarchicalTeams.html#id17"><code class="docutils literal notranslate"><span class="pre">SubordinateState.subordinate_team_name</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphHierarchicalTeams.html#id18"><code class="docutils literal notranslate"><span class="pre">SubordinateState.teams</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphHierarchicalTeams.html#id19"><code class="docutils literal notranslate"><span class="pre">SubordinateState.topic</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="graphHierarchicalTeams.html#graphHierarchicalTeams.states.deduplicate_merge"><code class="docutils literal notranslate"><span class="pre">deduplicate_merge()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="graphHierarchicalTeams.html#graphHierarchicalTeams.states.merge_str"><code class="docutils literal notranslate"><span class="pre">merge_str()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="graphHierarchicalTeams.html#module-graphHierarchicalTeams">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="graphNetwork.html">graphNetwork package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="graphNetwork.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="graphNetwork.nodes.html">graphNetwork.nodes package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="graphNetwork.nodes.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphNetwork.nodes.html#module-graphNetwork.nodes.agent_nodes">graphNetwork.nodes.agent_nodes module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphNetwork.nodes.html#module-graphNetwork.nodes.report_writer_node">graphNetwork.nodes.report_writer_node module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphNetwork.nodes.html#module-graphNetwork.nodes">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="graphNetwork.prompts.html">graphNetwork.prompts package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="graphNetwork.prompts.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphNetwork.prompts.html#module-graphNetwork.prompts.agent_definition">graphNetwork.prompts.agent_definition module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphNetwork.prompts.html#module-graphNetwork.prompts.generators">graphNetwork.prompts.generators module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphNetwork.prompts.html#module-graphNetwork.prompts.prompt_templates">graphNetwork.prompts.prompt_templates module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphNetwork.prompts.html#module-graphNetwork.prompts.summary_agent_prompt">graphNetwork.prompts.summary_agent_prompt module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphNetwork.prompts.html#module-graphNetwork.prompts.user_prompt">graphNetwork.prompts.user_prompt module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphNetwork.prompts.html#module-graphNetwork.prompts">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="graphNetwork.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graphNetwork.html#module-graphNetwork.graph">graphNetwork.graph module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="graphNetwork.html#graphNetwork.graph.load_json"><code class="docutils literal notranslate"><span class="pre">load_json()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="graphNetwork.html#module-graphNetwork.schemas">graphNetwork.schemas module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="graphNetwork.html#graphNetwork.schemas.Output"><code class="docutils literal notranslate"><span class="pre">Output</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="graphNetwork.html#graphNetwork.schemas.Output.name"><code class="docutils literal notranslate"><span class="pre">Output.name</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphNetwork.html#graphNetwork.schemas.Output.analysis"><code class="docutils literal notranslate"><span class="pre">Output.analysis</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphNetwork.html#graphNetwork.schemas.Output.task"><code class="docutils literal notranslate"><span class="pre">Output.task</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphNetwork.html#graphNetwork.schemas.Output.next_agent"><code class="docutils literal notranslate"><span class="pre">Output.next_agent</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphNetwork.html#graphNetwork.schemas.Output.questions"><code class="docutils literal notranslate"><span class="pre">Output.questions</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphNetwork.html#id0"><code class="docutils literal notranslate"><span class="pre">Output.analysis</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphNetwork.html#graphNetwork.schemas.Output.model_config"><code class="docutils literal notranslate"><span class="pre">Output.model_config</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphNetwork.html#id1"><code class="docutils literal notranslate"><span class="pre">Output.name</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphNetwork.html#id2"><code class="docutils literal notranslate"><span class="pre">Output.next_agent</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphNetwork.html#id3"><code class="docutils literal notranslate"><span class="pre">Output.questions</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphNetwork.html#id4"><code class="docutils literal notranslate"><span class="pre">Output.task</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="graphNetwork.html#module-graphNetwork.states">graphNetwork.states module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="graphNetwork.html#graphNetwork.states.OverallState"><code class="docutils literal notranslate"><span class="pre">OverallState</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="graphNetwork.html#graphNetwork.states.OverallState.questions"><code class="docutils literal notranslate"><span class="pre">OverallState.questions</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphNetwork.html#graphNetwork.states.OverallState.task"><code class="docutils literal notranslate"><span class="pre">OverallState.task</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphNetwork.html#graphNetwork.states.OverallState.questionnaire"><code class="docutils literal notranslate"><span class="pre">OverallState.questionnaire</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphNetwork.html#graphNetwork.states.OverallState.good_practices"><code class="docutils literal notranslate"><span class="pre">OverallState.good_practices</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphNetwork.html#graphNetwork.states.OverallState.analysis"><code class="docutils literal notranslate"><span class="pre">OverallState.analysis</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphNetwork.html#graphNetwork.states.OverallState.main_task"><code class="docutils literal notranslate"><span class="pre">OverallState.main_task</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphNetwork.html#graphNetwork.states.OverallState.processed_agents"><code class="docutils literal notranslate"><span class="pre">OverallState.processed_agents</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphNetwork.html#graphNetwork.states.OverallState.final_report"><code class="docutils literal notranslate"><span class="pre">OverallState.final_report</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphNetwork.html#id5"><code class="docutils literal notranslate"><span class="pre">OverallState.analysis</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphNetwork.html#id6"><code class="docutils literal notranslate"><span class="pre">OverallState.final_report</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphNetwork.html#id7"><code class="docutils literal notranslate"><span class="pre">OverallState.good_practices</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphNetwork.html#id8"><code class="docutils literal notranslate"><span class="pre">OverallState.main_task</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphNetwork.html#id9"><code class="docutils literal notranslate"><span class="pre">OverallState.processed_agents</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphNetwork.html#id10"><code class="docutils literal notranslate"><span class="pre">OverallState.questionnaire</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphNetwork.html#id11"><code class="docutils literal notranslate"><span class="pre">OverallState.questions</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphNetwork.html#id12"><code class="docutils literal notranslate"><span class="pre">OverallState.task</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="graphNetwork.html#graphNetwork.states.deduplicate_merge"><code class="docutils literal notranslate"><span class="pre">deduplicate_merge()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="graphNetwork.html#graphNetwork.states.merge_str"><code class="docutils literal notranslate"><span class="pre">merge_str()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="graphNetwork.html#module-graphNetwork">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="graphSupervisor.html">graphSupervisor package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="graphSupervisor.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="graphSupervisor.nodes.html">graphSupervisor.nodes package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="graphSupervisor.nodes.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphSupervisor.nodes.html#module-graphSupervisor.nodes.report_writer_node">graphSupervisor.nodes.report_writer_node module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphSupervisor.nodes.html#module-graphSupervisor.nodes.supervisor_node">graphSupervisor.nodes.supervisor_node module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphSupervisor.nodes.html#module-graphSupervisor.nodes.team_node">graphSupervisor.nodes.team_node module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphSupervisor.nodes.html#module-graphSupervisor.nodes">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="graphSupervisor.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graphSupervisor.html#module-graphSupervisor.graph">graphSupervisor.graph module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="graphSupervisor.html#graphSupervisor.graph.create_team_builder"><code class="docutils literal notranslate"><span class="pre">create_team_builder()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="graphSupervisor.html#module-graphSupervisor.schema">graphSupervisor.schema module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="graphSupervisor.html#graphSupervisor.schema.Person"><code class="docutils literal notranslate"><span class="pre">Person</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="graphSupervisor.html#graphSupervisor.schema.Person.description"><code class="docutils literal notranslate"><span class="pre">Person.description</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphSupervisor.html#graphSupervisor.schema.Person.model_config"><code class="docutils literal notranslate"><span class="pre">Person.model_config</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphSupervisor.html#graphSupervisor.schema.Person.name"><code class="docutils literal notranslate"><span class="pre">Person.name</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphSupervisor.html#graphSupervisor.schema.Person.persona"><code class="docutils literal notranslate"><span class="pre">Person.persona</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphSupervisor.html#graphSupervisor.schema.Person.role"><code class="docutils literal notranslate"><span class="pre">Person.role</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="graphSupervisor.html#graphSupervisor.schema.Perspectives"><code class="docutils literal notranslate"><span class="pre">Perspectives</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="graphSupervisor.html#graphSupervisor.schema.Perspectives.model_config"><code class="docutils literal notranslate"><span class="pre">Perspectives.model_config</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphSupervisor.html#graphSupervisor.schema.Perspectives.teams"><code class="docutils literal notranslate"><span class="pre">Perspectives.teams</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="graphSupervisor.html#graphSupervisor.schema.ResearchTeam"><code class="docutils literal notranslate"><span class="pre">ResearchTeam</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="graphSupervisor.html#graphSupervisor.schema.ResearchTeam.analyst"><code class="docutils literal notranslate"><span class="pre">ResearchTeam.analyst</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphSupervisor.html#graphSupervisor.schema.ResearchTeam.description"><code class="docutils literal notranslate"><span class="pre">ResearchTeam.description</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphSupervisor.html#graphSupervisor.schema.ResearchTeam.model_config"><code class="docutils literal notranslate"><span class="pre">ResearchTeam.model_config</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphSupervisor.html#graphSupervisor.schema.ResearchTeam.name"><code class="docutils literal notranslate"><span class="pre">ResearchTeam.name</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphSupervisor.html#graphSupervisor.schema.ResearchTeam.reviewer"><code class="docutils literal notranslate"><span class="pre">ResearchTeam.reviewer</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphSupervisor.html#graphSupervisor.schema.ResearchTeam.team"><code class="docutils literal notranslate"><span class="pre">ResearchTeam.team</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="graphSupervisor.html#module-graphSupervisor.states">graphSupervisor.states module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="graphSupervisor.html#graphSupervisor.states.OverallState"><code class="docutils literal notranslate"><span class="pre">OverallState</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="graphSupervisor.html#graphSupervisor.states.OverallState.topic"><code class="docutils literal notranslate"><span class="pre">OverallState.topic</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphSupervisor.html#graphSupervisor.states.OverallState.questionnaire"><code class="docutils literal notranslate"><span class="pre">OverallState.questionnaire</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphSupervisor.html#graphSupervisor.states.OverallState.reviews"><code class="docutils literal notranslate"><span class="pre">OverallState.reviews</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphSupervisor.html#graphSupervisor.states.OverallState.final_report"><code class="docutils literal notranslate"><span class="pre">OverallState.final_report</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphSupervisor.html#graphSupervisor.states.OverallState.teams"><code class="docutils literal notranslate"><span class="pre">OverallState.teams</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphSupervisor.html#id0"><code class="docutils literal notranslate"><span class="pre">OverallState.final_report</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphSupervisor.html#id1"><code class="docutils literal notranslate"><span class="pre">OverallState.questionnaire</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphSupervisor.html#id2"><code class="docutils literal notranslate"><span class="pre">OverallState.reviews</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphSupervisor.html#id3"><code class="docutils literal notranslate"><span class="pre">OverallState.teams</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphSupervisor.html#id4"><code class="docutils literal notranslate"><span class="pre">OverallState.topic</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="graphSupervisor.html#graphSupervisor.states.ResearchState"><code class="docutils literal notranslate"><span class="pre">ResearchState</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="graphSupervisor.html#graphSupervisor.states.ResearchState.name"><code class="docutils literal notranslate"><span class="pre">ResearchState.name</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphSupervisor.html#graphSupervisor.states.ResearchState.team_topic"><code class="docutils literal notranslate"><span class="pre">ResearchState.team_topic</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphSupervisor.html#graphSupervisor.states.ResearchState.description"><code class="docutils literal notranslate"><span class="pre">ResearchState.description</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphSupervisor.html#graphSupervisor.states.ResearchState.team_questionnaire"><code class="docutils literal notranslate"><span class="pre">ResearchState.team_questionnaire</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphSupervisor.html#graphSupervisor.states.ResearchState.reviews"><code class="docutils literal notranslate"><span class="pre">ResearchState.reviews</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphSupervisor.html#graphSupervisor.states.ResearchState.analyst"><code class="docutils literal notranslate"><span class="pre">ResearchState.analyst</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphSupervisor.html#graphSupervisor.states.ResearchState.reviewer"><code class="docutils literal notranslate"><span class="pre">ResearchState.reviewer</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphSupervisor.html#id5"><code class="docutils literal notranslate"><span class="pre">ResearchState.analyst</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphSupervisor.html#id6"><code class="docutils literal notranslate"><span class="pre">ResearchState.description</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphSupervisor.html#graphSupervisor.states.ResearchState.messages"><code class="docutils literal notranslate"><span class="pre">ResearchState.messages</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphSupervisor.html#id7"><code class="docutils literal notranslate"><span class="pre">ResearchState.name</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphSupervisor.html#id8"><code class="docutils literal notranslate"><span class="pre">ResearchState.reviewer</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphSupervisor.html#id9"><code class="docutils literal notranslate"><span class="pre">ResearchState.reviews</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphSupervisor.html#id10"><code class="docutils literal notranslate"><span class="pre">ResearchState.team_questionnaire</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphSupervisor.html#id11"><code class="docutils literal notranslate"><span class="pre">ResearchState.team_topic</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="graphSupervisor.html#graphSupervisor.states.deduplicate_merge"><code class="docutils literal notranslate"><span class="pre">deduplicate_merge()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="graphSupervisor.html#module-graphSupervisor">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">LangChainDiploma</a></h1>
+
+
+
+
+
+
+
+
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="graphEvaluator.html">graphEvaluator package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="graphHierarchicalTeams.html">graphHierarchicalTeams package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="graphNetwork.html">graphNetwork package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="graphSupervisor.html">graphSupervisor package</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2025, Fedir Zhuk, Aleksander Ignacik.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.1.3</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      
+      |
+      <a href="_sources/modules.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

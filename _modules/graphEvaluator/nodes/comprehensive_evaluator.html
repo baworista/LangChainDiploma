@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>graphEvaluator.nodes.comprehensive_evaluator &#8212; LangChainDiploma 1.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/basic.css?v=686e5160" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/alabaster.css?v=27fed22d" />
+    <script src="../../../_static/documentation_options.js?v=f2a433a1"></script>
+    <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for graphEvaluator.nodes.comprehensive_evaluator</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Module for evaluating team-generated reports using a comprehensive evaluator node.</span>
+
+<span class="sd">This module defines the `comprehensive_evaluator_node` function, which evaluates reports submitted by</span>
+<span class="sd">different teams based on predefined criteria using a language model. The evaluation process is anonymized</span>
+<span class="sd">to ensure fairness and objectivity, and each report is scored on five key criteria.</span>
+
+<span class="sd">Functionality:</span>
+<span class="sd">    - Accepts the current workflow state, including the topic, questionnaire, and reports.</span>
+<span class="sd">    - Anonymizes report data to prevent bias in evaluations.</span>
+<span class="sd">    - Scores reports based on relevance, factuality, completeness, clarity, and actionability.</span>
+<span class="sd">    - Returns structured evaluation results in a standardized format for further processing.</span>
+
+<span class="sd">Evaluation Criteria:</span>
+<span class="sd">    1. **Relevance**: How well the report addresses the task.</span>
+<span class="sd">    2. **Factuality**: Whether the report contains any factual errors.</span>
+<span class="sd">    3. **Completeness**: Coverage of all aspects of the task, including diagnosis and recommendations.</span>
+<span class="sd">    4. **Clarity**: Whether the report is well-structured and easy to understand.</span>
+<span class="sd">    5. **Actionability**: Practicality and applicability of the recommendations.</span>
+
+<span class="sd">Dependencies:</span>
+<span class="sd">    - `langchain_core.messages`: For generating system prompts for the language model.</span>
+<span class="sd">    - `langchain_openai`: For querying OpenAI&#39;s language model.</span>
+<span class="sd">    - `graphEvaluator.states`: Defines the `OverallState` workflow structure.</span>
+<span class="sd">    - `graphEvaluator.schema`: Provides the `StructuredEvaluatorOutput` for standardized evaluations.</span>
+
+<span class="sd">Functions:</span>
+<span class="sd">    - comprehensive_evaluator_node: Evaluates reports using a language model and returns structured results.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">dotenv</span><span class="w"> </span><span class="kn">import</span> <span class="n">load_dotenv</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langchain_core.messages</span><span class="w"> </span><span class="kn">import</span> <span class="n">SystemMessage</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langchain_openai</span><span class="w"> </span><span class="kn">import</span> <span class="n">ChatOpenAI</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">graphEvaluator.states</span><span class="w"> </span><span class="kn">import</span> <span class="n">OverallState</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">graphEvaluator.schema</span><span class="w"> </span><span class="kn">import</span> <span class="n">StructuredEvaluatorOutput</span>
+
+<span class="n">load_dotenv</span><span class="p">()</span>
+<span class="n">llm</span> <span class="o">=</span> <span class="n">ChatOpenAI</span><span class="p">(</span><span class="n">model_name</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;MODEL_SUPERVISOR&quot;</span><span class="p">))</span>
+
+<span class="n">evaluator_prompt</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">    Task: You are a comprehensive evaluator reviewing the reports compiled by the different teams on topic: </span><span class="si">{topic}</span><span class="s2">.</span>
+<span class="s2">    With asked questions and answers on it: </span><span class="si">{questionnaire}</span>
+<span class="s2">    The names are anonymized to you be objective in your evaluation.</span>
+<span class="s2">    You have access to the following reports:</span>
+
+<span class="s2">    Reports: </span><span class="si">{reports}</span>
+
+<span class="s2">    Evaluate each report based on the following criteria:</span>
+<span class="s2">    1. Relevance: How well does the report address the task?</span>
+<span class="s2">    2. Factuality: Does the report contain any factual errors?</span>
+<span class="s2">    3. Completeness: Does the report fully cover all aspects of the task (diagnosis and recommendations)?</span>
+<span class="s2">    4. Clarity: Is the report well-structured and easy to understand?</span>
+<span class="s2">    5. Actionability: Are the recommendations practical and applicable?</span>
+<span class="s2">    </span>
+<span class="s2">    **Provide a score (1-5) for each criterion and include a detailed and specific explanation for each report.**</span>
+<span class="s2">    **Ensure that your evaluation is critical and fair: Avoid giving the highest scores (5) unless the report clearly demonstrates exceptional quality in that criterion.**</span>
+<span class="s2">    **Justify your choice by explicitly comparing it with the others.**</span>
+<span class="s2">    **Note: You are only one of several evaluators. Make your evaluation based on a balanced and unbiased analysis, avoiding assumptions or over-optimistic scoring.**</span>
+<span class="s2">&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="comprehensive_evaluator_node">
+<a class="viewcode-back" href="../../../graphEvaluator.nodes.html#graphEvaluator.nodes.comprehensive_evaluator.comprehensive_evaluator_node">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">comprehensive_evaluator_node</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">OverallState</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Evaluate team-generated reports using a comprehensive language model.</span>
+
+<span class="sd">    This function processes reports provided in the workflow state, anonymizes their data, and evaluates</span>
+<span class="sd">    them based on predefined criteria. The results include structured feedback and scores for each report.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        state (OverallState): The current workflow state, which includes:</span>
+<span class="sd">            - topic (str): The topic being evaluated.</span>
+<span class="sd">            - questionnaire (str): Questions and answers used for evaluation.</span>
+<span class="sd">            - reports (dict): A dictionary of anonymized reports submitted by teams.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        dict: A structured evaluation report, containing scores and feedback for each report.</span>
+
+<span class="sd">    Example:</span>
+<span class="sd">        state = {</span>
+<span class="sd">            &quot;topic&quot;: &quot;Optimize organizational IT systems.&quot;,</span>
+<span class="sd">            &quot;questionnaire&quot;: &quot;Survey responses about IT satisfaction.&quot;,</span>
+<span class="sd">            &quot;reports&quot;: {</span>
+<span class="sd">                &quot;Report_1&quot;: &quot;Details about IT infrastructure.&quot;,</span>
+<span class="sd">                &quot;Report_2&quot;: &quot;Details about team collaboration.&quot;</span>
+<span class="sd">            }</span>
+<span class="sd">        }</span>
+
+<span class="sd">        output = comprehensive_evaluator_node(state)</span>
+<span class="sd">        print(output[&quot;evaluator_reports&quot;])</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Comprehensive Evaluator activated.&quot;</span><span class="p">)</span>
+
+    <span class="n">reports</span> <span class="o">=</span> <span class="n">state</span><span class="p">[</span><span class="s2">&quot;reports&quot;</span><span class="p">]</span>
+
+    <span class="c1"># Step 1: Create anonymized mapping</span>
+    <span class="n">anonymized_reports</span> <span class="o">=</span> <span class="p">{</span><span class="n">anonymized_name</span><span class="p">:</span> <span class="n">report</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">anonymized_name</span><span class="p">,</span> <span class="n">report</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">reports</span><span class="o">.</span><span class="n">items</span><span class="p">())}</span>
+
+    <span class="n">structured_llm</span> <span class="o">=</span> <span class="n">llm</span><span class="o">.</span><span class="n">with_structured_output</span><span class="p">(</span><span class="n">StructuredEvaluatorOutput</span><span class="p">)</span>
+
+    <span class="n">system_prompt</span> <span class="o">=</span> <span class="n">evaluator_prompt</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+        <span class="n">topic</span><span class="o">=</span><span class="n">state</span><span class="p">[</span><span class="s2">&quot;topic&quot;</span><span class="p">],</span>
+        <span class="n">questionnaire</span><span class="o">=</span><span class="n">state</span><span class="p">[</span><span class="s2">&quot;questionnaire&quot;</span><span class="p">],</span>
+        <span class="n">reports</span><span class="o">=</span><span class="n">anonymized_reports</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Step 2: LLM Query</span>
+    <span class="n">system_message</span> <span class="o">=</span> <span class="n">SystemMessage</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="n">system_prompt</span><span class="p">)</span>
+    <span class="n">output</span> <span class="o">=</span> <span class="n">structured_llm</span><span class="o">.</span><span class="n">invoke</span><span class="p">([</span><span class="n">system_message</span><span class="p">])</span>
+
+    <span class="c1"># Step 5: Construct the result</span>
+    <span class="n">detailed_result</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;comprehensive_evaluator&quot;</span><span class="p">:</span> <span class="n">output</span><span class="o">.</span><span class="n">reports</span><span class="p">}</span>
+
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;evaluator_reports&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">detailed_result</span><span class="p">]}</span></div>
+
+
+
+
+
+
+
+
+
+
+<span class="c1"># def comprehensive_evaluator_node(state: OverallState):</span>
+<span class="c1">#     print(&quot;Comprehensive Evaluator activated.&quot;)</span>
+<span class="c1">#</span>
+<span class="c1">#     reports = state[&quot;reports&quot;]</span>
+<span class="c1">#</span>
+<span class="c1">#     # Step 1: Create anonymized mapping</span>
+<span class="c1">#     anonymized_reports = {f&quot;Report_{i + 1}&quot;: content for i, (arch, content) in enumerate(reports.items())}</span>
+<span class="c1">#     reverse_mapping = {f&quot;Report_{i + 1}&quot;: arch for i, arch in enumerate(reports.keys())}</span>
+<span class="c1">#</span>
+<span class="c1">#     structured_llm = llm.with_structured_output(EvaluatorOutput)</span>
+<span class="c1">#</span>
+<span class="c1">#</span>
+<span class="c1">#     system_prompt = evaluator_prompt.format(</span>
+<span class="c1">#         topic=state[&quot;topic&quot;],</span>
+<span class="c1">#         questionnaire=state[&quot;questionnaire&quot;],</span>
+<span class="c1">#         reports=anonymized_reports</span>
+<span class="c1">#     )</span>
+<span class="c1">#</span>
+<span class="c1">#     # Step 2: LLM Query</span>
+<span class="c1">#     system_message = SystemMessage(content=system_prompt)</span>
+<span class="c1">#     output = structured_llm.invoke([system_message])</span>
+<span class="c1">#</span>
+<span class="c1">#     # Step 3: Extract relevant fields from the output</span>
+<span class="c1">#     anonymized_name = output.anonymized_name  # Extract the anonymized name</span>
+<span class="c1">#     description = output.description  # Extract the description</span>
+<span class="c1">#</span>
+<span class="c1">#     # Step 4: Map back the anonymized name to the original name</span>
+<span class="c1">#     original_name = reverse_mapping.get(anonymized_name, anonymized_name)</span>
+<span class="c1">#</span>
+<span class="c1">#     # Step 5: Construct the result</span>
+<span class="c1">#     detailed_result = {original_name: description}</span>
+<span class="c1">#</span>
+<span class="c1">#     return {&quot;evaluator_reports&quot;: [detailed_result]}</span>
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../../index.html">LangChainDiploma</a></h1>
+
+
+
+
+
+
+
+
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../graphEvaluator.html">graphEvaluator package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../graphHierarchicalTeams.html">graphHierarchicalTeams package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../graphNetwork.html">graphNetwork package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../graphSupervisor.html">graphSupervisor package</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2025, Fedir Zhuk, Aleksander Ignacik.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.1.3</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

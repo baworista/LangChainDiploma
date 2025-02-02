@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>graphEvaluator package &#8212; LangChainDiploma 1.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="_static/basic.css?v=686e5160" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=27fed22d" />
+    <script src="_static/documentation_options.js?v=f2a433a1"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="graphEvaluator.nodes package" href="graphEvaluator.nodes.html" />
+    <link rel="prev" title="Multi-Agent Architectures for Report Generation and Its Evaluation documentation" href="index.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="graphevaluator-package">
+<h1>graphEvaluator package<a class="headerlink" href="#graphevaluator-package" title="Link to this heading">¶</a></h1>
+<section id="subpackages">
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Link to this heading">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="graphEvaluator.nodes.html">graphEvaluator.nodes package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="graphEvaluator.nodes.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graphEvaluator.nodes.html#module-graphEvaluator.nodes.comprehensive_evaluator">graphEvaluator.nodes.comprehensive_evaluator module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="graphEvaluator.nodes.html#graphEvaluator.nodes.comprehensive_evaluator.comprehensive_evaluator_node"><code class="docutils literal notranslate"><span class="pre">comprehensive_evaluator_node()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="graphEvaluator.nodes.html#module-graphEvaluator.nodes.final_evaluator">graphEvaluator.nodes.final_evaluator module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="graphEvaluator.nodes.html#graphEvaluator.nodes.final_evaluator.final_evaluator_node"><code class="docutils literal notranslate"><span class="pre">final_evaluator_node()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="graphEvaluator.nodes.html#module-graphEvaluator.nodes.g_evaluator">graphEvaluator.nodes.g_evaluator module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="graphEvaluator.nodes.html#graphEvaluator.nodes.g_evaluator.g_eval_evaluator_node"><code class="docutils literal notranslate"><span class="pre">g_eval_evaluator_node()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="graphEvaluator.nodes.html#module-graphEvaluator.nodes.individual_evaluator">graphEvaluator.nodes.individual_evaluator module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="graphEvaluator.nodes.html#graphEvaluator.nodes.individual_evaluator.evaluate_single_report"><code class="docutils literal notranslate"><span class="pre">evaluate_single_report()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="graphEvaluator.nodes.html#graphEvaluator.nodes.individual_evaluator.individual_evaluator_node"><code class="docutils literal notranslate"><span class="pre">individual_evaluator_node()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="graphEvaluator.nodes.html#module-graphEvaluator.nodes.report_compiler">graphEvaluator.nodes.report_compiler module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="graphEvaluator.nodes.html#graphEvaluator.nodes.report_compiler.load_reports"><code class="docutils literal notranslate"><span class="pre">load_reports()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="graphEvaluator.nodes.html#graphEvaluator.nodes.report_compiler.report_compiler_node"><code class="docutils literal notranslate"><span class="pre">report_compiler_node()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="graphEvaluator.nodes.html#module-graphEvaluator.nodes">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading">¶</a></h2>
+</section>
+<section id="module-graphEvaluator.graph">
+<span id="graphevaluator-graph-module"></span><h2>graphEvaluator.graph module<a class="headerlink" href="#module-graphEvaluator.graph" title="Link to this heading">¶</a></h2>
+<p>Module for building and executing an evaluation graph in a multi-agent system.</p>
+<p>This module constructs a state graph for evaluating reports generated by different architectures
+(Supervisor, Network, HierarchicalTeams). It uses multiple evaluator nodes to assess and compare
+reports, ultimately selecting the best report and saving its content.</p>
+<dl class="simple">
+<dt>Key Features:</dt><dd><ul class="simple">
+<li><p>Modular evaluation nodes: Includes nodes for compiling reports, comprehensive evaluation,
+G-Eval scoring, individual evaluation, and final evaluation.</p></li>
+<li><p>Graph-based workflow: Orchestrates the evaluation process through defined edges and nodes.</p></li>
+<li><p>Outputs a visual representation of the graph and selects the best report based on evaluations.</p></li>
+</ul>
+</dd>
+<dt>Dependencies:</dt><dd><ul class="simple">
+<li><p>langgraph: Used for building and managing the state graph.</p></li>
+<li><p>graphEvaluator: Provides node functions (<cite>report_compiler_node</cite>, <cite>comprehensive_evaluator_node</cite>, etc.)
+and state structure (<cite>OverallState</cite>).</p></li>
+</ul>
+</dd>
+<dt>Workflow:</dt><dd><ol class="arabic simple">
+<li><p>Start with <cite>Report_Compiler</cite>: Loads and anonymizes reports from specified architectures.</p></li>
+<li><p>Evaluate reports using three paths:
+- Comprehensive evaluation (<cite>Comprehensive_Evaluator</cite>).
+- G-Eval scoring (<cite>G-Eval_Node</cite>).
+- Individual evaluation (<cite>Individual_Evaluator</cite>).</p></li>
+<li><p>Pass evaluations to the <cite>Final_Evaluator</cite>, which selects the best report.</p></li>
+<li><p>Output the best report’s content to a markdown file.</p></li>
+</ol>
+</dd>
+<dt>Outputs:</dt><dd><ul class="simple">
+<li><p><cite>evaluator_graph_diagram.png</cite>: A visualization of the evaluation graph.</p></li>
+<li><p><cite>the_best_report_info.md</cite>: The best report’s content, saved in markdown format.</p></li>
+</ul>
+</dd>
+</dl>
+</section>
+<section id="module-graphEvaluator.schema">
+<span id="graphevaluator-schema-module"></span><h2>graphEvaluator.schema module<a class="headerlink" href="#module-graphEvaluator.schema" title="Link to this heading">¶</a></h2>
+<p>Module defining Pydantic models for structured evaluator output.</p>
+<p>This module provides data models for representing evaluation results of reports in a multi-agent system.
+Each report is evaluated against criteria, with scores and comments ensuring consistent representation.</p>
+<dl class="simple">
+<dt>Classes:</dt><dd><p>Score: Represents the evaluation of a single criterion.
+EvaluatorOutput: Represents the overall evaluation of a single report.
+StructuredEvaluatorOutput: Represents evaluations for all reports in a structured format.</p>
+</dd>
+</dl>
+<dl class="py class">
+<dt class="sig sig-object py" id="graphEvaluator.schema.EvaluatorOutput">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">graphEvaluator.schema.</span></span><span class="sig-name descname"><span class="pre">EvaluatorOutput</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">anonymized_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scores</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#graphEvaluator.schema.Score" title="graphEvaluator.schema.Score"><span class="pre">Score</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overall_comment</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/graphEvaluator/schema.html#EvaluatorOutput"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#graphEvaluator.schema.EvaluatorOutput" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseModel</span></code></p>
+<p>Represents the overall evaluation of a single report, including scores and an overall comment.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="graphEvaluator.schema.EvaluatorOutput.anonymized_name">
+<span class="sig-name descname"><span class="pre">anonymized_name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#graphEvaluator.schema.EvaluatorOutput.anonymized_name" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="graphEvaluator.schema.EvaluatorOutput.evaluator_output">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">evaluator_output</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#graphEvaluator.schema.EvaluatorOutput.evaluator_output" title="Link to this definition">¶</a></dt>
+<dd><p>Returns a formatted string representation of the overall evaluation, including the anonymized name, scores, and overall comment.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="graphEvaluator.schema.EvaluatorOutput.model_config">
+<span class="sig-name descname"><span class="pre">model_config</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">ConfigDict</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#graphEvaluator.schema.EvaluatorOutput.model_config" title="Link to this definition">¶</a></dt>
+<dd><p>Configuration for the model, should be a dictionary conforming to [<cite>ConfigDict</cite>][pydantic.config.ConfigDict].</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="graphEvaluator.schema.EvaluatorOutput.overall_comment">
+<span class="sig-name descname"><span class="pre">overall_comment</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#graphEvaluator.schema.EvaluatorOutput.overall_comment" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="graphEvaluator.schema.EvaluatorOutput.scores">
+<span class="sig-name descname"><span class="pre">scores</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#graphEvaluator.schema.Score" title="graphEvaluator.schema.Score"><span class="pre">Score</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#graphEvaluator.schema.EvaluatorOutput.scores" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="graphEvaluator.schema.Score">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">graphEvaluator.schema.</span></span><span class="sig-name descname"><span class="pre">Score</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">criterion_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">score</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">comment</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/graphEvaluator/schema.html#Score"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#graphEvaluator.schema.Score" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseModel</span></code></p>
+<p>Represents the evaluation of a single criterion for a report.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="graphEvaluator.schema.Score.comment">
+<span class="sig-name descname"><span class="pre">comment</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#graphEvaluator.schema.Score.comment" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="graphEvaluator.schema.Score.criterion_name">
+<span class="sig-name descname"><span class="pre">criterion_name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#graphEvaluator.schema.Score.criterion_name" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="graphEvaluator.schema.Score.model_config">
+<span class="sig-name descname"><span class="pre">model_config</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">ConfigDict</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#graphEvaluator.schema.Score.model_config" title="Link to this definition">¶</a></dt>
+<dd><p>Configuration for the model, should be a dictionary conforming to [<cite>ConfigDict</cite>][pydantic.config.ConfigDict].</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="graphEvaluator.schema.Score.score">
+<span class="sig-name descname"><span class="pre">score</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#graphEvaluator.schema.Score.score" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="graphEvaluator.schema.Score.scores">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">scores</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#graphEvaluator.schema.Score.scores" title="Link to this definition">¶</a></dt>
+<dd><p>Returns a formatted string representation of the score, including the criterion name, the score, and the comment.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="graphEvaluator.schema.StructuredEvaluatorOutput">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">graphEvaluator.schema.</span></span><span class="sig-name descname"><span class="pre">StructuredEvaluatorOutput</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reports</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#graphEvaluator.schema.EvaluatorOutput" title="graphEvaluator.schema.EvaluatorOutput"><span class="pre">EvaluatorOutput</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/graphEvaluator/schema.html#StructuredEvaluatorOutput"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#graphEvaluator.schema.StructuredEvaluatorOutput" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseModel</span></code></p>
+<p>Represents the evaluations for all reports in a structured format.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="graphEvaluator.schema.StructuredEvaluatorOutput.model_config">
+<span class="sig-name descname"><span class="pre">model_config</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">ConfigDict</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#graphEvaluator.schema.StructuredEvaluatorOutput.model_config" title="Link to this definition">¶</a></dt>
+<dd><p>Configuration for the model, should be a dictionary conforming to [<cite>ConfigDict</cite>][pydantic.config.ConfigDict].</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="graphEvaluator.schema.StructuredEvaluatorOutput.reports">
+<span class="sig-name descname"><span class="pre">reports</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#graphEvaluator.schema.EvaluatorOutput" title="graphEvaluator.schema.EvaluatorOutput"><span class="pre">EvaluatorOutput</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#graphEvaluator.schema.StructuredEvaluatorOutput.reports" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-graphEvaluator.states">
+<span id="graphevaluator-states-module"></span><h2>graphEvaluator.states module<a class="headerlink" href="#module-graphEvaluator.states" title="Link to this heading">¶</a></h2>
+<p>Module for defining the <cite>OverallState</cite> structure.</p>
+<p>The <cite>OverallState</cite> is a <cite>TypedDict</cite> that stores the global state during the evaluation process
+in a multi-agent system. It tracks the topic, questionnaire, reports, evaluation results, and the
+final selected report.</p>
+<dl class="simple">
+<dt>Dependencies:</dt><dd><ul class="simple">
+<li><p>operator: For merging lists in <cite>evaluator_reports</cite>.</p></li>
+<li><p>typing: For type annotations.</p></li>
+</ul>
+</dd>
+<dt>Classes:</dt><dd><p>OverallState: Represents the workflow state for evaluation.</p>
+</dd>
+</dl>
+<dl class="py class">
+<dt class="sig sig-object py" id="graphEvaluator.states.OverallState">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">graphEvaluator.states.</span></span><span class="sig-name descname"><span class="pre">OverallState</span></span><a class="reference internal" href="_modules/graphEvaluator/states.html#OverallState"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#graphEvaluator.states.OverallState" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">TypedDict</span></code></p>
+<p>Global state for the evaluation workflow.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="graphEvaluator.states.OverallState.topic">
+<span class="sig-name descname"><span class="pre">topic</span></span><a class="headerlink" href="#graphEvaluator.states.OverallState.topic" title="Link to this definition">¶</a></dt>
+<dd><p>Evaluation topic (e.g., “Improving product management maturity”).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="graphEvaluator.states.OverallState.questionnaire">
+<span class="sig-name descname"><span class="pre">questionnaire</span></span><a class="headerlink" href="#graphEvaluator.states.OverallState.questionnaire" title="Link to this definition">¶</a></dt>
+<dd><p>Questionnaire data used in the evaluation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="graphEvaluator.states.OverallState.reports">
+<span class="sig-name descname"><span class="pre">reports</span></span><a class="headerlink" href="#graphEvaluator.states.OverallState.reports" title="Link to this definition">¶</a></dt>
+<dd><p>List of reports to evaluate. Each report includes:
+- <cite>real_name</cite> (str): Original name of the report.
+- <cite>anonymized_name</cite> (str): Anonymized identifier.
+- <cite>report</cite> (str): Report content.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List[dict[str, str, str]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="graphEvaluator.states.OverallState.evaluator_reports">
+<span class="sig-name descname"><span class="pre">evaluator_reports</span></span><a class="headerlink" href="#graphEvaluator.states.OverallState.evaluator_reports" title="Link to this definition">¶</a></dt>
+<dd><p>Results from different evaluators.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Annotated[List[dict], operator.add]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="graphEvaluator.states.OverallState.the_best_report_info">
+<span class="sig-name descname"><span class="pre">the_best_report_info</span></span><a class="headerlink" href="#graphEvaluator.states.OverallState.the_best_report_info" title="Link to this definition">¶</a></dt>
+<dd><p>Final selected report content.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id0">
+<span class="sig-name descname"><span class="pre">evaluator_reports</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List[dict],</span> <span class="pre">&lt;built-in</span> <span class="pre">function</span> <span class="pre">add&gt;]</span></em><a class="headerlink" href="#id0" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id1">
+<span class="sig-name descname"><span class="pre">questionnaire</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#id1" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id2">
+<span class="sig-name descname"><span class="pre">reports</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#id2" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id3">
+<span class="sig-name descname"><span class="pre">the_best_report_info</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#id3" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id4">
+<span class="sig-name descname"><span class="pre">topic</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#id4" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-graphEvaluator">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-graphEvaluator" title="Link to this heading">¶</a></h2>
+<p>Evaluator module is used to create and invoke the graph.</p>
+<p>This module contains the graph file, which is used to create and invoke the graph,
+states file, which is used to define the states used inside the graph,
+and the schema file, which is used to define the schemas used in the graph.</p>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">LangChainDiploma</a></h1>
+
+
+
+
+
+
+
+
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">graphEvaluator package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#subpackages">Subpackages</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-graphEvaluator.graph">graphEvaluator.graph module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-graphEvaluator.schema">graphEvaluator.schema module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-graphEvaluator.states">graphEvaluator.states module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-graphEvaluator">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="graphHierarchicalTeams.html">graphHierarchicalTeams package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="graphNetwork.html">graphNetwork package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="graphSupervisor.html">graphSupervisor package</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="index.html" title="previous chapter">Multi-Agent Architectures for Report Generation and Its Evaluation documentation</a></li>
+      <li>Next: <a href="graphEvaluator.nodes.html" title="next chapter">graphEvaluator.nodes package</a></li>
+  </ul></li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2025, Fedir Zhuk, Aleksander Ignacik.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.1.3</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      
+      |
+      <a href="_sources/graphEvaluator.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

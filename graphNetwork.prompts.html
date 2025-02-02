@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>graphNetwork.prompts package &#8212; LangChainDiploma 1.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="_static/basic.css?v=686e5160" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=27fed22d" />
+    <script src="_static/documentation_options.js?v=f2a433a1"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="graphSupervisor package" href="graphSupervisor.html" />
+    <link rel="prev" title="graphNetwork.nodes package" href="graphNetwork.nodes.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="graphnetwork-prompts-package">
+<h1>graphNetwork.prompts package<a class="headerlink" href="#graphnetwork-prompts-package" title="Link to this heading">¶</a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading">¶</a></h2>
+</section>
+<section id="module-graphNetwork.prompts.agent_definition">
+<span id="graphnetwork-prompts-agent-definition-module"></span><h2>graphNetwork.prompts.agent_definition module<a class="headerlink" href="#module-graphNetwork.prompts.agent_definition" title="Link to this heading">¶</a></h2>
+<p>Module: agents_definitions.</p>
+<p>This module defines the roles, missions, and responsibilities of various agents in the workflow.</p>
+<p>The <cite>AGENTS_DEFINITIONS</cite> dictionary provides a structured description of each agent’s role,
+primary mission, responsibilities, and domain. This structure allows the agents to perform
+their tasks within specific areas of expertise and collaborate effectively to achieve
+organizational goals.</p>
+<dl class="simple">
+<dt>Agent Roles:</dt><dd><ul class="simple">
+<li><p>HR_Agent: Focuses on Human Resources, improving the employee lifecycle and aligning HR strategies with goals.</p></li>
+<li><p>IT_Agent: Specializes in technology infrastructure and IT solutions to enhance operational efficiency.</p></li>
+<li><p>BP_Agent: Focuses on business processes, optimizing workflows and ensuring operational alignment.</p></li>
+<li><p>KM_Agent: Addresses knowledge management, improving knowledge sharing and resource accessibility.</p></li>
+<li><p>Consulting_Agent: Provides high-level strategic analysis and recommendations.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="graphNetwork.prompts.agent_definition.AGENTS_DEFINITIONS">
+<span class="sig-prename descclassname"><span class="pre">graphNetwork.prompts.agent_definition.</span></span><span class="sig-name descname"><span class="pre">AGENTS_DEFINITIONS</span></span><a class="headerlink" href="#graphNetwork.prompts.agent_definition.AGENTS_DEFINITIONS" title="Link to this definition">¶</a></dt>
+<dd><p>A dictionary containing detailed descriptions of the roles, missions,</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">responsibilities,</span> <span class="pre">and</span> <span class="pre">domains</span> <span class="pre">of</span> <span class="pre">various</span> <span class="pre">agents.</span></span></dt>
+<dd></dd></dl>
+
+</section>
+<section id="module-graphNetwork.prompts.generators">
+<span id="graphnetwork-prompts-generators-module"></span><h2>graphNetwork.prompts.generators module<a class="headerlink" href="#module-graphNetwork.prompts.generators" title="Link to this heading">¶</a></h2>
+<p>Module: prompt_generation.</p>
+<p>This module provides functions to generate structured prompts for agents, users, and summary agents
+within a network workflow. These prompts are dynamically created based on agent roles, responsibilities,
+and the current state of the workflow.</p>
+<dl class="simple">
+<dt>Modules and Constants Used:</dt><dd><ul class="simple">
+<li><p>AGENT_PROMPT_TEMPLATE: Template for agent-specific prompts.</p></li>
+<li><p>AGENTS_DEFINITIONS: Dictionary defining roles and responsibilities for each agent.</p></li>
+<li><p>SUMMARY_AGENT_PROMPT_TEMPLATE: Template for generating summary agent prompts.</p></li>
+<li><p>USER_PROMPT_TEMPLATE: Template for generating user prompts.</p></li>
+</ul>
+</dd>
+<dt>Functions:</dt><dd><ul class="simple">
+<li><p>generate_agent_prompt: Generates a prompt for a specific agent based on its definition.</p></li>
+<li><p>create_user_prompt: Generates a prompt for the user based on the current workflow state.</p></li>
+<li><p>create_summary_agent_prompt: Generates a prompt for the summary agent to consolidate analyses and reports.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py function">
+<dt class="sig sig-object py" id="graphNetwork.prompts.generators.create_summary_agent_prompt">
+<span class="sig-prename descclassname"><span class="pre">graphNetwork.prompts.generators.</span></span><span class="sig-name descname"><span class="pre">create_summary_agent_prompt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/graphNetwork/prompts/generators.html#create_summary_agent_prompt"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#graphNetwork.prompts.generators.create_summary_agent_prompt" title="Link to this definition">¶</a></dt>
+<dd><p>Generate a prompt for the summary agent to consolidate analyses and generate a final report.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>state</strong> (<em>dict</em>) – The current state of the workflow, containing:
+main_task (str): The primary task being addressed.
+analysis (str): Consolidated analysis results.
+questionnaire (str): The questionnaire data provided by the user.
+good_practices (str): Best practices relevant to the workflow.
+processed_agents (list, optional): Agents that have already been processed. Defaults to an empty list.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A formatted prompt string for the summary agent.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<dl>
+<dt>state = {</dt><dd><p>“main_task”: “Enhance knowledge sharing”,
+“analysis”: “Combined agent analyses…”,
+“questionnaire”: “Questionnaire data…”,
+“good_practices”: “Recommended tools and practices…”,
+“processed_agents”: [“KM_Agent”, “BP_Agent”],</p>
+<blockquote>
+<div><p>}</p>
+</div></blockquote>
+</dd>
+</dl>
+<p>prompt = create_summary_agent_prompt(state)
+print(prompt)</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="graphNetwork.prompts.generators.create_user_prompt">
+<span class="sig-prename descclassname"><span class="pre">graphNetwork.prompts.generators.</span></span><span class="sig-name descname"><span class="pre">create_user_prompt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/graphNetwork/prompts/generators.html#create_user_prompt"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#graphNetwork.prompts.generators.create_user_prompt" title="Link to this definition">¶</a></dt>
+<dd><p>Generate a user prompt based on the current workflow state.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>state</strong> (<em>dict</em>) – The current state of the workflow, containing:
+main_task (str): The primary task being addressed.
+task (str): The current subtask.
+questionnaire (str): The questionnaire data provided by the user.
+good_practices (str): Best practices relevant to the workflow.
+analysis (str): The analysis results from agents.
+questions (str or list, optional): Questions asked during the workflow. Defaults to “NO QUESTIONS”.
+processed_agents (list, optional): Agents that have already been processed. Defaults to an empty list.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A formatted prompt string for the user.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<dl class="simple">
+<dt>state = {</dt><dd><p>“main_task”: “Improve team collaboration”,
+“task”: “Analyze team dynamics”,
+“questionnaire”: “Survey results…”,
+“good_practices”: “Industry best practices…”,
+“analysis”: “Initial analysis…”,
+“questions”: [“What are the main blockers?”],
+“processed_agents”: [“HR_Agent”, “IT_Agent”],
+}</p>
+</dd>
+</dl>
+<p>prompt = create_user_prompt(state)
+print(prompt)</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="graphNetwork.prompts.generators.generate_agent_prompt">
+<span class="sig-prename descclassname"><span class="pre">graphNetwork.prompts.generators.</span></span><span class="sig-name descname"><span class="pre">generate_agent_prompt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">agent_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/graphNetwork/prompts/generators.html#generate_agent_prompt"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#graphNetwork.prompts.generators.generate_agent_prompt" title="Link to this definition">¶</a></dt>
+<dd><p>Generate a prompt for a specific agent based on its role and responsibilities.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>agent_name</strong> (<em>str</em>) – The name of the agent (e.g., “HR_Agent”, “IT_Agent”).</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A formatted prompt string tailored to the agent’s role and mission.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ValueError</strong> – If the specified agent name is not defined in <cite>AGENTS_DEFINITIONS</cite>.</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<p>agent_name = “HR_Agent”
+prompt = generate_agent_prompt(agent_name)
+print(prompt)</p>
+</dd></dl>
+
+</section>
+<section id="module-graphNetwork.prompts.prompt_templates">
+<span id="graphnetwork-prompts-prompt-templates-module"></span><h2>graphNetwork.prompts.prompt_templates module<a class="headerlink" href="#module-graphNetwork.prompts.prompt_templates" title="Link to this heading">¶</a></h2>
+<p>Module: agent_prompt_template.</p>
+<p>This module defines the template for generating agent-specific prompts in a multi-agent system.</p>
+<p>The <cite>AGENT_PROMPT_TEMPLATE</cite> provides a consistent structure for agent interactions, ensuring that agents
+adhere to their defined roles, responsibilities, and domains of expertise while collaborating effectively
+within the system. The template emphasizes clarity, collaboration, and adherence to predefined rules.</p>
+<dl>
+<dt>Key Components:</dt><dd><ul class="simple">
+<li><p>Agent Role: The specific role of the agent (e.g., HR Agent, IT Agent).</p></li>
+<li><p>Primary Mission: The main goal of the agent within the multi-agent system.</p></li>
+<li><p>Responsibilities: A detailed list of the agent’s tasks and collaboration guidelines.</p></li>
+<li><p>Rules: A set of rules that guide the agent’s behavior and ensure structured, consistent outputs.</p></li>
+</ul>
+</dd>
+<dt>Template Variables:</dt><dd><p>agent_role (str): The title or role of the agent.
+primary_mission (str): The agent’s overarching purpose or mission in the system.
+primary_responsibilities (str): A summary of the agent’s responsibilities.
+responsibility_1 (str): A specific task assigned to the agent.
+responsibility_2 (str): Another specific task assigned to the agent.
+domain (str): The area of expertise the agent operates within.</p>
+</dd>
+<dt>Rules Defined:</dt><dd><ol class="arabic simple">
+<li><p>Retain all previous analyses and append new insights under the agent’s name.</p></li>
+<li><p>Operate strictly within the defined domain.</p></li>
+<li><p>Follow the specified response format to ensure clarity and consistency.</p></li>
+<li><p>Collaborate effectively with other agents based on the context of the task.</p></li>
+<li><p>Avoid making assumptions—use only the provided data.</p></li>
+<li><p>Specify the next agent or mark the task as complete (<cite>__end__</cite>).</p></li>
+<li><p>Ensure tasks for the next agent align with their domain expertise.</p></li>
+<li><p>Optionally generate questions for the next agent to guide their analysis.</p></li>
+</ol>
+</dd>
+<dt>Collaboration Details:</dt><dd><ul class="simple">
+<li><p>HR Agent: Focuses on workforce challenges, recruitment, retention, and organizational culture.</p></li>
+<li><p>IT Agent: Optimizes technology infrastructure and aligns IT solutions with organizational goals.</p></li>
+<li><p>BP Agent: Analyzes workflows and processes for operational efficiency.</p></li>
+<li><p>KM Agent: Enhances knowledge management to support organizational growth and learning.</p></li>
+</ul>
+</dd>
+<dt>Usage Example:</dt><dd><dl>
+<dt>agent_data = {</dt><dd><p>“agent_role”: “HR Agent”,
+“primary_mission”: “providing expert analysis and actionable recommendations in Human Resources”,
+“primary_responsibilities”: “optimize employee lifecycle, enhance satisfaction, and align HR strategies with goals”,
+“responsibility_1”: “Analyze HR-specific data to identify challenges and opportunities.”,
+“responsibility_2”: “Develop actionable recommendations for employee performance and satisfaction.”,
+“domain”: “HR domain”</p>
+<blockquote>
+<div><p>}</p>
+</div></blockquote>
+</dd>
+</dl>
+<p>agent_prompt = AGENT_PROMPT_TEMPLATE.format(<a href="#id1"><span class="problematic" id="id2">**</span></a>agent_data)
+print(agent_prompt)</p>
+</dd>
+</dl>
+</section>
+<section id="module-graphNetwork.prompts.summary_agent_prompt">
+<span id="graphnetwork-prompts-summary-agent-prompt-module"></span><h2>graphNetwork.prompts.summary_agent_prompt module<a class="headerlink" href="#module-graphNetwork.prompts.summary_agent_prompt" title="Link to this heading">¶</a></h2>
+<p>Module: summary_agent_prompt_template.</p>
+<p>This module defines the template for generating prompts for a summary agent in a multi-agent system.</p>
+<p>The <cite>SUMMARY_AGENT_PROMPT_TEMPLATE</cite> is designed for a summary agent whose primary goal is to
+compile a comprehensive and actionable executive report. This report synthesizes the analyses
+and reviews provided by other agents in the system, adhering to a structured and concise format.</p>
+<dl>
+<dt>Purpose:</dt><dd><ul class="simple">
+<li><p>Restate the overarching goal of the task.</p></li>
+<li><p>Highlight key findings and analyses from agents.</p></li>
+<li><p>Incorporate questionnaires and best practices.</p></li>
+<li><p>Summarize contributions from agents and identify next steps or unanswered questions.</p></li>
+</ul>
+</dd>
+<dt>Template Variables:</dt><dd><p>main_task (str): The primary goal or focus of the task being addressed.
+analysis (str): A summary of the findings and analyses provided by agents.
+questionnaire (str): The questionnaire data relevant to the task.
+good_practices (str): Best practices to consider in the analysis.
+processed_agents (str): A list of agents that have already contributed to the task.</p>
+</dd>
+<dt>Sections of the Prompt:</dt><dd><ol class="arabic simple">
+<li><p><strong>Main Goal</strong>: Clarifies the purpose of the summary agent’s report.</p></li>
+<li><dl class="simple">
+<dt><strong>Content to Include</strong>:</dt><dd><ul class="simple">
+<li><p>Restate the main goal of the task.</p></li>
+<li><p>Highlight key findings from the agent analyses.</p></li>
+<li><p>Reference questionnaires and best practices.</p></li>
+<li><p>Identify contributing agents and their inputs.</p></li>
+<li><p>Summarize next steps or unresolved issues.</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><strong>Guidelines</strong>:</dt><dd><ul class="simple">
+<li><p>Ensure clarity and conciseness in the report.</p></li>
+<li><p>Avoid duplicating prior agent analyses.</p></li>
+<li><p>Focus on actionable insights and recommendations.</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p><strong>Structured Response Format</strong>: Instructs the agent to follow a specific structure in the report.</p></li>
+</ol>
+</dd>
+<dt>Usage Example:</dt><dd><dl>
+<dt>state = {</dt><dd><p>“main_task”: “Enhance team collaboration in a multinational organization”,
+“analysis”: “Key insights from HR and IT agents regarding communication barriers.”,
+“questionnaire”: “Survey data highlighting pain points in collaboration.”,
+“good_practices”: “Industry standards for effective team collaboration.”,
+“processed_agents”: [“HR_Agent”, “IT_Agent”],</p>
+<blockquote>
+<div><p>}</p>
+</div></blockquote>
+</dd>
+</dl>
+<p>prompt = SUMMARY_AGENT_PROMPT_TEMPLATE.format(<a href="#id3"><span class="problematic" id="id4">**</span></a>state)
+print(prompt)</p>
+</dd>
+<dt>Output Example:</dt><dd><p><strong>YOUR MAIN GOAL:</strong>
+You are a senior consultant experienced in writing executive reports. Your goal is to write a comprehensive report
+based on the reviews provided by the analyst-reviewer teams.</p>
+<p>The report should be structured, concise, and actionable. It should include an executive summary, an introduction,
+a detailed analysis, and a set of recommendations.</p>
+<p><strong>WHEN WRITING YOUR SUMMARY, INCLUDE THE FOLLOWING:</strong>
+- Restate the main goal of the task: Enhance team collaboration in a multinational organization.
+- Highlight key findings from the current analysis provided by agents: Key insights from HR and IT agents regarding communication barriers.
+- Here are the questionnaires: Survey data highlighting pain points in collaboration.
+- Here are best practices: Industry standards for effective team collaboration.
+- Mention which agents have already contributed: HR_Agent, IT_Agent.
+- Summarize the next steps or unanswered questions based on the analysis.</p>
+<p><strong>GUIDELINES:</strong>
+- Be clear and concise.
+- Avoid duplicating prior agent analyses.
+- Provide actionable insights or recommendations if possible.</p>
+<p><strong>Respond in the specified structured format.</strong></p>
+</dd>
+</dl>
+</section>
+<section id="module-graphNetwork.prompts.user_prompt">
+<span id="graphnetwork-prompts-user-prompt-module"></span><h2>graphNetwork.prompts.user_prompt module<a class="headerlink" href="#module-graphNetwork.prompts.user_prompt" title="Link to this heading">¶</a></h2>
+<p>Module: user_prompt_template.</p>
+<p>This module defines the template for generating user prompts in a multi-agent system workflow.</p>
+<p>The <cite>USER_PROMPT_TEMPLATE</cite> is designed to guide the user through a structured workflow by providing
+relevant information, tasks, analysis, and questions for the next agent. It ensures that agents
+collaborate effectively, ask the right questions, and adhere to the established process.</p>
+<dl>
+<dt>Purpose:</dt><dd><ul class="simple">
+<li><p>Defines the main goal of the task.</p></li>
+<li><p>Presents the subtask the user should focus on.</p></li>
+<li><p>Provides relevant context, including questionnaires and best practices.</p></li>
+<li><p>Summarizes the existing analysis and highlights unanswered questions.</p></li>
+</ul>
+</dd>
+<dt>Template Variables:</dt><dd><p>main_task (str): The primary goal of the task.
+task (str): A specific subtask the user should focus on.
+questionnaire (str): The questionnaire data provided by the user or agents.
+good_practices (str): Best practices to be considered during the task.
+analysis (str): The current analysis, summarizing insights from previous agents.
+questions (str or list): Any specific questions that need to be asked to agents.
+processed_agents (str): A list of agents who have already contributed to the task.</p>
+</dd>
+<dt>Sections of the Prompt:</dt><dd><ol class="arabic simple">
+<li><p><strong>Main Goal</strong>: Clarifies the overall objective of the task.</p></li>
+<li><p><strong>Subtask</strong>: Specifies the user’s current focus or subtask.</p></li>
+<li><p><strong>Questionnaire</strong>: Displays the questionnaire data to guide the analysis.</p></li>
+<li><p><strong>Best Practices</strong>: Provides industry or task-specific best practices.</p></li>
+<li><p><strong>Additional Context</strong>: Instructs the user to retain previous analysis and add new insights.</p></li>
+<li><p><strong>Current Analysis</strong>: A summary of the analysis from previous agents.</p></li>
+<li><p><strong>Questions for the Agent</strong>: Lists questions the user wants to ask the next agent.</p></li>
+<li><p><strong>Important Instructions</strong>: Informs the user about the agents who have already contributed and helps determine the next agent to ask.</p></li>
+</ol>
+</dd>
+<dt>Rules:</dt><dd><ul class="simple">
+<li><p>Ensure clarity and conciseness.</p></li>
+<li><p>Do not ask previously asked agents; focus on new ones or return to the summary agent if all agents have been asked.</p></li>
+<li><p>Respond in a structured format and specify the next agent or indicate the task is complete.</p></li>
+</ul>
+</dd>
+<dt>Usage Example:</dt><dd><dl>
+<dt>state = {</dt><dd><blockquote>
+<div><p>“main_task”: “Improve team collaboration”,
+“task”: “Analyze team communication barriers”,
+“questionnaire”: “Survey data about team interactions”,
+“good_practices”: “Effective communication practices”,
+“analysis”: “Previous analysis from HR and IT agents.”,
+“questions”: “What specific barriers prevent collaboration?”,
+“processed_agents”: [“HR_Agent”, “IT_Agent”]</p>
+</div></blockquote>
+<p>}</p>
+</dd>
+</dl>
+<p>prompt = USER_PROMPT_TEMPLATE.format(<a href="#id5"><span class="problematic" id="id6">**</span></a>state)
+print(prompt)</p>
+</dd>
+<dt>Output Example:</dt><dd><p><strong>YOUR MAIN GOAL:</strong>
+Improve team collaboration</p>
+<p><strong>WHEN ASKING TRY TO FOLLOW THIS SUBTASK:</strong>
+Analyze team communication barriers</p>
+<p><strong>Questionnaire:</strong>
+Survey data about team interactions</p>
+<p><strong>Best Practices:</strong>
+Effective communication practices</p>
+<p><strong>Additional Context:</strong>
+- Retain the existing analysis and only add your specific input.</p>
+<p><strong>Current Analysis is a sum of previous analysis previous agents:</strong>
+Previous analysis from HR and IT agents.</p>
+<p><strong>Questions for the Agent:</strong>
+- What specific barriers prevent collaboration?</p>
+<p><strong>VERY IMPORTANT</strong>
+<strong>HR_Agent, IT_Agent already provided their analysis, so you can’t ask them anymore. Please choose unasked agents instead. IF YOU HAVE ASKED HR, BP, IT, KM and Consulting agents, RETURN Summary_Agent.</strong></p>
+<p>Respond in the specified structured format. Remember to identify the next agent for the task or indicate if the task is complete.</p>
+</dd>
+</dl>
+</section>
+<section id="module-graphNetwork.prompts">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-graphNetwork.prompts" title="Link to this heading">¶</a></h2>
+<p>Prompts for the Network graph.</p>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">LangChainDiploma</a></h1>
+
+
+
+
+
+
+
+
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="graphEvaluator.html">graphEvaluator package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="graphHierarchicalTeams.html">graphHierarchicalTeams package</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="graphNetwork.html">graphNetwork package</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="graphNetwork.html#subpackages">Subpackages</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graphNetwork.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graphNetwork.html#module-graphNetwork.graph">graphNetwork.graph module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graphNetwork.html#module-graphNetwork.schemas">graphNetwork.schemas module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graphNetwork.html#module-graphNetwork.states">graphNetwork.states module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graphNetwork.html#module-graphNetwork">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="graphSupervisor.html">graphSupervisor package</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  <li><a href="graphNetwork.html">graphNetwork package</a><ul>
+      <li>Previous: <a href="graphNetwork.nodes.html" title="previous chapter">graphNetwork.nodes package</a></li>
+      <li>Next: <a href="graphSupervisor.html" title="next chapter">graphSupervisor package</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2025, Fedir Zhuk, Aleksander Ignacik.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.1.3</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      
+      |
+      <a href="_sources/graphNetwork.prompts.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

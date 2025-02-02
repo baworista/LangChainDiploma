@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>graphEvaluator.nodes.report_compiler &#8212; LangChainDiploma 1.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/basic.css?v=686e5160" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/alabaster.css?v=27fed22d" />
+    <script src="../../../_static/documentation_options.js?v=f2a433a1"></script>
+    <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for graphEvaluator.nodes.report_compiler</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Module for compiling and loading reports in a multi-agent system.</span>
+
+<span class="sd">This module provides functionality to load reports from specified architectures,</span>
+<span class="sd">assign anonymized names, and update the system state for further processing.</span>
+
+<span class="sd">Functionality:</span>
+<span class="sd">    - Loads reports from file paths based on architecture names.</span>
+<span class="sd">    - Compiles the reports into a dictionary with anonymized names.</span>
+<span class="sd">    - Updates the system state to include the compiled reports.</span>
+
+<span class="sd">Dependencies:</span>
+<span class="sd">    - `os`: For handling file paths and checking file existence.</span>
+<span class="sd">    - `graphEvaluator.states.OverallState`: Defines the state structure for managing the workflow.</span>
+
+<span class="sd">Functions:</span>
+<span class="sd">    - `load_reports`: Loads reports from specified architectures into a dictionary.</span>
+<span class="sd">    - `report_compiler_node`: Compiles reports, assigns anonymized names, and updates the state.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">List</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">graphEvaluator.states</span><span class="w"> </span><span class="kn">import</span> <span class="n">OverallState</span>
+
+
+<span class="c1"># Function to load reports into a dictionary</span>
+<div class="viewcode-block" id="load_reports">
+<a class="viewcode-back" href="../../../graphEvaluator.nodes.html#graphEvaluator.nodes.report_compiler.load_reports">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">load_reports</span><span class="p">(</span><span class="n">architectures</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Load reports from the specified architectures into a dictionary.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        architectures (List[str]): List of architecture names representing different report sources.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        dict[str, str]: A dictionary where keys are architecture names and values are the report content.</span>
+
+<span class="sd">    Example:</span>
+<span class="sd">        architectures = [&quot;Architecture1&quot;, &quot;Architecture2&quot;]</span>
+<span class="sd">        reports = load_reports(architectures)</span>
+<span class="sd">        print(reports)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">reports</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">arch</span> <span class="ow">in</span> <span class="n">architectures</span><span class="p">:</span>
+        <span class="n">report_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;../graph</span><span class="si">{</span><span class="n">arch</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;output</span><span class="si">{</span><span class="n">arch</span><span class="si">}</span><span class="s2">.md&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">report_path</span><span class="p">):</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;The&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;graph</span><span class="si">{</span><span class="n">arch</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;report downloaded!&quot;</span><span class="p">)</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">report_path</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+                <span class="n">reports</span><span class="p">[</span><span class="n">arch</span><span class="p">]</span> <span class="o">=</span> <span class="n">file</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Warning: Report for </span><span class="si">{</span><span class="n">arch</span><span class="si">}</span><span class="s2"> not found at </span><span class="si">{</span><span class="n">report_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">reports</span></div>
+
+
+
+<div class="viewcode-block" id="report_compiler_node">
+<a class="viewcode-back" href="../../../graphEvaluator.nodes.html#graphEvaluator.nodes.report_compiler.report_compiler_node">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">report_compiler_node</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">OverallState</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Compile reports into a dictionary with anonymized names and updates the system state.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        state (OverallState): Current system state containing:</span>
+<span class="sd">            - reports (list): List of architecture names to load reports from.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        OverallState: Updated state with compiled reports, including:</span>
+<span class="sd">            - &quot;real_name&quot;: Original architecture name.</span>
+<span class="sd">            - &quot;anonymized_name&quot;: Anonymized name for the report.</span>
+<span class="sd">            - &quot;report&quot;: Report content.</span>
+
+<span class="sd">    Example:</span>
+<span class="sd">        state = {</span>
+<span class="sd">            &quot;reports&quot;: [&quot;Architecture1&quot;, &quot;Architecture2&quot;]</span>
+<span class="sd">        }</span>
+<span class="sd">        updated_state = report_compiler_node(state)</span>
+<span class="sd">        print(updated_state[&quot;reports&quot;])</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Report Compiler activated.&quot;</span><span class="p">)</span>
+
+    <span class="n">architecture_names</span> <span class="o">=</span> <span class="n">state</span><span class="p">[</span><span class="s2">&quot;reports&quot;</span><span class="p">]</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">architecture_names</span><span class="p">)</span>
+
+    <span class="c1"># Step 1: Load the reports</span>
+    <span class="n">reports_dict</span> <span class="o">=</span> <span class="n">load_reports</span><span class="p">(</span><span class="n">architecture_names</span><span class="p">)</span>
+
+    <span class="c1"># Step 2: Create a dictionary with architecture name, simple anonymized name, and report</span>
+    <span class="n">compiled_reports</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">arch</span><span class="p">,</span> <span class="n">report</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">reports_dict</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
+        <span class="n">anonymized_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Report_</span><span class="si">{</span><span class="n">i</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="n">compiled_reports</span><span class="p">[</span><span class="n">arch</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;real_name&quot;</span><span class="p">:</span> <span class="n">arch</span><span class="p">,</span>
+            <span class="s2">&quot;anonymized_name&quot;</span><span class="p">:</span> <span class="n">anonymized_name</span><span class="p">,</span>
+            <span class="s2">&quot;report&quot;</span><span class="p">:</span> <span class="n">report</span>
+        <span class="p">}</span>
+
+    <span class="c1"># Step 3: Update the state with the compiled reports</span>
+    <span class="n">state</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s2">&quot;reports&quot;</span><span class="p">:</span> <span class="n">compiled_reports</span><span class="p">})</span>
+    <span class="k">return</span> <span class="n">state</span></div>
+
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../../index.html">LangChainDiploma</a></h1>
+
+
+
+
+
+
+
+
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../graphEvaluator.html">graphEvaluator package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../graphHierarchicalTeams.html">graphHierarchicalTeams package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../graphNetwork.html">graphNetwork package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../graphSupervisor.html">graphSupervisor package</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2025, Fedir Zhuk, Aleksander Ignacik.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.1.3</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>
